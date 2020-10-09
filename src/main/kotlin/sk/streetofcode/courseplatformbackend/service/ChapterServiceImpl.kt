@@ -1,0 +1,43 @@
+package sk.streetofcode.courseplatformbackend.service
+
+import org.springframework.stereotype.Service
+import sk.streetofcode.courseplatformbackend.api.ChapterService
+import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
+import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
+import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
+import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
+import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
+import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
+import sk.streetofcode.courseplatformbackend.model.Chapter
+
+@Service
+class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRepository: CourseRepository, val lectureRepository: LectureRepository) : ChapterService {
+    override fun get(id: Long): Chapter {
+        return chapterRepository.findById(id)
+                .orElseThrow { ResourceNotFoundException("Chapter with id $id was not found") }
+    }
+
+    override fun getAll(): List<Chapter> {
+        return chapterRepository.findAll().toList()
+    }
+
+    override fun add(addRequest: ChapterAddRequest): Long {
+        val course = courseRepository.findById(addRequest.courseId)
+        if (course.isEmpty) {
+            throw ResourceNotFoundException("Course with id ${addRequest.courseId} was not found")
+        }
+
+        val chapter = Chapter(course.get(), addRequest.name, addRequest.chapterOrder)
+        return chapterRepository.save(chapter).id ?: throw InternalErrorException("Could not save chapter")
+    }
+
+    override fun delete(id: Long) {
+        get(id) // If this line line wont throw exception then it means that chapter by this id exists
+
+        // Remove all lectures if this course is removed
+        lectureRepository.deleteByChapterId(id)
+
+        chapterRepository.deleteById(id)
+    }
+
+}

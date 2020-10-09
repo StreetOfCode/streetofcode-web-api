@@ -1,0 +1,2 @@
+--INSERT INTO course VALUES
+--(course_id_seq.nextval, '2007-12-03T10:15:30+01:00', 'long', 'name', 'short' )
