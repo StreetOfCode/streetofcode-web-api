@@ -29,6 +29,7 @@ data class Chapter(
                 cascade = [CascadeType.ALL],
                 fetch = FetchType.LAZY
         )
+        @OrderBy("lecture_order")
         val lectures: MutableSet<Lecture>,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")

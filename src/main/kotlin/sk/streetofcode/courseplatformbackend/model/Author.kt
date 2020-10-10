@@ -27,6 +27,7 @@ data class Author(
                 fetch = FetchType.LAZY
         )
         @JsonIgnore
+        @OrderBy("id")
         val courses: MutableSet<Course>
 ) {
     constructor(name: String, url: String, description: String)
