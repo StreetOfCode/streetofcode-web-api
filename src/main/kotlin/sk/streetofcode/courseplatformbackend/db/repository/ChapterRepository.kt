@@ -6,5 +6,4 @@ import sk.streetofcode.courseplatformbackend.model.Chapter
 
 @Repository
 interface ChapterRepository : CrudRepository<Chapter, Long> {
-
 }

@@ -31,4 +31,20 @@ data class Author(
 ) {
     constructor(name: String, url: String, description: String)
             : this(null, name, url, description, mutableSetOf())
+
+        override fun equals(other: Any?) = other is Author && AuthorEssential(this) == AuthorEssential(other)
+        override fun hashCode() = AuthorEssential(this).hashCode()
+        override fun toString() = AuthorEssential(this).toString().replaceFirst("AuthorEssential", "Author")
+}
+
+private data class AuthorEssential(
+        val name: String,
+        val url: String,
+        val description: String
+) {
+        constructor(author: Author) : this(
+                name = author.name,
+                url = author.url,
+                description = author.description
+        )
 }

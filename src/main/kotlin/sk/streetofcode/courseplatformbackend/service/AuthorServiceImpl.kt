@@ -13,7 +13,7 @@ import sk.streetofcode.courseplatformbackend.model.Author
 class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseRepository: CourseRepository) : AuthorService {
     override fun get(id: Long): Author {
         return authorRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Author with id " + id + "was not found") }
+                .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
     }
 
     override fun getAll(): List<Author> {
@@ -25,6 +25,7 @@ class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseReposi
         return authorRepository.save(author).id ?: throw InternalErrorException("Could not save author")
     }
 
+    // TODO this is not working
     override fun delete(id: Long) {
         get(id) // If this line line wont throw exception then it means that author by this id exists
 

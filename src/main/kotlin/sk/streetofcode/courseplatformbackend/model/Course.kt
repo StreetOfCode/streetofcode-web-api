@@ -1,12 +1,10 @@
 package sk.streetofcode.courseplatformbackend.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
 import javax.persistence.*
 
 @Entity
-//@EqualsAndHashCode(exclude = ["id"]) // TODO https://stackoverflow.com/questions/29595301/property-include-exclude-on-kotlin-data-classes
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
 data class Course(
         @Id
@@ -36,7 +34,6 @@ data class Course(
                 cascade = [CascadeType.ALL],
                 fetch = FetchType.LAZY
         )
-        @JsonIgnore
         val chapters: MutableSet<Chapter>,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
@@ -48,4 +45,26 @@ data class Course(
 ) {
     constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String)
             : this(null, author, difficulty, name, shortDescription, longDescription, mutableSetOf(),OffsetDateTime.now(), OffsetDateTime.now())
+
+        override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
+        override fun hashCode() = CourseEssential(this).hashCode()
+        override fun toString() = CourseEssential(this).toString().replaceFirst("CourseEssential", "Course")
+
+}
+
+private data class CourseEssential(
+        val name: String,
+        val shortDescription: String,
+        val longDescription: String,
+        val createdAt: OffsetDateTime,
+        val updatedAt: OffsetDateTime
+
+) {
+        constructor(course: Course) : this(
+                name = course.name,
+                shortDescription = course.shortDescription,
+                longDescription = course.longDescription,
+                createdAt = course.createdAt,
+                updatedAt = course.updatedAt
+        )
 }

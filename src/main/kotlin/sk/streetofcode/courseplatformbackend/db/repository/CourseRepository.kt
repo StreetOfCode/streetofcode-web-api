@@ -12,4 +12,8 @@ interface CourseRepository : CrudRepository<Course, Long>{
 
     @Transactional
     fun deleteByDifficultyId(difficultyId: Long)
+
+    fun <T> findBy(projection: Class<T>): List<T>
+
+    fun <T> findById(id: Long, projection: Class<T>): T
 }
