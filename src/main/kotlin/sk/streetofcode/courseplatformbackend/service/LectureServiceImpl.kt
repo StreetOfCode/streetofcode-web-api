@@ -31,9 +31,11 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
     }
 
     override fun delete(id: Long) {
-        get(id) // If this line line wont throw exception then it means that lecture by this id exists
-
-        lectureRepository.deleteById(id)
+        if (lectureRepository.existsById(id)) {
+            lectureRepository.deleteById(id)
+        } else {
+            throw ResourceNotFoundException("Lecture with id $id was not found")
+        }
     }
 
 }

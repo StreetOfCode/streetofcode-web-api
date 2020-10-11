@@ -39,7 +39,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         return courseRepository.save(course).id ?: throw InternalErrorException("Could not save course")
     }
 
-    // TODO this is stupid to get full course just to be sure that it exists, I should rather check exceptions
+    // TODO do it more efficiently using projection instead of getting full course
     override fun delete(id: Long) {
         val course = get(id)
         val courseId = course.id ?: throw InternalErrorException("Course from db should have had id $id but it is null")

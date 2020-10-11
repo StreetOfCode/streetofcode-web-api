@@ -27,14 +27,16 @@ class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseReposi
 
     // TODO this is not working
     override fun delete(id: Long) {
-        get(id) // If this line line wont throw exception then it means that author by this id exists
+        if (authorRepository.existsById(id)) {
+            // Remove all courses by this author
+            // TODO We probably don't want to delete all courses when author is deleted.
+            //  Then author_id in Course entity would have to be nullable
+            courseRepository.deleteByAuthorId(id)
 
-        // Remove all courses by this author
-        // TODO We probably don't want to delete all courses when author is deleted.
-        //  Then author_id in Course entity would have to be nullable
-        courseRepository.deleteByAuthorId(id)
-
-        authorRepository.deleteById(id)
+            authorRepository.deleteById(id)
+        } else {
+            throw ResourceNotFoundException("Author with id $id was not found")
+        }
     }
 
 }

@@ -27,14 +27,16 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
     }
 
     override fun delete(id: Long) {
-        get(id) // If this line line wont throw exception then it means that difficulty by this id exists
+        if (difficultyRepository.existsById(id)) {
+            // Remove all courses with difficultyId when removed
+            // TODO We probably don't want to delete all courses when difficulty is deleted.
+            //  Then difficulty_id in Course entity would have to be nullable
+            courseRepository.deleteByDifficultyId(id)
 
-        // Remove all courses with difficultyId when removed
-        // TODO We probably don't want to delete all courses when difficulty is deleted.
-        //  Then difficulty_id in Course entity would have to be nullable
-        courseRepository.deleteByDifficultyId(id)
-
-        difficultyRepository.deleteById(id)
+            difficultyRepository.deleteById(id)
+        } else {
+            throw ResourceNotFoundException("Difficulty with id $id was not found")
+        }
     }
 
 }

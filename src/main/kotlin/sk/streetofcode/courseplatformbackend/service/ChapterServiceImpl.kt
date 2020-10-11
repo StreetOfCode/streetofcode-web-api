@@ -32,12 +32,14 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
     }
 
     override fun delete(id: Long) {
-        get(id) // If this line line wont throw exception then it means that chapter by this id exists
+        if (chapterRepository.existsById(id)) {
+            // Remove all lectures if this course is removed
+            lectureRepository.deleteByChapterId(id)
 
-        // Remove all lectures if this course is removed
-        lectureRepository.deleteByChapterId(id)
-
-        chapterRepository.deleteById(id)
+            chapterRepository.deleteById(id)
+        } else {
+            throw ResourceNotFoundException("Chapter with id $id was not found")
+        }
     }
 
 }
