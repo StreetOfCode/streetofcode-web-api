@@ -34,6 +34,9 @@ data class Difficulty(
         constructor(name: String, description: String, difficultyOrder: Int)
                 : this(null, name, description, difficultyOrder, mutableSetOf())
 
+        constructor(id: Long, name: String, description: String, difficultyOrder: Int)
+                : this(id, name, description, difficultyOrder, mutableSetOf())
+
         override fun equals(other: Any?) = other is Difficulty && DifficultyEssential(this) == DifficultyEssential(other)
         override fun hashCode() = DifficultyEssential(this).hashCode()
         override fun toString() = DifficultyEssential(this).toString().replaceFirst("DifficultyEssential", "Difficulty")

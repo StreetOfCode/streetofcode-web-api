@@ -5,6 +5,7 @@ import sk.streetofcode.courseplatformbackend.api.DifficultyService
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyAddRequest
+import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Difficulty
@@ -20,10 +21,23 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
         return difficultyRepository.findAll().toList()
     }
 
-    override fun add(addRequest: DifficultyAddRequest): Long {
+    override fun add(addRequest: DifficultyAddRequest): Difficulty {
         val difficulty = Difficulty(addRequest.name, addRequest.description, addRequest.difficultyOrder)
 
-        return difficultyRepository.save(difficulty).id ?: throw InternalErrorException("Could not save difficulty")
+        return difficultyRepository.save(difficulty) ?: throw InternalErrorException("Could not save difficulty")
+    }
+
+    override fun edit(id: Long, editRequest: DifficultyEditRequest): Difficulty {
+        if (difficultyRepository.existsById(id)) {
+            if (id != editRequest.id) {
+                throw InternalErrorException("PathVariable id is not equal to request id field")
+            } else {
+                val difficulty = Difficulty(editRequest.id, editRequest.name, editRequest.description, editRequest.difficultyOrder)
+                return difficultyRepository.save(difficulty)
+            }
+        } else {
+            throw ResourceNotFoundException("Difficulty with id $id was not found")
+        }
     }
 
     override fun delete(id: Long) {
