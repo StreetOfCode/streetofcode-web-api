@@ -19,9 +19,6 @@ data class Difficulty(
         @Column(nullable = false)
         val description: String,
 
-        @Column(nullable = false)
-        val difficultyOrder: Int,
-
         @OneToMany(
                 mappedBy = "difficulty",
                 cascade = [CascadeType.PERSIST],
@@ -31,11 +28,11 @@ data class Difficulty(
         @JsonIgnore
         val courses: MutableSet<Course>
 ) {
-        constructor(name: String, description: String, difficultyOrder: Int)
-                : this(null, name, description, difficultyOrder, mutableSetOf())
+        constructor(name: String, description: String)
+                : this(null, name, description, mutableSetOf())
 
-        constructor(id: Long, name: String, description: String, difficultyOrder: Int)
-                : this(id, name, description, difficultyOrder, mutableSetOf())
+        constructor(id: Long, name: String, description: String)
+                : this(id, name, description, mutableSetOf())
 
         override fun equals(other: Any?) = other is Difficulty && DifficultyEssential(this) == DifficultyEssential(other)
         override fun hashCode() = DifficultyEssential(this).hashCode()
@@ -44,12 +41,10 @@ data class Difficulty(
 
 private data class DifficultyEssential(
         val name: String,
-        val description: String,
-        val difficultyOrder: Int
+        val description: String
 ) {
         constructor(difficulty: Difficulty) : this(
                 name = difficulty.name,
-                description = difficulty.description,
-                difficultyOrder = difficulty.difficultyOrder
+                description = difficulty.description
         )
 }

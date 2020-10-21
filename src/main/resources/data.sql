@@ -3,9 +3,9 @@ INSERT INTO author (id, name, description, url) VALUES
 (author_id_seq.nextval, 'Gabo', 'Kerekeš', 'url' );
 
 
-INSERT INTO difficulty (id, name, description, difficulty_order) VALUES
-(difficulty_id_seq.nextval, 'Beginner', 'Jednoduche', 1 ),
-(difficulty_id_seq.nextval, 'Intermediate', 'Pokrocile', 2 );
+INSERT INTO difficulty (id, name, description) VALUES
+(difficulty_id_seq.nextval, 'Beginner', 'Jednoduche'),
+(difficulty_id_seq.nextval, 'Intermediate', 'Pokrocile');
 
 
 INSERT INTO course (id, author_id, difficulty_id, name, short_description, long_description, created_at, updated_at) VALUES

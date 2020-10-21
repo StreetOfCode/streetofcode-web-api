@@ -23,7 +23,7 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
     }
 
     override fun add(addRequest: DifficultyAddRequest): Difficulty {
-        val difficulty = Difficulty(addRequest.name, addRequest.description, addRequest.difficultyOrder)
+        val difficulty = Difficulty(addRequest.name, addRequest.description)
 
         return difficultyRepository.save(difficulty) ?: throw InternalErrorException("Could not save difficulty")
     }
@@ -33,7 +33,7 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
             if (id != editRequest.id) {
                 throw InternalErrorException("PathVariable id is not equal to request id field")
             } else {
-                val difficulty = Difficulty(editRequest.id, editRequest.name, editRequest.description, editRequest.difficultyOrder)
+                val difficulty = Difficulty(editRequest.id, editRequest.name, editRequest.description)
                 return difficultyRepository.save(difficulty)
             }
         } else {
