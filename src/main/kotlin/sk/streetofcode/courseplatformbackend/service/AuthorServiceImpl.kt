@@ -1,10 +1,13 @@
 package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.AuthorService
+import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
+import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.model.Author
@@ -20,20 +23,42 @@ class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseReposi
         return authorRepository.findAll().toList()
     }
 
-    override fun add(addRequest: AuthorAddRequest): Long {
+    override fun add(addRequest: AuthorAddRequest): Author {
         val author = Author(addRequest.name, addRequest.url, addRequest.description)
-        return authorRepository.save(author).id ?: throw InternalErrorException("Could not save author")
+
+        try {
+            return authorRepository.save(author)
+        } catch (e: Exception) {
+            throw InternalErrorException("Could not save author")
+        }
     }
 
-    // TODO this is not working
-    override fun delete(id: Long) {
+    override fun edit(id: Long, editRequest: AuthorEditRequest): Author {
         if (authorRepository.existsById(id)) {
-            // Remove all courses by this author
-            // TODO We probably don't want to delete all courses when author is deleted.
-            //  Then author_id in Course entity would have to be nullable
-            courseRepository.deleteByAuthorId(id)
+            if (id != editRequest.id) {
+                throw BadRequestException("PathVariable id is not equal to request id field")
+            } else {
+                val author = Author(editRequest.id, editRequest.name, editRequest.url, editRequest.description)
+                return authorRepository.save(author)
+            }
+        } else {
+            throw ResourceNotFoundException("Author with id $id was not found")
+        }
+    }
+
+
+    @Transactional
+    override fun delete(id: Long) : Author {
+        val author = authorRepository.findById(id)
+
+        if (author.isPresent) {
+            // Change difficultyId to null in all courses with this difficultyId
+            courseRepository.setAuthorsToNull(authorId = id)
 
             authorRepository.deleteById(id)
+
+            return author.get()
+
         } else {
             throw ResourceNotFoundException("Author with id $id was not found")
         }

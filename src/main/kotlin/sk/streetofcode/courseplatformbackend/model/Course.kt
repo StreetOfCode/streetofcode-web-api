@@ -13,7 +13,7 @@ data class Course(
         val id: Long? = null,
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "author_id", nullable = false)
+        @JoinColumn(name = "author_id", nullable = true)
         val author: Author,
 
         @ManyToOne(fetch = FetchType.LAZY)

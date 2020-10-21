@@ -23,13 +23,16 @@ data class Author(
 
         @OneToMany(
                 mappedBy = "author",
-                cascade = [CascadeType.ALL],
+                cascade = [CascadeType.PERSIST],
                 fetch = FetchType.LAZY
         )
         @JsonIgnore
         @OrderBy("id")
         val courses: MutableSet<Course>
 ) {
+    constructor(id: Long, name: String, url: String, description: String)
+            : this(id, name, url, description, mutableSetOf())
+
     constructor(name: String, url: String, description: String)
             : this(null, name, url, description, mutableSetOf())
 

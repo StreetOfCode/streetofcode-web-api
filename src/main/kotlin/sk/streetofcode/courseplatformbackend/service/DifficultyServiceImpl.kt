@@ -1,8 +1,10 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.DifficultyService
+import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyAddRequest
@@ -10,6 +12,7 @@ import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Difficulty
+import java.lang.Exception
 
 @Service
 class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val courseRepository: CourseRepository) : DifficultyService {
@@ -25,13 +28,17 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
     override fun add(addRequest: DifficultyAddRequest): Difficulty {
         val difficulty = Difficulty(addRequest.name, addRequest.description)
 
-        return difficultyRepository.save(difficulty) ?: throw InternalErrorException("Could not save difficulty")
+        try {
+            return difficultyRepository.save(difficulty)
+        } catch (e: Exception) {
+            throw InternalErrorException("Could not save difficulty")
+        }
     }
 
     override fun edit(id: Long, editRequest: DifficultyEditRequest): Difficulty {
         if (difficultyRepository.existsById(id)) {
             if (id != editRequest.id) {
-                throw InternalErrorException("PathVariable id is not equal to request id field")
+                throw BadRequestException("PathVariable id is not equal to request id field")
             } else {
                 val difficulty = Difficulty(editRequest.id, editRequest.name, editRequest.description)
                 return difficultyRepository.save(difficulty)
