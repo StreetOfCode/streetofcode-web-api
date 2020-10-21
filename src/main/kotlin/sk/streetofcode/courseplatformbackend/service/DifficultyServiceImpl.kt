@@ -42,12 +42,16 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
     }
 
     @Transactional
-    override fun delete(id: Long) {
-        if (difficultyRepository.existsById(id)) {
+    override fun delete(id: Long): Difficulty {
+        val difficulty = difficultyRepository.findById(id)
+
+        if (difficulty.isPresent) {
             // Change difficultyId to null in all courses with this difficultyId
             courseRepository.setDifficultyIdsToNull(difficultyId = id)
 
             difficultyRepository.deleteById(id)
+
+            return difficulty.get()
         } else {
             throw ResourceNotFoundException("Difficulty with id $id was not found")
         }

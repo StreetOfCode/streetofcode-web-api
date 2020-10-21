@@ -42,8 +42,7 @@ class DifficultyController(val difficultyService: DifficultyService) {
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        difficultyService.delete(id)
-        return ResponseEntity.ok().build()
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Difficulty> {
+        return ResponseEntity.ok(difficultyService.delete(id))
     }
 }
