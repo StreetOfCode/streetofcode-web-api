@@ -24,11 +24,11 @@ data class Difficulty(
 
         @OneToMany(
                 mappedBy = "difficulty",
-                cascade = [CascadeType.ALL],
+                cascade = [CascadeType.PERSIST],
                 fetch = FetchType.LAZY
         )
-        @JsonIgnore
         @OrderBy("id")
+        @JsonIgnore
         val courses: MutableSet<Course>
 ) {
         constructor(name: String, description: String, difficultyOrder: Int)

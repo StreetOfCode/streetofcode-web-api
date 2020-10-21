@@ -1,6 +1,7 @@
 package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.DifficultyService
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
@@ -40,12 +41,11 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
         }
     }
 
+    @Transactional
     override fun delete(id: Long) {
         if (difficultyRepository.existsById(id)) {
-            // Remove all courses with difficultyId when removed
-            // TODO We probably don't want to delete all courses when difficulty is deleted.
-            //  Then difficulty_id in Course entity would have to be nullable
-            courseRepository.deleteByDifficultyId(id)
+            // Change difficultyId to null in all courses with this difficultyId
+            courseRepository.setDifficultyIdsToNull(difficultyId = id)
 
             difficultyRepository.deleteById(id)
         } else {

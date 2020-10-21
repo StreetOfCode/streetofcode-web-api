@@ -17,7 +17,7 @@ data class Course(
         val author: Author,
 
         @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "difficulty_id", nullable = false)
+        @JoinColumn(name = "difficulty_id", nullable = true)
         val difficulty: Difficulty,
 
         @Column(nullable = false)
