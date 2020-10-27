@@ -1,4 +1,4 @@
-package sk.streetofcode.courseplatformbackend.db.projection
+package sk.streetofcode.courseplatformbackend.db.projection.overview
 
 import sk.streetofcode.courseplatformbackend.model.Author
 import sk.streetofcode.courseplatformbackend.model.Difficulty

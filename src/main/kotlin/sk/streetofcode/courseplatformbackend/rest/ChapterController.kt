@@ -1,19 +1,40 @@
 package sk.streetofcode.courseplatformbackend.rest
 
+import org.json.JSONObject
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.model.Chapter
+import java.util.*
 
 @RestController
 @RequestMapping("chapter")
 class ChapterController(val chapterService: ChapterService) {
 
+
     @GetMapping
-    fun getAll(): ResponseEntity<List<Chapter>> {
-        return ResponseEntity.ok(chapterService.getAll())
+    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<Chapter>> {
+        return if (filter.isPresent) {
+            val courseId = JSONObject(filter.get()).getLong("courseId")
+            val chapters = chapterService.getByCourseId(courseId)
+            buildGetAll(chapters)
+        } else {
+            val chapters = chapterService.getAll()
+            buildGetAll(chapters)
+        }
+    }
+
+    private fun buildGetAll(chapters: List<Chapter>): ResponseEntity<List<Chapter>> {
+        val httpHeaders = HttpHeaders()
+        httpHeaders.add(
+                "Content-Range",
+                "chapter 0-${chapters.size}/${chapters.size}"
+        )
+
+        return ResponseEntity.ok().headers(httpHeaders).body(chapters)
     }
 
     @GetMapping("{id}")

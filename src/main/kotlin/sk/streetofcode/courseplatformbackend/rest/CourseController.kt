@@ -1,12 +1,13 @@
 package sk.streetofcode.courseplatformbackend.rest
 
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
-import sk.streetofcode.courseplatformbackend.db.projection.CourseOverview
-import sk.streetofcode.courseplatformbackend.db.projection.CoursesHomepageOverview
+import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
+import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
 import sk.streetofcode.courseplatformbackend.model.Course
 
 @RestController
@@ -15,7 +16,16 @@ class CourseController(val courseService: CourseService) {
 
     @GetMapping
     fun getAll(): ResponseEntity<List<Course>> {
-        return ResponseEntity.ok(courseService.getAll())
+
+        val courses = courseService.getAll()
+
+        val httpHeaders = HttpHeaders()
+        httpHeaders.add(
+                "Content-Range",
+                "course 0-${courses.size}/${courses.size}"
+        )
+
+        return ResponseEntity.ok().headers(httpHeaders).body(courses)
     }
 
     @GetMapping("{id}")
@@ -35,7 +45,7 @@ class CourseController(val courseService: CourseService) {
     }
 
     @GetMapping("/home-page")
-    fun getCoursesHomepage(): ResponseEntity<List<CoursesHomepageOverview>> {
+    fun getCoursesHomepage(): ResponseEntity<List<CoursesHomepage>> {
         return ResponseEntity.ok(courseService.getCoursesHomepage())
     }
 

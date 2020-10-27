@@ -1,4 +1,4 @@
-package sk.streetofcode.courseplatformbackend.db.projection
+package sk.streetofcode.courseplatformbackend.db.projection.overview
 
 interface ChapterOverview {
     fun getId(): Long

@@ -21,6 +21,10 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
         return chapterRepository.findAll().toList()
     }
 
+    override fun getByCourseId(courseId: Long): List<Chapter> {
+        return chapterRepository.findByCourseId(courseId)
+    }
+
     override fun add(addRequest: ChapterAddRequest): Long {
         val course = courseRepository.findById(addRequest.courseId)
         if (course.isEmpty) {

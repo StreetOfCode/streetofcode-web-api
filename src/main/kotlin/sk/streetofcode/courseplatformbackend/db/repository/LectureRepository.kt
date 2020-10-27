@@ -10,4 +10,6 @@ interface LectureRepository : CrudRepository<Lecture, Long> {
 
     @Transactional
     fun deleteByChapterId(chapterId: Long)
+
+    fun findByChapterId(chapterId: Long): List<Lecture>
 }

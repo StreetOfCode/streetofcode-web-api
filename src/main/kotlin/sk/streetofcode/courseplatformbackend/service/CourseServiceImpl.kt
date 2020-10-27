@@ -6,8 +6,8 @@ import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
-import sk.streetofcode.courseplatformbackend.db.projection.CourseOverview
-import sk.streetofcode.courseplatformbackend.db.projection.CoursesHomepageOverview
+import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
+import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
 import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
@@ -49,8 +49,8 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         courseRepository.deleteById(id)
     }
 
-    override fun getCoursesHomepage(): List<CoursesHomepageOverview> {
-        return courseRepository.findBy(CoursesHomepageOverview::class.java)
+    override fun getCoursesHomepage(): List<CoursesHomepage> {
+        return courseRepository.findBy(CoursesHomepage::class.java)
     }
 
     override fun getCourseOverview(id: Long): CourseOverview {

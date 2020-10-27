@@ -20,6 +20,10 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         return lectureRepository.findAll().toList()
     }
 
+    override fun getByChapterId(chapterId: Long): List<Lecture> {
+        return lectureRepository.findByChapterId(chapterId)
+    }
+
     override fun add(addRequest: LectureAddRequest): Long {
         val chapter = chapterRepository.findById(addRequest.chapterId)
         if (chapter.isEmpty) {

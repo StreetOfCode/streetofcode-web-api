@@ -6,6 +6,7 @@ import sk.streetofcode.courseplatformbackend.model.Lecture
 interface LectureService {
     fun get(id: Long): Lecture
     fun getAll(): List<Lecture>
+    fun getByChapterId(chapterId: Long): List<Lecture>
     fun add(addRequest: LectureAddRequest): Long
     fun delete(id: Long)
 }
