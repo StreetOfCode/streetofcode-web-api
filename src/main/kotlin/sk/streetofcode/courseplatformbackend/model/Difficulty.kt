@@ -26,7 +26,7 @@ data class Difficulty(
         )
         @OrderBy("id")
         @JsonIgnore
-        val courses: MutableSet<Course>
+        val courses: MutableSet<Course> = mutableSetOf()
 ) {
         constructor(name: String, description: String)
                 : this(null, name, description, mutableSetOf())

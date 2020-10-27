@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
 import sk.streetofcode.courseplatformbackend.model.Difficulty
@@ -47,9 +48,15 @@ open class IntegrationTests : StringSpec() {
         }
     }
 
+    protected fun getDifficultyNotFound(difficultyId: Long) {
+        return restTemplate.getForEntity<ResourceNotFoundException>("/difficulty/$difficultyId").let {
+            it.statusCode shouldBe HttpStatus.NOT_FOUND
+        }
+    }
+
     protected fun addDifficulty(body: DifficultyAddRequest): Difficulty {
         return restTemplate.postForEntity<Difficulty>("/difficulty", body).let {
-            it.statusCode shouldBe HttpStatus.OK
+            it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
