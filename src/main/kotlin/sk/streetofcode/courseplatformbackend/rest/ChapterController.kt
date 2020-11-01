@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.rest
 
+import org.json.JSONException
 import org.json.JSONObject
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -18,8 +19,13 @@ class ChapterController(val chapterService: ChapterService) {
     @GetMapping
     fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<Chapter>> {
         return if (filter.isPresent) {
-            val courseId = JSONObject(filter.get()).getLong("courseId")
-            val chapters = chapterService.getByCourseId(courseId)
+            val chapters = try {
+                val courseId = JSONObject(filter.get()).getLong("courseId")
+                chapterService.getByCourseId(courseId)
+            } catch (e: JSONException) {
+                chapterService.getAll()
+            }
+
             buildGetAll(chapters)
         } else {
             val chapters = chapterService.getAll()
