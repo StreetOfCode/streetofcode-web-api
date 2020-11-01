@@ -24,7 +24,7 @@ data class Lecture(
         @Column(nullable = false)
         val lectureOrder: Int,
 
-        @Column(nullable = false)
+        @Column(nullable = false, columnDefinition = "TEXT")
         val content: String,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
