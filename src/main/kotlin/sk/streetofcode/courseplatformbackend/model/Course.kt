@@ -14,20 +14,20 @@ data class Course(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "author_id", nullable = true)
-        val author: Author,
+        var author: Author,
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "difficulty_id", nullable = true)
-        val difficulty: Difficulty,
+        var difficulty: Difficulty,
 
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(nullable = false)
-        val shortDescription: String,
+        var shortDescription: String,
 
         @Column(nullable = false)
-        val longDescription: String,
+        var longDescription: String,
 
         @OneToMany(
                 mappedBy = "course",
@@ -41,7 +41,7 @@ data class Course(
         val createdAt: OffsetDateTime,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        val updatedAt: OffsetDateTime
+        var updatedAt: OffsetDateTime
 
 ) {
     constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String)

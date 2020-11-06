@@ -6,8 +6,9 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
-import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
+import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
+import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
 import sk.streetofcode.courseplatformbackend.model.Course
 
 @RestController
@@ -36,6 +37,11 @@ class CourseController(val courseService: CourseService) {
     @PostMapping
     fun add(@RequestBody courseAddRequest: CourseAddRequest): ResponseEntity<Long> {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.add(courseAddRequest))
+    }
+
+    @PutMapping("{id}")
+    fun edit(@PathVariable("id") id: Long, @RequestBody courseEditRequest: CourseEditRequest): ResponseEntity<Course> {
+        return ResponseEntity.ok(courseService.edit(id, courseEditRequest))
     }
 
     @DeleteMapping("{id}")

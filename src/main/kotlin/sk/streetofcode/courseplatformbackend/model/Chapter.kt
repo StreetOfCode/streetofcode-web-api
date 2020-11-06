@@ -19,10 +19,10 @@ data class Chapter(
         val course: Course,
 
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(nullable = false)
-        val chapterOrder: Int,
+        var chapterOrder: Int,
 
         @OneToMany(
                 mappedBy = "chapter",
@@ -36,7 +36,7 @@ data class Chapter(
         val createdAt: OffsetDateTime,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        val updatedAt: OffsetDateTime
+        var updatedAt: OffsetDateTime
 ) {
     constructor(course: Course, name: String, chapterOrder: Int)
             : this(null, course, name, chapterOrder, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())

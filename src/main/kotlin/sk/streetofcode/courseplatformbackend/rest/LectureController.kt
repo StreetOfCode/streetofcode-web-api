@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.LectureService
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
+import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
 import sk.streetofcode.courseplatformbackend.model.Lecture
 import java.util.*
 
@@ -44,6 +45,11 @@ class LectureController(val lectureService: LectureService) {
     @PostMapping
     fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<Long> {
         return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.add(lectureAddRequest))
+    }
+
+    @PutMapping("{id}")
+    fun edit(@PathVariable("id") id: Long, @RequestBody lectureEditRequest: LectureEditRequest): ResponseEntity<Lecture> {
+        return ResponseEntity.ok(lectureService.edit(id, lectureEditRequest))
     }
 
     @DeleteMapping("{id}")

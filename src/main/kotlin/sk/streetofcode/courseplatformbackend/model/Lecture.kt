@@ -19,24 +19,24 @@ data class Lecture(
         val chapter: Chapter,
 
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @Column(nullable = false)
-        val lectureOrder: Int,
+        var lectureOrder: Int,
 
         @Column(nullable = false, columnDefinition = "TEXT")
-        val content: String,
+        var content: String,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
         val createdAt: OffsetDateTime,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        val updatedAt: OffsetDateTime
+        var updatedAt: OffsetDateTime
 ) {
     constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String)
             : this(null, chapter, name, lectureOrder, content, OffsetDateTime.now(), OffsetDateTime.now())
 
-        override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
+    override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
         override fun hashCode() = LectureEssential(this).hashCode()
         override fun toString() = LectureEssential(this).toString().replaceFirst("LectureEssential", "Lecture")
 }
