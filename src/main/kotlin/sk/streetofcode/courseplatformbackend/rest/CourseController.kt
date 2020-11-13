@@ -5,18 +5,18 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
+import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
 import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
-import sk.streetofcode.courseplatformbackend.model.Course
 
 @RestController
 @RequestMapping("course")
 class CourseController(val courseService: CourseService) {
 
     @GetMapping
-    fun getAll(): ResponseEntity<List<Course>> {
+    fun getAll(): ResponseEntity<List<CourseDto>> {
 
         val courses = courseService.getAll()
 
@@ -30,22 +30,22 @@ class CourseController(val courseService: CourseService) {
     }
 
     @GetMapping("{id}")
-    fun get(@PathVariable("id") id: Long): ResponseEntity<Course> {
+    fun get(@PathVariable("id") id: Long): ResponseEntity<CourseDto> {
         return ResponseEntity.ok(courseService.get(id))
     }
 
     @PostMapping
-    fun add(@RequestBody courseAddRequest: CourseAddRequest): ResponseEntity<Course> {
+    fun add(@RequestBody courseAddRequest: CourseAddRequest): ResponseEntity<CourseDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.add(courseAddRequest))
     }
 
     @PutMapping("{id}")
-    fun edit(@PathVariable("id") id: Long, @RequestBody courseEditRequest: CourseEditRequest): ResponseEntity<Course> {
+    fun edit(@PathVariable("id") id: Long, @RequestBody courseEditRequest: CourseEditRequest): ResponseEntity<CourseDto> {
         return ResponseEntity.ok(courseService.edit(id, courseEditRequest))
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Course> {
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<CourseDto> {
         return ResponseEntity.ok(courseService.delete(id))
     }
 

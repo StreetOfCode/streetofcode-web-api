@@ -6,10 +6,10 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
-import sk.streetofcode.courseplatformbackend.model.Chapter
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ChapterIntegrationTests : IntegrationTests() {
@@ -27,7 +27,7 @@ class ChapterIntegrationTests : IntegrationTests() {
         "add chapter" {
             val chapter = addChapter(ChapterAddRequest(1, "testName", 1))
 
-            val fetchedChapter = getChapter(chapter.id!!)
+            val fetchedChapter = getChapter(chapter.id)
             fetchedChapter.name shouldBe "testName"
             fetchedChapter.course.id shouldBe 1
             fetchedChapter.chapterOrder shouldBe 1
@@ -39,10 +39,10 @@ class ChapterIntegrationTests : IntegrationTests() {
             val chapter = addChapter(ChapterAddRequest(1, "testName", 1))
 
             val editedChapter = editChapter(
-                    chapter.id!!, ChapterEditRequest(1, "testNameEdited", 1)
+                    chapter.id, ChapterEditRequest(chapter.id, "testNameEdited", 1)
             )
 
-            val fetchedChapter = getChapter(editedChapter.id!!)
+            val fetchedChapter = getChapter(editedChapter.id)
             fetchedChapter.name shouldBe "testNameEdited"
             fetchedChapter.course.id shouldBe 1
             fetchedChapter.chapterOrder shouldBe 1
@@ -51,20 +51,20 @@ class ChapterIntegrationTests : IntegrationTests() {
         "delete chapter" {
             val chapter = addChapter(ChapterAddRequest(1, "testName", 1))
 
-            val removedChapter = deleteChapter(chapter.id!!)
+            val removedChapter = deleteChapter(chapter.id)
             removedChapter.shouldBe(chapter)
 
-            getChapterNotFound(chapter.id!!)
+            getChapterNotFound(chapter.id)
         }
     }
 
 
-    private fun getChapters(): ResponseEntity<List<Chapter>> {
-        return restTemplate.getForEntity<List<Chapter>>("/chapter")
+    private fun getChapters(): ResponseEntity<List<ChapterDto>> {
+        return restTemplate.getForEntity("/chapter")
     }
 
-    private fun getChapter(chapterId: Long): Chapter {
-        return restTemplate.getForEntity<Chapter>("/chapter/$chapterId").let {
+    private fun getChapter(chapterId: Long): ChapterDto {
+        return restTemplate.getForEntity<ChapterDto>("/chapter/$chapterId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
@@ -82,22 +82,22 @@ class ChapterIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun addChapter(body: ChapterAddRequest): Chapter {
-        return restTemplate.postForEntity<Chapter>("/chapter", body).let {
+    private fun addChapter(body: ChapterAddRequest): ChapterDto {
+        return restTemplate.postForEntity<ChapterDto>("/chapter", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
-    private fun editChapter(chapterId: Long, body: ChapterEditRequest): Chapter {
-        return restTemplate.putForEntity<Chapter>("/chapter/$chapterId", body).let {
+    private fun editChapter(chapterId: Long, body: ChapterEditRequest): ChapterDto {
+        return restTemplate.putForEntity<ChapterDto>("/chapter/$chapterId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun deleteChapter(chapterId: Long): Chapter {
-        return restTemplate.deleteForEntity<Chapter>("/chapter/$chapterId").let {
+    private fun deleteChapter(chapterId: Long): ChapterDto {
+        return restTemplate.deleteForEntity<ChapterDto>("/chapter/$chapterId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

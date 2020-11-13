@@ -14,7 +14,6 @@ data class Lecture(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "chapter_id", nullable = false)
-        @JsonIgnoreProperties("lectures", "name", "chapterOrder", "createdAt", "updatedAt")
         val chapter: Chapter,
 
         @Column(nullable = false)

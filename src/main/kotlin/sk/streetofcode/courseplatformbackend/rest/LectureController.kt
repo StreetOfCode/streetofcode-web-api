@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.LectureService
+import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
 import sk.streetofcode.courseplatformbackend.model.Lecture
@@ -16,7 +17,7 @@ import java.util.*
 class LectureController(val lectureService: LectureService) {
 
     @GetMapping
-    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<Lecture>> {
+    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<LectureDto>> {
         return if (filter.isPresent) {
             val chapterId = JSONObject(filter.get()).getLong("chapterId")
             val lectures = lectureService.getByChapterId(chapterId)
@@ -27,7 +28,7 @@ class LectureController(val lectureService: LectureService) {
         }
     }
 
-    private fun buildGetAll(lectures: List<Lecture>): ResponseEntity<List<Lecture>> {
+    private fun buildGetAll(lectures: List<LectureDto>): ResponseEntity<List<LectureDto>> {
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
                 "Content-Range",
@@ -38,22 +39,22 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @GetMapping("{id}")
-    fun get(@PathVariable("id") id: Long): ResponseEntity<Lecture> {
+    fun get(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.get(id))
     }
 
     @PostMapping
-    fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<Lecture> {
+    fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<LectureDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.add(lectureAddRequest))
     }
 
     @PutMapping("{id}")
-    fun edit(@PathVariable("id") id: Long, @RequestBody lectureEditRequest: LectureEditRequest): ResponseEntity<Lecture> {
+    fun edit(@PathVariable("id") id: Long, @RequestBody lectureEditRequest: LectureEditRequest): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.edit(id, lectureEditRequest))
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Lecture> {
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.delete(id))
     }
 }

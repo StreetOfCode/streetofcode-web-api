@@ -6,6 +6,7 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
@@ -27,7 +28,7 @@ class CourseIntegrationTests : IntegrationTests() {
         "add course" {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
 
-            val fetchedCourse = getCourse(course.id!!)
+            val fetchedCourse = getCourse(course.id)
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
@@ -39,8 +40,8 @@ class CourseIntegrationTests : IntegrationTests() {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
 
             val editedCourse = editCourse(
-                course.id!!,
-                CourseEditRequest(course.id!!, 1, 1, "editedTestName", "editedShort", "editedLong")
+                    course.id,
+                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong")
             )
 
             val fetchedCourse = getCourse(editedCourse.id!!)
@@ -52,20 +53,20 @@ class CourseIntegrationTests : IntegrationTests() {
         "delete course" {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
 
-            val removedCourse = deleteCourse(course.id!!)
+            val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)
 
-            getCourseNotFound(course.id!!)
+            getCourseNotFound(course.id)
         }
     }
 
 
-    private fun getCourses(): ResponseEntity<List<Course>> {
-        return restTemplate.getForEntity<List<Course>>("/course")
+    private fun getCourses(): ResponseEntity<List<CourseDto>> {
+        return restTemplate.getForEntity("/course")
     }
 
-    private fun getCourse(courseId: Long): Course {
-        return restTemplate.getForEntity<Course>("/course/$courseId").let {
+    private fun getCourse(courseId: Long): CourseDto {
+        return restTemplate.getForEntity<CourseDto>("/course/$courseId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
@@ -83,8 +84,8 @@ class CourseIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun addCourse(body: CourseAddRequest): Course {
-        return restTemplate.postForEntity<Course>("/course", body).let {
+    private fun addCourse(body: CourseAddRequest): CourseDto {
+        return restTemplate.postForEntity<CourseDto>("/course", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
@@ -97,8 +98,8 @@ class CourseIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun deleteCourse(courseId: Long): Course {
-        return restTemplate.deleteForEntity<Course>("/course/$courseId").let {
+    private fun deleteCourse(courseId: Long): CourseDto {
+        return restTemplate.deleteForEntity<CourseDto>("/course/$courseId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

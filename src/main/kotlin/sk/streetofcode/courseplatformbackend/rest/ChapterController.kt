@@ -7,9 +7,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.ChapterService
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
-import sk.streetofcode.courseplatformbackend.model.Chapter
 import java.util.*
 
 @RestController
@@ -18,7 +18,7 @@ class ChapterController(val chapterService: ChapterService) {
 
 
     @GetMapping
-    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<Chapter>> {
+    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
         return if (filter.isPresent) {
             val chapters = try {
                 val courseId = JSONObject(filter.get()).getLong("courseId")
@@ -34,7 +34,7 @@ class ChapterController(val chapterService: ChapterService) {
         }
     }
 
-    private fun buildGetAll(chapters: List<Chapter>): ResponseEntity<List<Chapter>> {
+    private fun buildGetAll(chapters: List<ChapterDto>): ResponseEntity<List<ChapterDto>> {
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
                 "Content-Range",
@@ -45,22 +45,22 @@ class ChapterController(val chapterService: ChapterService) {
     }
 
     @GetMapping("{id}")
-    fun get(@PathVariable("id") id: Long): ResponseEntity<Chapter> {
+    fun get(@PathVariable("id") id: Long): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.get(id))
     }
 
     @PostMapping
-    fun add(@RequestBody chapterAddRequest: ChapterAddRequest): ResponseEntity<Chapter> {
+    fun add(@RequestBody chapterAddRequest: ChapterAddRequest): ResponseEntity<ChapterDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(chapterService.add(chapterAddRequest))
     }
 
     @PutMapping("{id}")
-    fun edit(@PathVariable("id") id: Long, @RequestBody chapterEditRequest: ChapterEditRequest): ResponseEntity<Chapter> {
+    fun edit(@PathVariable("id") id: Long, @RequestBody chapterEditRequest: ChapterEditRequest): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.edit(id, chapterEditRequest))
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Chapter> {
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.delete(id))
     }
 }

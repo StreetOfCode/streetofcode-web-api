@@ -1,14 +1,14 @@
 package sk.streetofcode.courseplatformbackend.api
 
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
-import sk.streetofcode.courseplatformbackend.model.Chapter
 
 interface ChapterService {
-    fun get(id: Long): Chapter
-    fun getAll(): List<Chapter>
-    fun getByCourseId(courseId: Long): List<Chapter>
-    fun add(addRequest: ChapterAddRequest): Chapter
-    fun edit(id: Long, editRequest: ChapterEditRequest): Chapter
-    fun delete(id: Long): Chapter
+    fun get(id: Long): ChapterDto
+    fun getAll(): List<ChapterDto>
+    fun getByCourseId(courseId: Long): List<ChapterDto>
+    fun add(addRequest: ChapterAddRequest): ChapterDto
+    fun edit(id: Long, editRequest: ChapterEditRequest): ChapterDto
+    fun delete(id: Long): ChapterDto
 }

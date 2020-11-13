@@ -6,10 +6,10 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
-import sk.streetofcode.courseplatformbackend.model.Lecture
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LectureIntegrationTests : IntegrationTests() {
@@ -27,7 +27,7 @@ class LectureIntegrationTests : IntegrationTests() {
         "add lecture" {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
 
-            val fetchedLecture = getLecture(lecture.id!!)
+            val fetchedLecture = getLecture(lecture.id)
             fetchedLecture.name shouldBe "testName"
             fetchedLecture.chapter.id shouldBe 1
             fetchedLecture.lectureOrder shouldBe 1
@@ -40,10 +40,10 @@ class LectureIntegrationTests : IntegrationTests() {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
 
             val editedLecture = editLecture(
-                    lecture.id!!, LectureEditRequest(1, "testNameEdited", 1, "testContentEdited")
+                    lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited")
             )
 
-            val fetchedLecture = getLecture(editedLecture.id!!)
+            val fetchedLecture = getLecture(editedLecture.id)
             fetchedLecture.name shouldBe "testNameEdited"
             fetchedLecture.chapter.id shouldBe 1
             fetchedLecture.lectureOrder shouldBe 1
@@ -53,26 +53,26 @@ class LectureIntegrationTests : IntegrationTests() {
         "delete lecture" {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
 
-            val removedLecture = deleteLecture(lecture.id!!)
+            val removedLecture = deleteLecture(lecture.id)
             removedLecture.shouldBe(lecture)
 
-            getLectureNotFound(lecture.id!!)
+            getLectureNotFound(lecture.id)
         }
     }
 
 
-    private fun getLectures(): ResponseEntity<List<Lecture>> {
-        return restTemplate.getForEntity<List<Lecture>>("/lecture")
+    private fun getLectures(): ResponseEntity<List<LectureDto>> {
+        return restTemplate.getForEntity("/lecture")
     }
 
     // TODO not working
-    private fun getLecturesByChapterId(chapterId: Long): ResponseEntity<List<Lecture>> {
+    private fun getLecturesByChapterId(chapterId: Long): ResponseEntity<List<LectureDto>> {
         val filter = "?filter={\"chapterId\":$chapterId}"
-        return restTemplate.getForEntity<List<Lecture>>("/lecture$filter")
+        return restTemplate.getForEntity("/lecture$filter")
     }
 
-    private fun getLecture(lectureId: Long): Lecture {
-        return restTemplate.getForEntity<Lecture>("/lecture/$lectureId").let {
+    private fun getLecture(lectureId: Long): LectureDto {
+        return restTemplate.getForEntity<LectureDto>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
@@ -90,22 +90,22 @@ class LectureIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun addLecture(body: LectureAddRequest): Lecture {
-        return restTemplate.postForEntity<Lecture>("/lecture", body).let {
+    private fun addLecture(body: LectureAddRequest): LectureDto {
+        return restTemplate.postForEntity<LectureDto>("/lecture", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
-    private fun editLecture(lectureId: Long, body: LectureEditRequest): Lecture {
-        return restTemplate.putForEntity<Lecture>("/lecture/$lectureId", body).let {
+    private fun editLecture(lectureId: Long, body: LectureEditRequest): LectureDto {
+        return restTemplate.putForEntity<LectureDto>("/lecture/$lectureId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun deleteLecture(lectureId: Long): Lecture {
-        return restTemplate.deleteForEntity<Lecture>("/lecture/$lectureId").let {
+    private fun deleteLecture(lectureId: Long): LectureDto {
+        return restTemplate.deleteForEntity<LectureDto>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

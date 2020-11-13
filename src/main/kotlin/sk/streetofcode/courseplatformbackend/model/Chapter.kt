@@ -14,7 +14,6 @@ data class Chapter(
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "course_id", nullable = false)
-        @JsonIgnoreProperties("chapters", "author", "difficulty", "name", "shortDescription", "longDescription", "createdAt", "updatedAt")
         val course: Course,
 
         @Column(nullable = false)
@@ -40,9 +39,9 @@ data class Chapter(
     constructor(course: Course, name: String, chapterOrder: Int)
             : this(null, course, name, chapterOrder, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
 
-        override fun equals(other: Any?) = other is Chapter && ChapterEssential(this) == ChapterEssential(other)
-        override fun hashCode() = ChapterEssential(this).hashCode()
-        override fun toString() = ChapterEssential(this).toString().replaceFirst("ChapterEssential", "Chapter")
+    override fun equals(other: Any?) = other is Chapter && ChapterEssential(this) == ChapterEssential(other)
+    override fun hashCode() = ChapterEssential(this).hashCode()
+    override fun toString() = ChapterEssential(this).toString().replaceFirst("ChapterEssential", "Chapter")
 }
 
 
@@ -52,10 +51,10 @@ private data class ChapterEssential(
         val createdAt: OffsetDateTime,
         val updatedAt: OffsetDateTime
 ) {
-        constructor(chapter: Chapter) : this(
-                name = chapter.name,
-                chapterOrder = chapter.chapterOrder,
-                createdAt = chapter.createdAt,
-                updatedAt = chapter.updatedAt
-        )
+    constructor(chapter: Chapter) : this(
+            name = chapter.name,
+            chapterOrder = chapter.chapterOrder,
+            createdAt = chapter.createdAt,
+            updatedAt = chapter.updatedAt
+    )
 }
