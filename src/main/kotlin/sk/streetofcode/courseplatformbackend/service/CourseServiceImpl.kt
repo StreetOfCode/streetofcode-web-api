@@ -27,9 +27,9 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         return courseRepository.findAll().toList()
     }
 
-    override fun add(addRequest: CourseAddRequest): Long {
-        val author = authorRepository.findById(addRequest.authorId)
-        if (author.isEmpty) {
+    override fun add(addRequest: CourseAddRequest): Course {
+        val course = authorRepository.findById(addRequest.authorId)
+        if (course.isEmpty) {
             throw ResourceNotFoundException("Author with id ${addRequest.authorId} was not found")
         }
 
@@ -38,8 +38,11 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
             throw ResourceNotFoundException("Difficulty with id ${addRequest.difficultyId} was not found")
         }
 
-        val course = Course(author.get(), difficulty.get(), addRequest.name, addRequest.shortDescription, addRequest.longDescription)
-        return courseRepository.save(course).id ?: throw InternalErrorException("Could not save course")
+        try {
+            return courseRepository.save(Course(course.get(), difficulty.get(), addRequest.name, addRequest.shortDescription, addRequest.longDescription))
+        } catch (e: Exception) {
+            throw InternalErrorException("Could not save course")
+        }
     }
 
     // TODO refactor
@@ -74,13 +77,14 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         }
     }
 
-    override fun delete(id: Long) {
+    override fun delete(id: Long): Course {
         val course = get(id)
         val courseId = course.id ?: throw InternalErrorException("Course from db should have had id $id but it is null")
 
         course.chapters.forEach{ _ -> chapterServiceImpl.delete(courseId)}
 
         courseRepository.deleteById(id)
+        return course
     }
 
     override fun getCoursesHomepage(): List<CoursesHomepage> {

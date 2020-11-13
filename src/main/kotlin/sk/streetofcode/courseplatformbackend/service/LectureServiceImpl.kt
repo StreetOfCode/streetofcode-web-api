@@ -9,7 +9,6 @@ import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
-import sk.streetofcode.courseplatformbackend.model.Author
 import sk.streetofcode.courseplatformbackend.model.Lecture
 import java.time.OffsetDateTime
 
@@ -28,14 +27,18 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         return lectureRepository.findByChapterId(chapterId)
     }
 
-    override fun add(addRequest: LectureAddRequest): Long {
+    override fun add(addRequest: LectureAddRequest): Lecture {
         val chapter = chapterRepository.findById(addRequest.chapterId)
         if (chapter.isEmpty) {
             throw ResourceNotFoundException("Chapter with id ${addRequest.chapterId} was not found")
         }
 
-        val lecture = Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content)
-        return lectureRepository.save(lecture).id ?: throw InternalErrorException("Could not save lecture")
+        try {
+            val l = lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content))
+            return l
+        } catch (e: Exception) {
+            throw InternalErrorException("Could not save lecture")
+        }
     }
 
     override fun edit(id: Long, editRequest: LectureEditRequest): Lecture {
@@ -56,10 +59,14 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         }
     }
 
-    override fun delete(id: Long) {
-        if (lectureRepository.existsById(id)) {
+    override fun delete(id: Long): Lecture {
+        val lecture = lectureRepository.findById(id)
+
+        if (lecture.isPresent) {
             lectureRepository.deleteById(id)
-        } else {
+            return lecture.get()
+        }
+        else {
             throw ResourceNotFoundException("Lecture with id $id was not found")
         }
     }

@@ -2,13 +2,29 @@ package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.getForEntity
+import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
+import sk.streetofcode.courseplatformbackend.model.Difficulty
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RequestDocumentClarificationBackendTests : IntegrationTests() {
+class DifficultyIntegrationTests : IntegrationTests() {
     init {
-        "Can add difficulty" {
+        "get difficulties" {
+            val difficultiesResponse = getDifficulties()
+            difficultiesResponse.statusCode shouldBe HttpStatus.OK
+            val contentRange = difficultiesResponse.headers["Content-Range"]
+            contentRange shouldBe listOf("difficulty 0-2/2")
+
+            val difficulties = difficultiesResponse.body!!
+            difficulties.size shouldBe 2
+        }
+
+        "add difficulty" {
             val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
 
             val fetchedDifficulty = getDifficulty(difficulty.id!!)
@@ -16,7 +32,9 @@ class RequestDocumentClarificationBackendTests : IntegrationTests() {
             fetchedDifficulty.description shouldBe "testDescription"
         }
 
-        "Can edit difficulty" {
+        "edit difficulty" {
+            editDifficultyNotFound(999, DifficultyEditRequest(1, "", ""))
+
             val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
 
             val editedDifficulty = editDifficulty(
@@ -25,17 +43,64 @@ class RequestDocumentClarificationBackendTests : IntegrationTests() {
             )
 
             val fetchedDifficulty = getDifficulty(editedDifficulty.id!!)
+            fetchedDifficulty.id shouldBe difficulty.id
+            fetchedDifficulty.courses shouldBe difficulty.courses
             fetchedDifficulty.name shouldBe "editedTestName"
             fetchedDifficulty.description shouldBe "editedTestDescription"
         }
 
-        "Can delete difficulty" {
+        "delete difficulty" {
             val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
 
             val removedDifficulty = deleteDifficulty(difficulty.id!!)
             removedDifficulty.shouldBe(difficulty)
 
             getDifficultyNotFound(difficulty.id!!)
+        }
+    }
+
+
+    private fun getDifficulties(): ResponseEntity<List<Difficulty>> {
+        return restTemplate.getForEntity<List<Difficulty>>("/difficulty")
+    }
+
+    private fun getDifficulty(difficultyId: Long): Difficulty {
+        return restTemplate.getForEntity<Difficulty>("/difficulty/$difficultyId").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
+    }
+
+    private fun getDifficultyNotFound(difficultyId: Long) {
+        return restTemplate.getForEntity<ResourceNotFoundException>("/difficulty/$difficultyId").let {
+            it.statusCode shouldBe HttpStatus.NOT_FOUND
+        }
+    }
+
+    private fun editDifficultyNotFound(difficultyId: Long, body: DifficultyEditRequest) {
+        return restTemplate.putForEntity<ResourceNotFoundException>("/difficulty/$difficultyId", body).let {
+            it.statusCode shouldBe HttpStatus.NOT_FOUND
+        }
+    }
+
+    private fun addDifficulty(body: DifficultyAddRequest): Difficulty {
+        return restTemplate.postForEntity<Difficulty>("/difficulty", body).let {
+            it.statusCode shouldBe HttpStatus.CREATED
+            it.body!!
+        }
+    }
+
+    private fun editDifficulty(difficultyId: Long, body: DifficultyEditRequest): Difficulty {
+        return restTemplate.putForEntity<Difficulty>("/difficulty/$difficultyId", body).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
+    }
+
+    private fun deleteDifficulty(difficultyId: Long): Difficulty {
+        return restTemplate.deleteForEntity<Difficulty>("/difficulty/$difficultyId").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
         }
     }
 }

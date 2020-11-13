@@ -35,7 +35,7 @@ class CourseController(val courseService: CourseService) {
     }
 
     @PostMapping
-    fun add(@RequestBody courseAddRequest: CourseAddRequest): ResponseEntity<Long> {
+    fun add(@RequestBody courseAddRequest: CourseAddRequest): ResponseEntity<Course> {
         return ResponseEntity.status(HttpStatus.CREATED).body(courseService.add(courseAddRequest))
     }
 
@@ -45,9 +45,8 @@ class CourseController(val courseService: CourseService) {
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        courseService.delete(id)
-        return ResponseEntity.ok().build()
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Course> {
+        return ResponseEntity.ok(courseService.delete(id))
     }
 
     @GetMapping("/home-page")

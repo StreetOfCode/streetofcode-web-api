@@ -1,6 +1,5 @@
 package sk.streetofcode.courseplatformbackend.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
 import javax.persistence.*
@@ -37,8 +36,8 @@ data class Lecture(
             : this(null, chapter, name, lectureOrder, content, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
-        override fun hashCode() = LectureEssential(this).hashCode()
-        override fun toString() = LectureEssential(this).toString().replaceFirst("LectureEssential", "Lecture")
+    override fun hashCode() = LectureEssential(this).hashCode()
+    override fun toString() = LectureEssential(this).toString().replaceFirst("LectureEssential", "Lecture")
 }
 
 private data class LectureEssential(
@@ -49,11 +48,11 @@ private data class LectureEssential(
         val updatedAt: OffsetDateTime
 
 ) {
-        constructor(lecture: Lecture) : this(
-                name = lecture.name,
-                lectureOrder = lecture.lectureOrder,
-                content = lecture.content,
-                createdAt = lecture.createdAt,
-                updatedAt = lecture.updatedAt
-        )
+    constructor(lecture: Lecture) : this(
+            name = lecture.name,
+            lectureOrder = lecture.lectureOrder,
+            content = lecture.content,
+            createdAt = lecture.createdAt,
+            updatedAt = lecture.updatedAt
+    )
 }

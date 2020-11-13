@@ -50,7 +50,7 @@ class ChapterController(val chapterService: ChapterService) {
     }
 
     @PostMapping
-    fun add(@RequestBody chapterAddRequest: ChapterAddRequest): ResponseEntity<Long> {
+    fun add(@RequestBody chapterAddRequest: ChapterAddRequest): ResponseEntity<Chapter> {
         return ResponseEntity.status(HttpStatus.CREATED).body(chapterService.add(chapterAddRequest))
     }
 
@@ -60,8 +60,7 @@ class ChapterController(val chapterService: ChapterService) {
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        chapterService.delete(id)
-        return ResponseEntity.ok().build()
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Chapter> {
+        return ResponseEntity.ok(chapterService.delete(id))
     }
 }

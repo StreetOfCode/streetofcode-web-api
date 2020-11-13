@@ -28,7 +28,7 @@ data class Author(
         )
         @JsonIgnore
         @OrderBy("id")
-        val courses: MutableSet<Course>
+        val courses: MutableSet<Course> = mutableSetOf()
 ) {
     constructor(id: Long, name: String, url: String, description: String)
             : this(id, name, url, description, mutableSetOf())

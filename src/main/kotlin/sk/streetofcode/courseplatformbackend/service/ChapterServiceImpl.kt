@@ -11,6 +11,7 @@ import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.Chapter
+import java.lang.Exception
 import java.time.OffsetDateTime
 
 @Service
@@ -28,14 +29,17 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
         return chapterRepository.findByCourseId(courseId)
     }
 
-    override fun add(addRequest: ChapterAddRequest): Long {
+    override fun add(addRequest: ChapterAddRequest): Chapter {
         val course = courseRepository.findById(addRequest.courseId)
         if (course.isEmpty) {
             throw ResourceNotFoundException("Course with id ${addRequest.courseId} was not found")
         }
 
-        val chapter = Chapter(course.get(), addRequest.name, addRequest.chapterOrder)
-        return chapterRepository.save(chapter).id ?: throw InternalErrorException("Could not save chapter")
+        try {
+            return chapterRepository.save(Chapter(course.get(), addRequest.name, addRequest.chapterOrder))
+        } catch (e: Exception) {
+            throw InternalErrorException("Could not save chapter")
+        }
     }
 
     override fun edit(id: Long, editRequest: ChapterEditRequest): Chapter {
@@ -55,12 +59,14 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
         }
     }
 
-    override fun delete(id: Long) {
-        if (chapterRepository.existsById(id)) {
+    override fun delete(id: Long): Chapter {
+        val chapter = chapterRepository.findById(id)
+        if (chapter.isPresent) {
             // Remove all lectures if this course is removed
             lectureRepository.deleteByChapterId(id)
 
             chapterRepository.deleteById(id)
+            return chapter.get()
         } else {
             throw ResourceNotFoundException("Chapter with id $id was not found")
         }

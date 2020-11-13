@@ -1,6 +1,5 @@
 package sk.streetofcode.courseplatformbackend.model
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
 import javax.persistence.*

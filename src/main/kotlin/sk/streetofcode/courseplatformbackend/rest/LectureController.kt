@@ -43,7 +43,7 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @PostMapping
-    fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<Long> {
+    fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<Lecture> {
         return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.add(lectureAddRequest))
     }
 
@@ -53,8 +53,7 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @DeleteMapping("{id}")
-    fun delete(@PathVariable("id") id: Long): ResponseEntity<Void> {
-        lectureService.delete(id)
-        return ResponseEntity.ok().build()
+    fun delete(@PathVariable("id") id: Long): ResponseEntity<Lecture> {
+        return ResponseEntity.ok(lectureService.delete(id))
     }
 }

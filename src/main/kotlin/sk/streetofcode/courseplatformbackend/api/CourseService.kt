@@ -9,9 +9,9 @@ import sk.streetofcode.courseplatformbackend.model.Course
 interface CourseService {
     fun get(id: Long): Course
     fun getAll(): List<Course>
-    fun add(addRequest: CourseAddRequest): Long
+    fun add(addRequest: CourseAddRequest): Course
     fun edit(id: Long, editRequest: CourseEditRequest): Course
-    fun delete(id: Long)
+    fun delete(id: Long): Course
     fun getCoursesHomepage(): List<CoursesHomepage>
     fun getCourseOverview(id: Long): CourseOverview
 }
