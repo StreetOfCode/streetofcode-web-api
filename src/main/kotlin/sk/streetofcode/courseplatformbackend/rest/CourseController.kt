@@ -6,10 +6,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
-import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
-import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
 
 @RestController
 @RequestMapping("course")
@@ -50,12 +50,12 @@ class CourseController(val courseService: CourseService) {
     }
 
     @GetMapping("/home-page")
-    fun getCoursesHomepage(): ResponseEntity<List<CoursesHomepage>> {
+    fun getCoursesHomepage(): ResponseEntity<List<CourseHomepageDto>> {
         return ResponseEntity.ok(courseService.getCoursesHomepage())
     }
 
     @GetMapping("/overview/{id}")
-    fun getCourseOverview(@PathVariable("id") id: Long): ResponseEntity<CourseOverview> {
+    fun getCourseOverview(@PathVariable("id") id: Long): ResponseEntity<CourseOverviewDto> {
         return ResponseEntity.ok(courseService.getCourseOverview(id))
     }
 }

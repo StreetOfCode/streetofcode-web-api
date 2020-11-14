@@ -1,17 +1,16 @@
 package sk.streetofcode.courseplatformbackend.service
 
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.mapper.CourseMapper
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
-import sk.streetofcode.courseplatformbackend.db.projection.overview.CourseOverview
-import sk.streetofcode.courseplatformbackend.db.projection.homepage.CoursesHomepage
 import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
@@ -82,20 +81,22 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
     override fun delete(id: Long): CourseDto {
         val course = get(id)
 
-        course.chapters.forEach{ _ -> chapterServiceImpl.delete(course.id)}
+        course.chapters.forEach { _ -> chapterServiceImpl.delete(course.id) }
 
         courseRepository.deleteById(id)
         return course
     }
 
-    override fun getCoursesHomepage(): List<CoursesHomepage> {
-        return courseRepository.findBy(CoursesHomepage::class.java)
+    override fun getCoursesHomepage(): List<CourseHomepageDto> {
+        return courseRepository.findAll().map { course -> mapper.toCourseHomepage(course) }.toList()
     }
 
-    override fun getCourseOverview(id: Long): CourseOverview {
-        try {
-            return courseRepository.findById(id, CourseOverview::class.java)
-        } catch (empty: EmptyResultDataAccessException) {
+    override fun getCourseOverview(id: Long): CourseOverviewDto {
+
+        val course = courseRepository.findById(id)
+        if (course.isPresent) {
+            return mapper.toCourseOverview(course.get())
+        } else {
             throw ResourceNotFoundException("Course with id $id not found")
         }
     }

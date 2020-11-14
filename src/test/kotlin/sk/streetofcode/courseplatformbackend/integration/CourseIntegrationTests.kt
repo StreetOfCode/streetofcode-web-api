@@ -7,6 +7,8 @@ import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
@@ -25,10 +27,32 @@ class CourseIntegrationTests : IntegrationTests() {
             courses.size shouldBe 2
         }
 
+        "get courses for homepage" {
+            val coursesResponse = getCoursesHomepage()
+            coursesResponse.statusCode shouldBe HttpStatus.OK
+
+            val courses = coursesResponse.body!!
+            courses.size shouldBe 2
+        }
+
+        "get course overview" {
+
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
+
+            val fetchedCourse = getCourseOverview(course.id)
+            fetchedCourse.id shouldBe course.id
+            fetchedCourse.name shouldBe "testName"
+            fetchedCourse.shortDescription shouldBe "short"
+            fetchedCourse.longDescription shouldBe "long"
+            fetchedCourse.author!!.id shouldBe 1
+            fetchedCourse.difficulty!!.id shouldBe 1
+        }
+
         "add course" {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
 
             val fetchedCourse = getCourse(course.id)
+            fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
@@ -65,8 +89,19 @@ class CourseIntegrationTests : IntegrationTests() {
         return restTemplate.getForEntity("/course")
     }
 
+    private fun getCoursesHomepage(): ResponseEntity<List<CourseHomepageDto>> {
+        return restTemplate.getForEntity("/course/home-page")
+    }
+
     private fun getCourse(courseId: Long): CourseDto {
         return restTemplate.getForEntity<CourseDto>("/course/$courseId").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
+    }
+
+    private fun getCourseOverview(courseId: Long): CourseOverviewDto {
+        return restTemplate.getForEntity<CourseOverviewDto>("/course/overview/$courseId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

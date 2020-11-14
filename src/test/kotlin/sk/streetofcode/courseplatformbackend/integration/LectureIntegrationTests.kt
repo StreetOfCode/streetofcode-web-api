@@ -65,12 +65,6 @@ class LectureIntegrationTests : IntegrationTests() {
         return restTemplate.getForEntity("/lecture")
     }
 
-    // TODO not working
-    private fun getLecturesByChapterId(chapterId: Long): ResponseEntity<List<LectureDto>> {
-        val filter = "?filter={\"chapterId\":$chapterId}"
-        return restTemplate.getForEntity("/lecture$filter")
-    }
-
     private fun getLecture(lectureId: Long): LectureDto {
         return restTemplate.getForEntity<LectureDto>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.OK

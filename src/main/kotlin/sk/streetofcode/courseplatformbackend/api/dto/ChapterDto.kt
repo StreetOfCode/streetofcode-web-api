@@ -7,7 +7,7 @@ data class ChapterDto(
         val course: ChapterCourseDto,
         val name: String,
         val chapterOrder: Int,
-        val lectures: MutableSet<LectureDto>,
+        val lectures: Set<LectureDto>,
         val createdAt: OffsetDateTime,
         val updatedAt: OffsetDateTime
 )

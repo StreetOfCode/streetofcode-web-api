@@ -17,8 +17,4 @@ interface CourseRepository : CrudRepository<Course, Long> {
     @Modifying
     @Query("update Course c set updated_at = ?1, author_id = null where author_id = ?2")
     fun setAuthorsToNull(updatedAt: OffsetDateTime = OffsetDateTime.now(), authorId: Long)
-
-    fun <T> findBy(projection: Class<T>): List<T>
-
-    fun <T> findById(id: Long, projection: Class<T>): T
 }
