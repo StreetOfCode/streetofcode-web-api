@@ -11,6 +11,7 @@ data class CourseDto(
         val name: String,
         val shortDescription: String,
         val longDescription: String,
+        val imageUrl: String? = null,
         val chapters: Set<CourseChapterDto>,
         val createdAt: OffsetDateTime,
         val updatedAt: OffsetDateTime

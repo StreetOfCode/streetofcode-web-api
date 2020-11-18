@@ -6,5 +6,6 @@ data class CourseEditRequest(
         val difficultyId: Long,
         val name: String,
         val shortDescription: String,
-        val longDescription: String
+        val longDescription: String,
+        val imageUrl: String? = null
 )

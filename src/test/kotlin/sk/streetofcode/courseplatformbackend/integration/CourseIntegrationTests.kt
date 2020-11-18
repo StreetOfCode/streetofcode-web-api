@@ -37,45 +37,48 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get course overview" {
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
 
             val fetchedCourse = getCourseOverview(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
+            fetchedCourse.imageUrl shouldBe "imageUrl"
             fetchedCourse.author!!.id shouldBe 1
             fetchedCourse.difficulty!!.id shouldBe 1
         }
 
         "add course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
+            fetchedCourse.imageUrl shouldBe "imageUrl"
         }
 
         "edit course" {
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong"))
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "imageUrl"))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
 
             val editedCourse = editCourse(
                     course.id,
-                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong")
+                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl")
             )
 
             val fetchedCourse = getCourse(editedCourse.id!!)
             fetchedCourse.name shouldBe "editedTestName"
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
+            fetchedCourse.imageUrl shouldBe "editedImageUrl"
         }
 
         "delete course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)

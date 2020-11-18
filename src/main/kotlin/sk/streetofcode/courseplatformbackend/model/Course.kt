@@ -29,6 +29,9 @@ data class Course(
         @Column(nullable = false)
         var longDescription: String,
 
+        @Column(nullable = true)
+        var imageUrl: String? = null,
+
         @OneToMany(
                 mappedBy = "course",
                 cascade = [CascadeType.ALL],
@@ -44,8 +47,8 @@ data class Course(
         var updatedAt: OffsetDateTime
 
 ) {
-    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String)
-            : this(null, author, difficulty, name, shortDescription, longDescription, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, imageUrl: String?)
+            : this(null, author, difficulty, name, shortDescription, longDescription, imageUrl, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()

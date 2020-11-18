@@ -9,6 +9,7 @@ data class CourseOverviewDto(
         val name: String,
         val shortDescription: String,
         val longDescription: String,
+        val imageUrl: String? = null,
         val author: Author? = null,
         val difficulty: Difficulty? = null,
         val createdAt: OffsetDateTime,
