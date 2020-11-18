@@ -13,6 +13,7 @@ import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundExcep
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.model.Course
+import sk.streetofcode.courseplatformbackend.model.CourseStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class CourseIntegrationTests : IntegrationTests() {
@@ -37,7 +38,7 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get course overview" {
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.DRAFT))
 
             val fetchedCourse = getCourseOverview(course.id)
             fetchedCourse.id shouldBe course.id
@@ -45,12 +46,13 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
             fetchedCourse.imageUrl shouldBe "imageUrl"
+            fetchedCourse.status shouldBe CourseStatus.DRAFT
             fetchedCourse.author!!.id shouldBe 1
             fetchedCourse.difficulty!!.id shouldBe 1
         }
 
         "add course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PRIVATE))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
@@ -58,16 +60,17 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
             fetchedCourse.imageUrl shouldBe "imageUrl"
+            fetchedCourse.status shouldBe CourseStatus.PRIVATE
         }
 
         "edit course" {
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "imageUrl"))
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "imageUrl", CourseStatus.PUBLIC))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PUBLIC))
 
             val editedCourse = editCourse(
                     course.id,
-                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl")
+                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl", CourseStatus.PRIVATE)
             )
 
             val fetchedCourse = getCourse(editedCourse.id!!)
@@ -75,10 +78,11 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
             fetchedCourse.imageUrl shouldBe "editedImageUrl"
+            fetchedCourse.status shouldBe CourseStatus.PRIVATE
         }
 
         "delete course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl"))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PRIVATE))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)

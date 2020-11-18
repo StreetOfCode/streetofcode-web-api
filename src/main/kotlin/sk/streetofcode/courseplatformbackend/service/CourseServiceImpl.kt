@@ -40,7 +40,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         }
 
         try {
-            return mapper.toCourseDto(courseRepository.save(Course(course.get(), difficulty.get(), addRequest.name, addRequest.shortDescription, addRequest.longDescription, addRequest.imageUrl)))
+            return mapper.toCourseDto(courseRepository.save(Course(course.get(), difficulty.get(), addRequest.name, addRequest.shortDescription, addRequest.longDescription, addRequest.imageUrl, addRequest.status)))
         } catch (e: Exception) {
             throw InternalErrorException("Could not save course")
         }
@@ -73,6 +73,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
                 course.shortDescription = editRequest.shortDescription
                 course.longDescription = editRequest.longDescription
                 course.imageUrl = editRequest.imageUrl
+                course.status = editRequest.status
                 course.updatedAt = OffsetDateTime.now()
                 return mapper.toCourseDto(courseRepository.save(course))
             }

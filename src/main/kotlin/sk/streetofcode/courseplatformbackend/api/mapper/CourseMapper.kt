@@ -16,6 +16,7 @@ class CourseMapper() {
                 course.shortDescription,
                 course.longDescription,
                 course.imageUrl,
+                course.status,
                 course.chapters.map { chapter -> toCourseChapterDto(chapter) }.toSet(),
                 course.createdAt,
                 course.updatedAt
@@ -39,6 +40,7 @@ class CourseMapper() {
                 course.shortDescription,
                 course.longDescription,
                 course.imageUrl,
+                course.status,
                 course.author,
                 course.difficulty,
                 course.createdAt,
