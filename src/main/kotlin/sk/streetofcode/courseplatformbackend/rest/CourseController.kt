@@ -11,13 +11,14 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
+import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 @RestController
 @RequestMapping("course")
-class CourseController(val courseService: CourseService) {
+class CourseController(val courseService: CourseService, val authenticationService: AuthenticationService) {
 
     @GetMapping
-    @PreAuthorize("hasRole('admin')")
+    @PreAuthorize("hasRole('${AuthenticationService.ADMIN_GROUP_NAME}')")
     fun getAll(): ResponseEntity<List<CourseDto>> {
 
         val courses = courseService.getAll()
