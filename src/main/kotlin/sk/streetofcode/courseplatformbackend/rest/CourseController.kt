@@ -3,6 +3,7 @@ package sk.streetofcode.courseplatformbackend.rest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
@@ -16,6 +17,7 @@ import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 class CourseController(val courseService: CourseService) {
 
     @GetMapping
+    @PreAuthorize("hasRole('admin')")
     fun getAll(): ResponseEntity<List<CourseDto>> {
 
         val courses = courseService.getAll()
