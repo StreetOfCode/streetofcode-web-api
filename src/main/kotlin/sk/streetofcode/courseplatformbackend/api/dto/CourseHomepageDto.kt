@@ -8,5 +8,6 @@ data class CourseHomepageDto(
         val name: String,
         val shortDescription: String,
         val author: Author? = null,
-        val difficulty: Difficulty? = null
+        val difficulty: Difficulty? = null,
+        val imageUrl: String? = null
 )

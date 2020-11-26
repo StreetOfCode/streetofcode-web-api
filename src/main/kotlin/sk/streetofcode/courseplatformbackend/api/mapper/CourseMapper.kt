@@ -29,7 +29,8 @@ class CourseMapper() {
                 course.name,
                 course.shortDescription,
                 course.author,
-                course.difficulty
+                course.difficulty,
+                course.imageUrl
         )
     }
 
