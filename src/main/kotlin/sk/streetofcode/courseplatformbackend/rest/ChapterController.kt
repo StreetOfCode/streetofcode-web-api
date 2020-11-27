@@ -20,7 +20,7 @@ class ChapterController(val chapterService: ChapterService) {
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
+    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
         return if (filter.isPresent) {
             val chapters = try {
                 val courseId = JSONObject(filter.get()).getLong("courseId")

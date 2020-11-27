@@ -19,7 +19,7 @@ class LectureController(val lectureService: LectureService) {
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<LectureDto>> {
+    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<LectureDto>> {
         return if (filter.isPresent) {
             val lectures = try {
                 val chapterId = JSONObject(filter.get()).getLong("chapterId")
