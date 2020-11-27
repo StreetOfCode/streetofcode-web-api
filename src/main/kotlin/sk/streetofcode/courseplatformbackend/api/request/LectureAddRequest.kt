@@ -4,5 +4,6 @@ data class LectureAddRequest(
         val chapterId: Long,
         val name: String,
         val lectureOrder: Int,
-        val content: String
+        val content: String? = null,
+        val videoUrl: String? = null
 )

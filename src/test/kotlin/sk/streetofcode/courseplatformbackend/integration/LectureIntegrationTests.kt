@@ -25,13 +25,14 @@ class LectureIntegrationTests : IntegrationTests() {
         }
 
         "add lecture" {
-            val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
+            val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent", "videoUrl"))
 
             val fetchedLecture = getLecture(lecture.id)
             fetchedLecture.name shouldBe "testName"
             fetchedLecture.chapter.id shouldBe 1
             fetchedLecture.lectureOrder shouldBe 1
             fetchedLecture.content shouldBe "testContent"
+            fetchedLecture.videoUrl shouldBe "videoUrl"
         }
 
         "edit lecture" {
@@ -40,7 +41,7 @@ class LectureIntegrationTests : IntegrationTests() {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
 
             val editedLecture = editLecture(
-                    lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited")
+                    lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited", "videoUrl")
             )
 
             val fetchedLecture = getLecture(editedLecture.id)
@@ -48,6 +49,7 @@ class LectureIntegrationTests : IntegrationTests() {
             fetchedLecture.chapter.id shouldBe 1
             fetchedLecture.lectureOrder shouldBe 1
             fetchedLecture.content shouldBe "testContentEdited"
+            fetchedLecture.videoUrl shouldBe "videoUrl"
         }
 
         "delete lecture" {

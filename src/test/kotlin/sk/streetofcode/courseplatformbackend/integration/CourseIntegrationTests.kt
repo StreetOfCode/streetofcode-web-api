@@ -88,7 +88,7 @@ class CourseIntegrationTests : IntegrationTests() {
                     CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl", CourseStatus.PRIVATE)
             )
 
-            val fetchedCourse = getCourse(editedCourse.id!!)
+            val fetchedCourse = getCourse(editedCourse.id)
             fetchedCourse.name shouldBe "editedTestName"
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
@@ -142,9 +142,7 @@ class CourseIntegrationTests : IntegrationTests() {
     }
 
     private fun getCourseOverviewWithUserRoleThrowsAuthorizationException(courseId: Long) {
-        return restWithUserRole().getForEntity<AuthorizationException>("/course/overview/$courseId").let {
-            it.statusCode shouldBe HttpStatus.FORBIDDEN
-        }
+        return restWithUserRole().getForEntity<AuthorizationException>("/course/overview/$courseId").statusCode shouldBe HttpStatus.FORBIDDEN
     }
 
     private fun getCourseNotFound(courseId: Long) {
@@ -154,9 +152,7 @@ class CourseIntegrationTests : IntegrationTests() {
     }
 
     private fun editCourseNotFound(courseId: Long, body: CourseEditRequest) {
-        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/course/$courseId", body).let {
-            it.statusCode shouldBe HttpStatus.NOT_FOUND
-        }
+        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/course/$courseId", body).statusCode shouldBe HttpStatus.NOT_FOUND
     }
 
     private fun addCourse(body: CourseAddRequest): CourseDto {

@@ -14,6 +14,7 @@ class LectureMapper() {
                 lecture.name,
                 lecture.lectureOrder,
                 lecture.content,
+                lecture.videoUrl,
                 lecture.createdAt,
                 lecture.updatedAt
         )

@@ -38,7 +38,7 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         }
 
         try {
-            return mapper.toLectureDto(lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content)))
+            return mapper.toLectureDto(lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content, addRequest.videoUrl)))
         } catch (e: Exception) {
             throw InternalErrorException("Could not save lecture")
         }
@@ -55,6 +55,7 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
                 val lecture = existingLecture.get()
                 lecture.name = editRequest.name
                 lecture.content = editRequest.content
+                lecture.videoUrl = editRequest.videoUrl
                 lecture.lectureOrder = editRequest.lectureOrder
                 lecture.updatedAt = OffsetDateTime.now()
                 return mapper.toLectureDto(lectureRepository.save(lecture))
