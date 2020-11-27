@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.rest
 
+import org.json.JSONException
 import org.json.JSONObject
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -20,8 +21,13 @@ class LectureController(val lectureService: LectureService) {
     @IsAdmin
     fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<LectureDto>> {
         return if (filter.isPresent) {
-            val chapterId = JSONObject(filter.get()).getLong("chapterId")
-            val lectures = lectureService.getByChapterId(chapterId)
+            val lectures = try {
+                val chapterId = JSONObject(filter.get()).getLong("chapterId")
+                lectureService.getByChapterId(chapterId)
+            } catch (e: JSONException) {
+                lectureService.getAll()
+            }
+
             buildGetAll(lectures)
         } else {
             val lectures = lectureService.getAll()
