@@ -67,7 +67,7 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
             // Remove all lectures if this course is removed
             lectureRepository.deleteByChapterId(id)
 
-            chapterRepository.deleteById(id)
+            chapterRepository.delete(chapter.get())
             return mapper.toChapterDto(chapter.get())
         } else {
             throw ResourceNotFoundException("Chapter with id $id was not found")

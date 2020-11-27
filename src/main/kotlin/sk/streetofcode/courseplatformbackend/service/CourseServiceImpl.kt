@@ -1,6 +1,7 @@
 package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
@@ -13,6 +14,7 @@ import sk.streetofcode.courseplatformbackend.api.mapper.CourseMapper
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
+import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Course
@@ -20,7 +22,7 @@ import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import java.time.OffsetDateTime
 
 @Service
-class CourseServiceImpl(val courseRepository: CourseRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper) : CourseService {
+class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepository: ChapterRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper) : CourseService {
     override fun get(id: Long): CourseDto {
         return mapper.toCourseDto(courseRepository.findById(id)
                 .orElseThrow { ResourceNotFoundException("Course with id $id was not found") })
@@ -82,11 +84,11 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         }
     }
 
+    @Transactional
     override fun delete(id: Long): CourseDto {
         val course = get(id)
 
-        course.chapters.forEach { _ -> chapterServiceImpl.delete(course.id) }
-
+        chapterRepository.deleteByCourseId(id)
         courseRepository.deleteById(id)
         return course
     }
