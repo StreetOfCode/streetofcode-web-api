@@ -12,6 +12,8 @@ interface CourseService {
     fun add(addRequest: CourseAddRequest): CourseDto
     fun edit(id: Long, editRequest: CourseEditRequest): CourseDto
     fun delete(id: Long): CourseDto
-    fun getCoursesHomepage(): List<CourseHomepageDto>
-    fun getCourseOverview(id: Long): CourseOverviewDto
+    fun getPublicCoursesHomepage(): List<CourseHomepageDto>
+    fun getAllCoursesHomepage(): List<CourseHomepageDto>
+    fun getPublicCourseOverview(id: Long): CourseOverviewDto
+    fun getAnyCourseOverview(id: Long): CourseOverviewDto
 }

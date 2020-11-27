@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.AuthorService
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
 import sk.streetofcode.courseplatformbackend.model.Author
 
 @RestController
@@ -14,6 +15,7 @@ import sk.streetofcode.courseplatformbackend.model.Author
 class AuthorController(val authorService: AuthorService) {
 
     @GetMapping
+    @IsAdmin
     fun getAll(): ResponseEntity<List<Author>> {
 
         val authors = authorService.getAll()
@@ -28,21 +30,25 @@ class AuthorController(val authorService: AuthorService) {
     }
 
     @GetMapping("{id}")
+    @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<Author> {
         return ResponseEntity.ok(authorService.get(id))
     }
 
     @PostMapping
+    @IsAdmin
     fun add(@RequestBody authorAddRequest: AuthorAddRequest): ResponseEntity<Author> {
         return ResponseEntity.status(HttpStatus.CREATED).body(authorService.add(authorAddRequest))
     }
 
     @PutMapping("{id}")
+    @IsAdmin
     fun edit(@PathVariable("id") id: Long, @RequestBody authorEditRequest: AuthorEditRequest): ResponseEntity<Author> {
         return ResponseEntity.ok(authorService.edit(id, authorEditRequest))
     }
 
     @DeleteMapping("{id}")
+    @IsAdmin
     fun delete(@PathVariable("id") id: Long): ResponseEntity<Author> {
         return ResponseEntity.ok(authorService.delete(id))
     }

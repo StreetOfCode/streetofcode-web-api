@@ -26,4 +26,12 @@ open class IntegrationTests : StringSpec() {
         return exchange(url, HttpMethod.DELETE, null, T::class.java)
     }
 
+    protected fun restWithAdminRole(): TestRestTemplate {
+        return restTemplate.withBasicAuth("admin", "admin")
+    }
+
+    protected fun restWithUserRole(): TestRestTemplate {
+        return restTemplate.withBasicAuth("user", "user")
+    }
+
 }

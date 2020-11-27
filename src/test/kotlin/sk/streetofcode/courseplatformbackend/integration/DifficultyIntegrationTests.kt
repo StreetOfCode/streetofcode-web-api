@@ -9,9 +9,10 @@ import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
 import sk.streetofcode.courseplatformbackend.model.Difficulty
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTestAnnotation
 class DifficultyIntegrationTests : IntegrationTests() {
     init {
         "get difficulties" {
@@ -61,44 +62,44 @@ class DifficultyIntegrationTests : IntegrationTests() {
 
 
     private fun getDifficulties(): ResponseEntity<List<Difficulty>> {
-        return restTemplate.getForEntity<List<Difficulty>>("/difficulty")
+        return restWithAdminRole().getForEntity<List<Difficulty>>("/difficulty")
     }
 
     private fun getDifficulty(difficultyId: Long): Difficulty {
-        return restTemplate.getForEntity<Difficulty>("/difficulty/$difficultyId").let {
+        return restWithAdminRole().getForEntity<Difficulty>("/difficulty/$difficultyId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun getDifficultyNotFound(difficultyId: Long) {
-        return restTemplate.getForEntity<ResourceNotFoundException>("/difficulty/$difficultyId").let {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/difficulty/$difficultyId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editDifficultyNotFound(difficultyId: Long, body: DifficultyEditRequest) {
-        return restTemplate.putForEntity<ResourceNotFoundException>("/difficulty/$difficultyId", body).let {
+        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/difficulty/$difficultyId", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun addDifficulty(body: DifficultyAddRequest): Difficulty {
-        return restTemplate.postForEntity<Difficulty>("/difficulty", body).let {
+        return restWithAdminRole().postForEntity<Difficulty>("/difficulty", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
     private fun editDifficulty(difficultyId: Long, body: DifficultyEditRequest): Difficulty {
-        return restTemplate.putForEntity<Difficulty>("/difficulty/$difficultyId", body).let {
+        return restWithAdminRole().putForEntity<Difficulty>("/difficulty/$difficultyId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun deleteDifficulty(difficultyId: Long): Difficulty {
-        return restTemplate.deleteForEntity<Difficulty>("/difficulty/$difficultyId").let {
+        return restWithAdminRole().deleteForEntity<Difficulty>("/difficulty/$difficultyId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

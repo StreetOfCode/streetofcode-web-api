@@ -10,8 +10,9 @@ import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTestAnnotation
 class ChapterIntegrationTests : IntegrationTests() {
     init {
         "get chapters" {
@@ -60,44 +61,44 @@ class ChapterIntegrationTests : IntegrationTests() {
 
 
     private fun getChapters(): ResponseEntity<List<ChapterDto>> {
-        return restTemplate.getForEntity("/chapter")
+        return restWithAdminRole().getForEntity("/chapter")
     }
 
     private fun getChapter(chapterId: Long): ChapterDto {
-        return restTemplate.getForEntity<ChapterDto>("/chapter/$chapterId").let {
+        return restWithAdminRole().getForEntity<ChapterDto>("/chapter/$chapterId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun getChapterNotFound(chapterId: Long) {
-        return restTemplate.getForEntity<ResourceNotFoundException>("/chapter/$chapterId").let {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/chapter/$chapterId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editChapterNotFound(chapterId: Long, body: ChapterEditRequest) {
-        return restTemplate.putForEntity<ResourceNotFoundException>("/chapter/$chapterId", body).let {
+        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/chapter/$chapterId", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun addChapter(body: ChapterAddRequest): ChapterDto {
-        return restTemplate.postForEntity<ChapterDto>("/chapter", body).let {
+        return restWithAdminRole().postForEntity<ChapterDto>("/chapter", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
     private fun editChapter(chapterId: Long, body: ChapterEditRequest): ChapterDto {
-        return restTemplate.putForEntity<ChapterDto>("/chapter/$chapterId", body).let {
+        return restWithAdminRole().putForEntity<ChapterDto>("/chapter/$chapterId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun deleteChapter(chapterId: Long): ChapterDto {
-        return restTemplate.deleteForEntity<ChapterDto>("/chapter/$chapterId").let {
+        return restWithAdminRole().deleteForEntity<ChapterDto>("/chapter/$chapterId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

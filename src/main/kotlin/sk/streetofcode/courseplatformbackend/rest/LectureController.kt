@@ -9,7 +9,7 @@ import sk.streetofcode.courseplatformbackend.api.LectureService
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
-import sk.streetofcode.courseplatformbackend.model.Lecture
+import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
 import java.util.*
 
 @RestController
@@ -17,6 +17,7 @@ import java.util.*
 class LectureController(val lectureService: LectureService) {
 
     @GetMapping
+    @IsAdmin
     fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<LectureDto>> {
         return if (filter.isPresent) {
             val chapterId = JSONObject(filter.get()).getLong("chapterId")
@@ -39,21 +40,25 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @GetMapping("{id}")
+    @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.get(id))
     }
 
     @PostMapping
+    @IsAdmin
     fun add(@RequestBody lectureAddRequest: LectureAddRequest): ResponseEntity<LectureDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(lectureService.add(lectureAddRequest))
     }
 
     @PutMapping("{id}")
+    @IsAdmin
     fun edit(@PathVariable("id") id: Long, @RequestBody lectureEditRequest: LectureEditRequest): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.edit(id, lectureEditRequest))
     }
 
     @DeleteMapping("{id}")
+    @IsAdmin
     fun delete(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.delete(id))
     }

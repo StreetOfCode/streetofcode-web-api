@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
@@ -10,8 +9,9 @@ import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTestAnnotation
 class LectureIntegrationTests : IntegrationTests() {
     init {
         "get lectures" {
@@ -62,44 +62,44 @@ class LectureIntegrationTests : IntegrationTests() {
 
 
     private fun getLectures(): ResponseEntity<List<LectureDto>> {
-        return restTemplate.getForEntity("/lecture")
+        return restWithAdminRole().getForEntity("/lecture")
     }
 
     private fun getLecture(lectureId: Long): LectureDto {
-        return restTemplate.getForEntity<LectureDto>("/lecture/$lectureId").let {
+        return restWithAdminRole().getForEntity<LectureDto>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun getLectureNotFound(lectureId: Long) {
-        return restTemplate.getForEntity<ResourceNotFoundException>("/lecture/$lectureId").let {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editLectureNotFound(lectureId: Long, body: LectureEditRequest) {
-        return restTemplate.putForEntity<ResourceNotFoundException>("/lecture/$lectureId", body).let {
+        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/lecture/$lectureId", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun addLecture(body: LectureAddRequest): LectureDto {
-        return restTemplate.postForEntity<LectureDto>("/lecture", body).let {
+        return restWithAdminRole().postForEntity<LectureDto>("/lecture", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
     private fun editLecture(lectureId: Long, body: LectureEditRequest): LectureDto {
-        return restTemplate.putForEntity<LectureDto>("/lecture/$lectureId", body).let {
+        return restWithAdminRole().putForEntity<LectureDto>("/lecture/$lectureId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun deleteLecture(lectureId: Long): LectureDto {
-        return restTemplate.deleteForEntity<LectureDto>("/lecture/$lectureId").let {
+        return restWithAdminRole().deleteForEntity<LectureDto>("/lecture/$lectureId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

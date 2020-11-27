@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
@@ -9,9 +8,10 @@ import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
 import sk.streetofcode.courseplatformbackend.model.Author
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTestAnnotation
 class AuthorIntegrationTests : IntegrationTests() {
     init {
         "get authors" {
@@ -63,44 +63,44 @@ class AuthorIntegrationTests : IntegrationTests() {
 
 
     private fun getAuthors(): ResponseEntity<List<Author>> {
-        return restTemplate.getForEntity<List<Author>>("/author")
+        return restWithAdminRole().getForEntity<List<Author>>("/author")
     }
 
     private fun getAuthor(authorId: Long): Author {
-        return restTemplate.getForEntity<Author>("/author/$authorId").let {
+        return restWithAdminRole().getForEntity<Author>("/author/$authorId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun getAuthorNotFound(authorId: Long) {
-        return restTemplate.getForEntity<ResourceNotFoundException>("/author/$authorId").let {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/author/$authorId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editAuthorNotFound(authorId: Long, body: AuthorEditRequest) {
-        return restTemplate.putForEntity<ResourceNotFoundException>("/author/$authorId", body).let {
+        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/author/$authorId", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun addAuthor(body: AuthorAddRequest): Author {
-        return restTemplate.postForEntity<Author>("/author", body).let {
+        return restWithAdminRole().postForEntity<Author>("/author", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
     private fun editAuthor(authorId: Long, body: AuthorEditRequest): Author {
-        return restTemplate.putForEntity<Author>("/author/$authorId", body).let {
+        return restWithAdminRole().putForEntity<Author>("/author/$authorId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun deleteAuthor(authorId: Long): Author {
-        return restTemplate.deleteForEntity<Author>("/author/$authorId").let {
+        return restWithAdminRole().deleteForEntity<Author>("/author/$authorId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }

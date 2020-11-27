@@ -10,6 +10,7 @@ import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
+import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
 import java.util.*
 
 @RestController
@@ -18,6 +19,7 @@ class ChapterController(val chapterService: ChapterService) {
 
 
     @GetMapping
+    @IsAdmin
     fun getAll(@RequestParam("filter") filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
         return if (filter.isPresent) {
             val chapters = try {
@@ -45,21 +47,25 @@ class ChapterController(val chapterService: ChapterService) {
     }
 
     @GetMapping("{id}")
+    @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.get(id))
     }
 
     @PostMapping
+    @IsAdmin
     fun add(@RequestBody chapterAddRequest: ChapterAddRequest): ResponseEntity<ChapterDto> {
         return ResponseEntity.status(HttpStatus.CREATED).body(chapterService.add(chapterAddRequest))
     }
 
     @PutMapping("{id}")
+    @IsAdmin
     fun edit(@PathVariable("id") id: Long, @RequestBody chapterEditRequest: ChapterEditRequest): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.edit(id, chapterEditRequest))
     }
 
     @DeleteMapping("{id}")
+    @IsAdmin
     fun delete(@PathVariable("id") id: Long): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.delete(id))
     }

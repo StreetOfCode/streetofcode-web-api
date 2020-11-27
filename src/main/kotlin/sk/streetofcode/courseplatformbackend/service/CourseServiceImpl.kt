@@ -5,6 +5,7 @@ import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
+import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
@@ -15,6 +16,7 @@ import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Course
+import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import java.time.OffsetDateTime
 
 @Service
@@ -89,11 +91,29 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val authorReposi
         return course
     }
 
-    override fun getCoursesHomepage(): List<CourseHomepageDto> {
+    override fun getPublicCoursesHomepage(): List<CourseHomepageDto> {
+        return courseRepository.findAll().filter { course -> CourseStatus.PUBLIC == course.status }.map { course -> mapper.toCourseHomepage(course) }.toList()
+    }
+
+    override fun getAllCoursesHomepage(): List<CourseHomepageDto> {
         return courseRepository.findAll().map { course -> mapper.toCourseHomepage(course) }.toList()
     }
 
-    override fun getCourseOverview(id: Long): CourseOverviewDto {
+    override fun getPublicCourseOverview(id: Long): CourseOverviewDto {
+
+        val course = courseRepository.findById(id)
+        if (course.isPresent) {
+            if (CourseStatus.PUBLIC != course.get().status) {
+                throw AuthorizationException()
+            } else {
+                return mapper.toCourseOverview(course.get())
+            }
+        } else {
+            throw ResourceNotFoundException("Course with id $id not found")
+        }
+    }
+
+    override fun getAnyCourseOverview(id: Long): CourseOverviewDto {
 
         val course = courseRepository.findById(id)
         if (course.isPresent) {

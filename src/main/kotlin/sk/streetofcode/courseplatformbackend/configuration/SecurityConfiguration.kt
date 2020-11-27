@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Profile("!test")
 class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     companion object {
         const val AUTHORITY_PREFIX = "ROLE_"
