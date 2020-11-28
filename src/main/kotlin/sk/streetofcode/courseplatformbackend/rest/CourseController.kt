@@ -11,7 +11,6 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
-import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAuthenticated
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 @RestController
@@ -58,7 +57,6 @@ class CourseController(val courseService: CourseService, val authenticationServi
     }
 
     @GetMapping("/home-page")
-    @IsAuthenticated
     fun getCoursesHomepage(): ResponseEntity<List<CourseHomepageDto>> {
         return if (authenticationService.isAdmin()) {
             ResponseEntity.ok(courseService.getAllCoursesHomepage())
@@ -68,7 +66,6 @@ class CourseController(val courseService: CourseService, val authenticationServi
     }
 
     @GetMapping("/overview/{id}")
-    @IsAuthenticated
     fun getCourseOverview(@PathVariable("id") id: Long): ResponseEntity<CourseOverviewDto> {
         return if (authenticationService.isAdmin()) {
             ResponseEntity.ok(courseService.getAnyCourseOverview(id))
