@@ -25,6 +25,8 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
             .oauth2ResourceServer { oauth2 ->
                 oauth2.jwt().jwtAuthenticationConverter(CognitoAuthenticationConverter())
             }
+        // To enable H2
+        http.headers().frameOptions().disable()
     }
 }
 
