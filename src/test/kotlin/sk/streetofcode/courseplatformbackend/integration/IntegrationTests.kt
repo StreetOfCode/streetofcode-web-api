@@ -4,10 +4,12 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.spring.SpringListener
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
 
 open class IntegrationTests : StringSpec() {
     override fun listeners(): List<TestListener> {
@@ -16,6 +18,9 @@ open class IntegrationTests : StringSpec() {
 
     @Autowired
     protected lateinit var restTemplate: TestRestTemplate
+
+    @MockBean
+    protected lateinit var youtubeApiClient: YoutubeApiClient
 
     // helper method to do the same thing as postForEntity but with PUT method
     protected inline fun <reified T> TestRestTemplate.putForEntity(url: String, body: Any): ResponseEntity<T> {

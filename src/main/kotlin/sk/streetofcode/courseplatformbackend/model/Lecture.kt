@@ -28,14 +28,17 @@ data class Lecture(
         @Column(nullable = true, columnDefinition = "TEXT")
         var videoUrl: String? = null,
 
+        @Column(nullable = false, columnDefinition = "integer default 0")
+        var videoDurationSeconds: Int,
+
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
         val createdAt: OffsetDateTime,
 
         @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
         var updatedAt: OffsetDateTime
 ) {
-    constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String?, videoUrl: String?)
-            : this(null, chapter, name, lectureOrder, content, videoUrl, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String?, videoUrl: String?, videoDurationSeconds: Int)
+            : this(null, chapter, name, lectureOrder, content, videoUrl, videoDurationSeconds, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()

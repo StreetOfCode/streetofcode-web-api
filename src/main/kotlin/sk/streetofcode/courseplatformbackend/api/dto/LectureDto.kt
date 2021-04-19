@@ -9,6 +9,7 @@ data class LectureDto(
         val lectureOrder: Int,
         val content: String? = null,
         val videoUrl: String? = null,
+        val videoDurationSeconds: Int? = null,
         val createdAt: OffsetDateTime,
         val updatedAt: OffsetDateTime
 )

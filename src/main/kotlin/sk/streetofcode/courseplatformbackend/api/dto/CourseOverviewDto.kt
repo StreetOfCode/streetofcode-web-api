@@ -16,16 +16,19 @@ data class CourseOverviewDto(
         val difficulty: Difficulty? = null,
         val createdAt: OffsetDateTime,
         val updatedAt: OffsetDateTime,
-        val chapters: Set<ChapterOverviewDto>
+        val chapters: Set<ChapterOverviewDto>,
+        val courseDurationMinutes: Int
 )
 
 data class ChapterOverviewDto(
         val id: Long,
         val name: String,
-        val lectures: List<LectureOverviewDto>
+        val lectures: List<LectureOverviewDto>,
+        val chapterDurationMinutes: Int
 )
 
 data class LectureOverviewDto(
         val id: Long,
-        val name: String
+        val name: String,
+        val videoDurationSeconds: Int
 )

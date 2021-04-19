@@ -20,19 +20,19 @@ INSERT INTO chapter (id, course_id, name, chapter_order, created_at, updated_at)
 (chapter_id_seq.nextval, 2, 'Dalsia kapitolka o informatike', 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
 
 
-INSERT INTO lecture (id, chapter_id, name, content, video_url, lecture_order, created_at, updated_at) VALUES
-(lecture_id_seq.nextval, 1, 'Part 1', STRINGDECODE('# Library project for Kotlin Spring Boot online course\n**Application manages books, authors and book categories.** \n\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-object-model.png)\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-data-model.png)\n\n**What''s part of the project:**\n* JDK 11\n* Kotlin\n* JDBCTemplate\n* JPA Hibernate\n* H2 in-memory database\n* CRUD operations\n* REST API\n* Swagger\n* Integration tests\n'), 'https://www.youtube.com/embed/z1At9Jk4sqE', 1, '007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
-(lecture_id_seq.nextval, 1, 'Part 2', null, 'https://www.youtube.com/embed/z1At9Jk4sqE', 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(lecture_id_seq.nextval, 1, 'Part 3', STRINGDECODE('# Library project for Kotlin Spring Boot online course\n**Application manages books, authors and book categories.** \n\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-object-model.png)\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-data-model.png)\n\n**What''s part of the project:**\n* JDK 11\n* Kotlin\n* JDBCTemplate\n* JPA Hibernate\n* H2 in-memory database\n* CRUD operations\n* REST API\n* Swagger\n* Integration tests\n'), null, 3, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+INSERT INTO lecture (id, chapter_id, name, content, video_url, video_duration_seconds, lecture_order, created_at, updated_at) VALUES
+(lecture_id_seq.nextval, 1, 'Part 1', STRINGDECODE('# Library project for Kotlin Spring Boot online course\n**Application manages books, authors and book categories.** \n\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-object-model.png)\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-data-model.png)\n\n**What''s part of the project:**\n* JDK 11\n* Kotlin\n* JDBCTemplate\n* JPA Hibernate\n* H2 in-memory database\n* CRUD operations\n* REST API\n* Swagger\n* Integration tests\n'), 'https://www.youtube.com/embed/z1At9Jk4sqE', 124, 1, '007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
+(lecture_id_seq.nextval, 1, 'Part 2', null, 'https://www.youtube.com/embed/z1At9Jk4sqE', 124, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_id_seq.nextval, 1, 'Part 3', STRINGDECODE('# Library project for Kotlin Spring Boot online course\n**Application manages books, authors and book categories.** \n\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-object-model.png)\n![alt text](http://streetofcode.sk/wp-content/uploads/2019/11/library-data-model.png)\n\n**What''s part of the project:**\n* JDK 11\n* Kotlin\n* JDBCTemplate\n* JPA Hibernate\n* H2 in-memory database\n* CRUD operations\n* REST API\n* Swagger\n* Integration tests\n'), null, 0, 3, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 
-(lecture_id_seq.nextval, 2, 'Part 1', 'Mega kontent', null, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
-(lecture_id_seq.nextval, 2, 'Part 2', 'Mega kontent druhy', null, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_id_seq.nextval, 2, 'Part 1', 'Mega kontent', null, 12050, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
+(lecture_id_seq.nextval, 2, 'Part 2', 'Mega kontent druhy', null, 5000, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 
-(lecture_id_seq.nextval, 3, 'Part 1', 'Mega kontent', null, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
-(lecture_id_seq.nextval, 3, 'Part 2', 'Mega kontent druhy', null, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(lecture_id_seq.nextval, 3, 'Part 3', 'Mega kontent treti', null, 3, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_id_seq.nextval, 3, 'Part 1', 'Mega kontent', null, 5000, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
+(lecture_id_seq.nextval, 3, 'Part 2', 'Mega kontent druhy', null, 130, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_id_seq.nextval, 3, 'Part 3', 'Mega kontent treti', null, 5000, 3, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 
-(lecture_id_seq.nextval, 4, 'Part 1', 'Mega kontent', null, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
-(lecture_id_seq.nextval, 4, 'Part 2', 'Mega kontent druhy', null, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
+(lecture_id_seq.nextval, 4, 'Part 1', 'Mega kontent', null, 5000, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
+(lecture_id_seq.nextval, 4, 'Part 2', 'Mega kontent druhy', null, 5000, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
 

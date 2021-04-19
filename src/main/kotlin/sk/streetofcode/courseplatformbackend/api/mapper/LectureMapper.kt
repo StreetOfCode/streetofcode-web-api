@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.dto.LectureChapterDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.model.Lecture
+import java.time.temporal.ChronoUnit
 
 @Component
 class LectureMapper() {
@@ -15,8 +16,9 @@ class LectureMapper() {
                 lecture.lectureOrder,
                 lecture.content,
                 lecture.videoUrl,
-                lecture.createdAt,
-                lecture.updatedAt
+                lecture.videoDurationSeconds,
+                lecture.createdAt.truncatedTo(ChronoUnit.SECONDS),
+                lecture.updatedAt.truncatedTo(ChronoUnit.SECONDS)
         )
     }
 }

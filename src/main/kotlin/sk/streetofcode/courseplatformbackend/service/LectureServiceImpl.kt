@@ -9,13 +9,14 @@ import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundExcep
 import sk.streetofcode.courseplatformbackend.api.mapper.LectureMapper
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
+import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.Lecture
 import java.time.OffsetDateTime
 
 @Service
-class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRepository: ChapterRepository, val mapper: LectureMapper) : LectureService {
+class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRepository: ChapterRepository, val mapper: LectureMapper, val youtubeApiClient: YoutubeApiClient) : LectureService {
 
     override fun get(id: Long): LectureDto {
 
@@ -36,10 +37,12 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         if (chapter.isEmpty) {
             throw ResourceNotFoundException("Chapter with id ${addRequest.chapterId} was not found")
         }
-
         try {
-            return mapper.toLectureDto(lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content, addRequest.videoUrl)))
+            return mapper.toLectureDto(lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content, addRequest.videoUrl, youtubeApiClient.getVideoDurationInSeconds(addRequest.videoUrl))))
         } catch (e: Exception) {
+            if (e is InternalErrorException) {
+                throw e
+            }
             throw InternalErrorException("Could not save lecture")
         }
     }
@@ -56,6 +59,7 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
                 lecture.name = editRequest.name
                 lecture.content = editRequest.content
                 lecture.videoUrl = editRequest.videoUrl
+                lecture.videoDurationSeconds = youtubeApiClient.getVideoDurationInSeconds(editRequest.videoUrl)
                 lecture.lectureOrder = editRequest.lectureOrder
                 lecture.updatedAt = OffsetDateTime.now()
                 return mapper.toLectureDto(lectureRepository.save(lecture))

@@ -4,6 +4,8 @@ import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.dto.*
 import sk.streetofcode.courseplatformbackend.model.Chapter
 import sk.streetofcode.courseplatformbackend.model.Course
+import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 
 @Component
 class CourseMapper() {
@@ -18,8 +20,8 @@ class CourseMapper() {
                 course.imageUrl,
                 course.status,
                 course.chapters.map { chapter -> toCourseChapterDto(chapter) }.toSet(),
-                course.createdAt,
-                course.updatedAt
+                course.createdAt.truncatedTo(ChronoUnit.SECONDS),
+                course.updatedAt.truncatedTo(ChronoUnit.SECONDS)
         )
     }
 
@@ -35,6 +37,22 @@ class CourseMapper() {
     }
 
     fun toCourseOverview(course: Course): CourseOverviewDto {
+
+        val chapters = course.chapters.map { chapter ->
+            ChapterOverviewDto(
+                chapter.id!!,
+                chapter.name,
+                chapter.lectures.map { lecture ->
+                    LectureOverviewDto(
+                        lecture.id!!,
+                        lecture.name,
+                        lecture.videoDurationSeconds
+                    )
+                },
+                chapterDurationMinutes = chapter.lectures.sumBy { lecture -> TimeUnit.SECONDS.toMinutes(lecture.videoDurationSeconds.toLong()).toInt() }
+            )
+        }.toSet()
+
         return CourseOverviewDto(
                 course.id!!,
                 course.name,
@@ -44,20 +62,10 @@ class CourseMapper() {
                 course.status,
                 course.author,
                 course.difficulty,
-                course.createdAt,
-                course.updatedAt,
-                course.chapters.map { chapter ->
-                    ChapterOverviewDto(
-                            chapter.id!!,
-                            chapter.name,
-                            chapter.lectures.map { lecture ->
-                                LectureOverviewDto(
-                                        lecture.id!!,
-                                        lecture.name
-                                )
-                            }
-                    )
-                }.toSet()
+                course.createdAt.truncatedTo(ChronoUnit.SECONDS),
+                course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
+                chapters,
+                courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes }
         )
     }
 

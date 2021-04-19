@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterCourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.model.Chapter
+import java.time.temporal.ChronoUnit
 
 @Component
 class ChapterMapper(val lectureMapper: LectureMapper) {
@@ -15,8 +16,8 @@ class ChapterMapper(val lectureMapper: LectureMapper) {
                 chapter.name,
                 chapter.chapterOrder,
                 chapter.lectures.map { lecture -> lectureMapper.toLectureDto(lecture) }.toSet(),
-                chapter.createdAt,
-                chapter.updatedAt
+                chapter.createdAt.truncatedTo(ChronoUnit.SECONDS),
+                chapter.updatedAt.truncatedTo(ChronoUnit.SECONDS)
         )
     }
 }
