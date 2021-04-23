@@ -61,7 +61,6 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
     }
 
-
     private fun getAuthors(): ResponseEntity<List<Author>> {
         return restWithAdminRole().getForEntity<List<Author>>("/author")
     }

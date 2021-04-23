@@ -16,7 +16,7 @@ import sk.streetofcode.courseplatformbackend.model.Author
 class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseRepository: CourseRepository) : AuthorService {
     override fun get(id: Long): Author {
         return authorRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
+            .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
     }
 
     override fun getAll(): List<Author> {
@@ -46,9 +46,8 @@ class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseReposi
         }
     }
 
-
     @Transactional
-    override fun delete(id: Long) : Author {
+    override fun delete(id: Long): Author {
         val author = authorRepository.findById(id)
 
         if (author.isPresent) {
@@ -58,10 +57,8 @@ class AuthorServiceImpl(val authorRepository: AuthorRepository, val courseReposi
             authorRepository.deleteById(id)
 
             return author.get()
-
         } else {
             throw ResourceNotFoundException("Author with id $id was not found")
         }
     }
-
 }

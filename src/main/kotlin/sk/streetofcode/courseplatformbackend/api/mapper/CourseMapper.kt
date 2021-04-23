@@ -11,28 +11,28 @@ import java.util.concurrent.TimeUnit
 class CourseMapper() {
     fun toCourseDto(course: Course): CourseDto {
         return CourseDto(
-                course.id!!,
-                course.author,
-                course.difficulty,
-                course.name,
-                course.shortDescription,
-                course.longDescription,
-                course.imageUrl,
-                course.status,
-                course.chapters.map { chapter -> toCourseChapterDto(chapter) }.toSet(),
-                course.createdAt.truncatedTo(ChronoUnit.SECONDS),
-                course.updatedAt.truncatedTo(ChronoUnit.SECONDS)
+            course.id!!,
+            course.author,
+            course.difficulty,
+            course.name,
+            course.shortDescription,
+            course.longDescription,
+            course.imageUrl,
+            course.status,
+            course.chapters.map { chapter -> toCourseChapterDto(chapter) }.toSet(),
+            course.createdAt.truncatedTo(ChronoUnit.SECONDS),
+            course.updatedAt.truncatedTo(ChronoUnit.SECONDS)
         )
     }
 
     fun toCourseHomepage(course: Course): CourseHomepageDto {
         return CourseHomepageDto(
-                course.id!!,
-                course.name,
-                course.shortDescription,
-                course.author,
-                course.difficulty,
-                course.imageUrl
+            course.id!!,
+            course.name,
+            course.shortDescription,
+            course.author,
+            course.difficulty,
+            course.imageUrl
         )
     }
 
@@ -54,25 +54,25 @@ class CourseMapper() {
         }.toSet()
 
         return CourseOverviewDto(
-                course.id!!,
-                course.name,
-                course.shortDescription,
-                course.longDescription,
-                course.imageUrl,
-                course.status,
-                course.author,
-                course.difficulty,
-                course.createdAt.truncatedTo(ChronoUnit.SECONDS),
-                course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
-                chapters,
-                courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes }
+            course.id!!,
+            course.name,
+            course.shortDescription,
+            course.longDescription,
+            course.imageUrl,
+            course.status,
+            course.author,
+            course.difficulty,
+            course.createdAt.truncatedTo(ChronoUnit.SECONDS),
+            course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
+            chapters,
+            courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes }
         )
     }
 
     private fun toCourseChapterDto(chapter: Chapter): CourseChapterDto {
         return CourseChapterDto(
-                chapter.id!!,
-                chapter.name
+            chapter.id!!,
+            chapter.name
         )
     }
 }

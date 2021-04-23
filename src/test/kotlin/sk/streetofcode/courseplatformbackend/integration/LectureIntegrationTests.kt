@@ -61,7 +61,7 @@ class LectureIntegrationTests : IntegrationTests() {
             Mockito.`when`(youtubeApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
 
             val editedLecture = editLecture(
-                    lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited", videoUrl)
+                lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited", videoUrl)
             )
 
             val fetchedLecture = getLecture(editedLecture.id)
@@ -82,7 +82,6 @@ class LectureIntegrationTests : IntegrationTests() {
             getLectureNotFound(lecture.id)
         }
     }
-
 
     private fun getLectures(): ResponseEntity<List<LectureDto>> {
         return restWithAdminRole().getForEntity("/lecture")

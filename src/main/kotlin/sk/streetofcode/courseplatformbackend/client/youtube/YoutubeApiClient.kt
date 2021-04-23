@@ -12,7 +12,7 @@ import java.time.Duration
 @Service
 class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtubeProperties: YoutubeProperties) {
 
-    fun getVideoDurationInSeconds(videoEmbedUrl: String? = null):Int {
+    fun getVideoDurationInSeconds(videoEmbedUrl: String? = null): Int {
         if (videoEmbedUrl == null) {
             return 0
         }

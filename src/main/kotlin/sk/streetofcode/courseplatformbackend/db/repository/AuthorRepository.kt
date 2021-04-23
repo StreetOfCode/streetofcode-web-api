@@ -5,6 +5,4 @@ import org.springframework.stereotype.Repository
 import sk.streetofcode.courseplatformbackend.model.Author
 
 @Repository
-interface AuthorRepository : CrudRepository<Author, Long> {
-
-}
+interface AuthorRepository : CrudRepository<Author, Long>

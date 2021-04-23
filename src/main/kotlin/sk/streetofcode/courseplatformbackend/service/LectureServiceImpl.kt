@@ -20,8 +20,10 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
 
     override fun get(id: Long): LectureDto {
 
-        return mapper.toLectureDto(lectureRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Lecture with id $id was not found") })
+        return mapper.toLectureDto(
+            lectureRepository.findById(id)
+                .orElseThrow { ResourceNotFoundException("Lecture with id $id was not found") }
+        )
     }
 
     override fun getAll(): List<LectureDto> {
@@ -73,10 +75,8 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
         if (lecture.isPresent) {
             lectureRepository.deleteById(id)
             return mapper.toLectureDto(lecture.get())
-        }
-        else {
+        } else {
             throw ResourceNotFoundException("Lecture with id $id was not found")
         }
     }
-
 }

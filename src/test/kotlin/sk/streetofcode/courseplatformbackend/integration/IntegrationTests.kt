@@ -38,5 +38,4 @@ open class IntegrationTests : StringSpec() {
     protected fun restWithUserRole(): TestRestTemplate {
         return restTemplate.withBasicAuth("user", "user")
     }
-
 }

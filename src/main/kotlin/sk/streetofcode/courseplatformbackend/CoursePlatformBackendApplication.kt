@@ -9,5 +9,5 @@ import org.springframework.boot.runApplication
 class CoursePlatformBackendApplication
 
 fun main(args: Array<String>) {
-	runApplication<CoursePlatformBackendApplication>(*args)
+    runApplication<CoursePlatformBackendApplication>(*args)
 }

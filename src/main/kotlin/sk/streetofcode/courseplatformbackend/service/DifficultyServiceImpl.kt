@@ -1,6 +1,5 @@
 package sk.streetofcode.courseplatformbackend.service
 
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.DifficultyService
@@ -18,7 +17,7 @@ import java.lang.Exception
 class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val courseRepository: CourseRepository) : DifficultyService {
     override fun get(id: Long): Difficulty {
         return difficultyRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Difficulty with id $id was not found") }
+            .orElseThrow { ResourceNotFoundException("Difficulty with id $id was not found") }
     }
 
     override fun getAll(): List<Difficulty> {
@@ -63,5 +62,4 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
             throw ResourceNotFoundException("Difficulty with id $id was not found")
         }
     }
-
 }

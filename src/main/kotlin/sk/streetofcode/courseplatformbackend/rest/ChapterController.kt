@@ -17,7 +17,6 @@ import java.util.*
 @RequestMapping("chapter")
 class ChapterController(val chapterService: ChapterService) {
 
-
     @GetMapping
     @IsAdmin
     fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
@@ -39,8 +38,8 @@ class ChapterController(val chapterService: ChapterService) {
     private fun buildGetAll(chapters: List<ChapterDto>): ResponseEntity<List<ChapterDto>> {
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
-                "Content-Range",
-                "chapter 0-${chapters.size}/${chapters.size}"
+            "Content-Range",
+            "chapter 0-${chapters.size}/${chapters.size}"
         )
 
         return ResponseEntity.ok().headers(httpHeaders).body(chapters)

@@ -10,15 +10,15 @@ import java.time.temporal.ChronoUnit
 class LectureMapper() {
     fun toLectureDto(lecture: Lecture): LectureDto {
         return LectureDto(
-                lecture.id!!,
-                LectureChapterDto(lecture.chapter.id!!, lecture.chapter.name),
-                lecture.name,
-                lecture.lectureOrder,
-                lecture.content,
-                lecture.videoUrl,
-                lecture.videoDurationSeconds,
-                lecture.createdAt.truncatedTo(ChronoUnit.SECONDS),
-                lecture.updatedAt.truncatedTo(ChronoUnit.SECONDS)
+            lecture.id!!,
+            LectureChapterDto(lecture.chapter.id!!, lecture.chapter.name),
+            lecture.name,
+            lecture.lectureOrder,
+            lecture.content,
+            lecture.videoUrl,
+            lecture.videoDurationSeconds,
+            lecture.createdAt.truncatedTo(ChronoUnit.SECONDS),
+            lecture.updatedAt.truncatedTo(ChronoUnit.SECONDS)
         )
     }
 }

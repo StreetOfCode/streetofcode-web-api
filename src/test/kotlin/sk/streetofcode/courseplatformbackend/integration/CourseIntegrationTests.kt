@@ -68,7 +68,6 @@ class CourseIntegrationTests : IntegrationTests() {
         "add course" {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PRIVATE))
 
-
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
@@ -84,8 +83,8 @@ class CourseIntegrationTests : IntegrationTests() {
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PUBLIC))
 
             val editedCourse = editCourse(
-                    course.id,
-                    CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl", CourseStatus.PRIVATE)
+                course.id,
+                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl", CourseStatus.PRIVATE)
             )
 
             val fetchedCourse = getCourse(editedCourse.id)
@@ -105,7 +104,6 @@ class CourseIntegrationTests : IntegrationTests() {
             getCourseNotFound(course.id)
         }
     }
-
 
     private fun getCourses(): ResponseEntity<List<CourseDto>> {
         return restWithAdminRole().getForEntity("/course")

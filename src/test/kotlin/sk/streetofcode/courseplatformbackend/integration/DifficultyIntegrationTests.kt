@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
@@ -59,7 +58,6 @@ class DifficultyIntegrationTests : IntegrationTests() {
             getDifficultyNotFound(difficulty.id!!)
         }
     }
-
 
     private fun getDifficulties(): ResponseEntity<List<Difficulty>> {
         return restWithAdminRole().getForEntity<List<Difficulty>>("/difficulty")

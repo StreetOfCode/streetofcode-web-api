@@ -22,8 +22,8 @@ class AuthorController(val authorService: AuthorService) {
 
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
-                "Content-Range",
-                "author 0-${authors.size}/${authors.size}"
+            "Content-Range",
+            "author 0-${authors.size}/${authors.size}"
         )
 
         return ResponseEntity.ok().headers(httpHeaders).body(authors)

@@ -24,8 +24,10 @@ import java.time.OffsetDateTime
 @Service
 class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepository: ChapterRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper) : CourseService {
     override fun get(id: Long): CourseDto {
-        return mapper.toCourseDto(courseRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Course with id $id was not found") })
+        return mapper.toCourseDto(
+            courseRepository.findById(id)
+                .orElseThrow { ResourceNotFoundException("Course with id $id was not found") }
+        )
     }
 
     override fun getAll(): List<CourseDto> {
@@ -124,5 +126,4 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepos
             throw ResourceNotFoundException("Course with id $id not found")
         }
     }
-
 }

@@ -38,8 +38,8 @@ class LectureController(val lectureService: LectureService) {
     private fun buildGetAll(lectures: List<LectureDto>): ResponseEntity<List<LectureDto>> {
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
-                "Content-Range",
-                "lecture 0-${lectures.size}/${lectures.size}"
+            "Content-Range",
+            "lecture 0-${lectures.size}/${lectures.size}"
         )
 
         return ResponseEntity.ok().headers(httpHeaders).body(lectures)

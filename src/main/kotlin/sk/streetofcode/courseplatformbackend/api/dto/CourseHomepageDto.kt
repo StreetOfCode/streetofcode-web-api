@@ -4,10 +4,10 @@ import sk.streetofcode.courseplatformbackend.model.Author
 import sk.streetofcode.courseplatformbackend.model.Difficulty
 
 data class CourseHomepageDto(
-        val id: Long,
-        val name: String,
-        val shortDescription: String,
-        val author: Author? = null,
-        val difficulty: Difficulty? = null,
-        val imageUrl: String? = null
+    val id: Long,
+    val name: String,
+    val shortDescription: String,
+    val author: Author? = null,
+    val difficulty: Difficulty? = null,
+    val imageUrl: String? = null
 )

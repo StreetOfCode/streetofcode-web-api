@@ -19,8 +19,10 @@ import java.time.OffsetDateTime
 @Service
 class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRepository: CourseRepository, val lectureRepository: LectureRepository, val mapper: ChapterMapper) : ChapterService {
     override fun get(id: Long): ChapterDto {
-        return mapper.toChapterDto(chapterRepository.findById(id)
-                .orElseThrow { ResourceNotFoundException("Chapter with id $id was not found") })
+        return mapper.toChapterDto(
+            chapterRepository.findById(id)
+                .orElseThrow { ResourceNotFoundException("Chapter with id $id was not found") }
+        )
     }
 
     override fun getAll(): List<ChapterDto> {
@@ -73,5 +75,4 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
             throw ResourceNotFoundException("Chapter with id $id was not found")
         }
     }
-
 }

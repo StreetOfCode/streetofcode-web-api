@@ -21,8 +21,8 @@ class DifficultyController(val difficultyService: DifficultyService) {
 
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
-                "Content-Range",
-                "difficulty 0-${difficulties.size}/${difficulties.size}"
+            "Content-Range",
+            "difficulty 0-${difficulties.size}/${difficulties.size}"
         )
 
         return ResponseEntity.ok().headers(httpHeaders).body(difficulties)

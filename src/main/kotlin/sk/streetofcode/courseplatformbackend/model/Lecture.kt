@@ -7,38 +7,38 @@ import javax.persistence.*
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
 data class Lecture(
-        @Id
-        @SequenceGenerator(name = "lecture_id_seq", allocationSize = 1)
-        @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lecture_id_seq")
-        val id: Long? = null,
+    @Id
+    @SequenceGenerator(name = "lecture_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lecture_id_seq")
+    val id: Long? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "chapter_id", nullable = false)
-        val chapter: Chapter,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chapter_id", nullable = false)
+    val chapter: Chapter,
 
-        @Column(nullable = false)
-        var name: String,
+    @Column(nullable = false)
+    var name: String,
 
-        @Column(nullable = false)
-        var lectureOrder: Int,
+    @Column(nullable = false)
+    var lectureOrder: Int,
 
-        @Column(nullable = true, columnDefinition = "TEXT")
-        var content: String? = null,
+    @Column(nullable = true, columnDefinition = "TEXT")
+    var content: String? = null,
 
-        @Column(nullable = true, columnDefinition = "TEXT")
-        var videoUrl: String? = null,
+    @Column(nullable = true, columnDefinition = "TEXT")
+    var videoUrl: String? = null,
 
-        @Column(nullable = false, columnDefinition = "integer default 0")
-        var videoDurationSeconds: Int,
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    var videoDurationSeconds: Int,
 
-        @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        val createdAt: OffsetDateTime,
+    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    val createdAt: OffsetDateTime,
 
-        @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-        var updatedAt: OffsetDateTime
+    @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
+    var updatedAt: OffsetDateTime
 ) {
-    constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String?, videoUrl: String?, videoDurationSeconds: Int)
-            : this(null, chapter, name, lectureOrder, content, videoUrl, videoDurationSeconds, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String?, videoUrl: String?, videoDurationSeconds: Int) :
+        this(null, chapter, name, lectureOrder, content, videoUrl, videoDurationSeconds, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()
@@ -46,20 +46,20 @@ data class Lecture(
 }
 
 private data class LectureEssential(
-        val name: String,
-        val lectureOrder: Int,
-        val content: String?,
-        val videoUrl: String?,
-        val createdAt: OffsetDateTime,
-        val updatedAt: OffsetDateTime
+    val name: String,
+    val lectureOrder: Int,
+    val content: String?,
+    val videoUrl: String?,
+    val createdAt: OffsetDateTime,
+    val updatedAt: OffsetDateTime
 
 ) {
     constructor(lecture: Lecture) : this(
-            name = lecture.name,
-            lectureOrder = lecture.lectureOrder,
-            content = lecture.content,
-            videoUrl = lecture.videoUrl,
-            createdAt = lecture.createdAt,
-            updatedAt = lecture.updatedAt
+        name = lecture.name,
+        lectureOrder = lecture.lectureOrder,
+        content = lecture.content,
+        videoUrl = lecture.videoUrl,
+        createdAt = lecture.createdAt,
+        updatedAt = lecture.updatedAt
     )
 }

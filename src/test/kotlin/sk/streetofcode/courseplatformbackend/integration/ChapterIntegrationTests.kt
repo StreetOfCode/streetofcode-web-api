@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.matchers.shouldBe
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
@@ -40,7 +39,7 @@ class ChapterIntegrationTests : IntegrationTests() {
             val chapter = addChapter(ChapterAddRequest(1, "testName", 1))
 
             val editedChapter = editChapter(
-                    chapter.id, ChapterEditRequest(chapter.id, "testNameEdited", 1)
+                chapter.id, ChapterEditRequest(chapter.id, "testNameEdited", 1)
             )
 
             val fetchedChapter = getChapter(editedChapter.id)
@@ -58,7 +57,6 @@ class ChapterIntegrationTests : IntegrationTests() {
             getChapterNotFound(chapter.id)
         }
     }
-
 
     private fun getChapters(): ResponseEntity<List<ChapterDto>> {
         return restWithAdminRole().getForEntity("/chapter")

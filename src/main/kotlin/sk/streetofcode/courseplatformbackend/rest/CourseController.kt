@@ -25,8 +25,8 @@ class CourseController(val courseService: CourseService, val authenticationServi
 
         val httpHeaders = HttpHeaders()
         httpHeaders.add(
-                "Content-Range",
-                "course 0-${courses.size}/${courses.size}"
+            "Content-Range",
+            "course 0-${courses.size}/${courses.size}"
         )
 
         return ResponseEntity.ok().headers(httpHeaders).body(courses)
