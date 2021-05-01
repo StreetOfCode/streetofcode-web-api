@@ -76,8 +76,10 @@ class LectureIntegrationTests : IntegrationTests() {
         "delete lecture" {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
 
+            // todo test na lecturesCount
+
             val removedLecture = deleteLecture(lecture.id)
-            removedLecture.shouldBe(lecture)
+            removedLecture shouldBe lecture
 
             getLectureNotFound(lecture.id)
         }

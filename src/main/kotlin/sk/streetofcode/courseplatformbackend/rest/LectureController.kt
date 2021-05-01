@@ -11,6 +11,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
+import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAuthenticated
 import java.util.*
 
 @RestController
@@ -46,7 +47,7 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @GetMapping("{id}")
-    @IsAdmin
+    @IsAuthenticated
     fun get(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.get(id))
     }

@@ -5,6 +5,7 @@ import java.time.OffsetDateTime
 data class LectureDto(
     val id: Long,
     val chapter: LectureChapterDto,
+    val course: LectureCourseDto,
     val name: String,
     val lectureOrder: Int,
     val content: String? = null,
@@ -17,4 +18,9 @@ data class LectureDto(
 data class LectureChapterDto(
     val id: Long,
     val name: String
+)
+
+data class LectureCourseDto(
+    val id: Long,
+    val lecturesCount: Int
 )

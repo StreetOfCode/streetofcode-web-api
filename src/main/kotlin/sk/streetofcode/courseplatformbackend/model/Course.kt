@@ -48,11 +48,13 @@ data class Course(
     val createdAt: OffsetDateTime,
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    var updatedAt: OffsetDateTime
+    var updatedAt: OffsetDateTime,
 
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    var lecturesCount: Int
 ) {
     constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, imageUrl: String?, status: CourseStatus) :
-        this(null, author, difficulty, name, shortDescription, longDescription, imageUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
+        this(null, author, difficulty, name, shortDescription, longDescription, imageUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()

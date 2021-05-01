@@ -6,6 +6,7 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import sk.streetofcode.courseplatformbackend.model.Course
 import java.time.OffsetDateTime
+import javax.transaction.Transactional
 
 @Repository
 interface CourseRepository : CrudRepository<Course, Long> {
@@ -17,4 +18,9 @@ interface CourseRepository : CrudRepository<Course, Long> {
     @Modifying
     @Query("update Course c set updated_at = ?1, author_id = null where author_id = ?2")
     fun setAuthorsToNull(updatedAt: OffsetDateTime = OffsetDateTime.now(), authorId: Long)
+
+    @Modifying
+    @Transactional
+    @Query("update Course c set lectures_count = lectures_count + (?1) where id = ?2")
+    fun updateLecturesCount(delta: Int, courseId: Long)
 }

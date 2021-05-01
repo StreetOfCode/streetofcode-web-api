@@ -11,12 +11,19 @@ import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
 import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
+import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.Lecture
 import java.time.OffsetDateTime
 
 @Service
-class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRepository: ChapterRepository, val mapper: LectureMapper, val youtubeApiClient: YoutubeApiClient) : LectureService {
+class LectureServiceImpl(
+    val lectureRepository: LectureRepository,
+    val chapterRepository: ChapterRepository,
+    val courseRepository: CourseRepository,
+    val mapper: LectureMapper,
+    val youtubeApiClient: YoutubeApiClient
+) : LectureService {
 
     override fun get(id: Long): LectureDto {
 
@@ -40,7 +47,20 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
             throw ResourceNotFoundException("Chapter with id ${addRequest.chapterId} was not found")
         }
         try {
-            return mapper.toLectureDto(lectureRepository.save(Lecture(chapter.get(), addRequest.name, addRequest.lectureOrder, addRequest.content, addRequest.videoUrl, youtubeApiClient.getVideoDurationInSeconds(addRequest.videoUrl))))
+            val updatedChapter = chapter.get()
+            updatedChapter.course.lecturesCount += 1
+            return mapper.toLectureDto(
+                lectureRepository.save(
+                    Lecture(
+                        updatedChapter,
+                        addRequest.name,
+                        addRequest.lectureOrder,
+                        addRequest.content,
+                        addRequest.videoUrl,
+                        youtubeApiClient.getVideoDurationInSeconds(addRequest.videoUrl)
+                    )
+                )
+            )
         } catch (e: Exception) {
             if (e is InternalErrorException) {
                 throw e
@@ -74,6 +94,7 @@ class LectureServiceImpl(val lectureRepository: LectureRepository, val chapterRe
 
         if (lecture.isPresent) {
             lectureRepository.deleteById(id)
+            courseRepository.updateLecturesCount(-1, lecture.get().chapter.course.id!!)
             return mapper.toLectureDto(lecture.get())
         } else {
             throw ResourceNotFoundException("Lecture with id $id was not found")

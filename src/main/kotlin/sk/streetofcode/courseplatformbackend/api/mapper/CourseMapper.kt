@@ -21,7 +21,8 @@ class CourseMapper() {
             course.status,
             course.chapters.map { chapter -> toCourseChapterDto(chapter) }.toSet(),
             course.createdAt.truncatedTo(ChronoUnit.SECONDS),
-            course.updatedAt.truncatedTo(ChronoUnit.SECONDS)
+            course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
+            course.lecturesCount
         )
     }
 

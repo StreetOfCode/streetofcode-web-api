@@ -2,12 +2,17 @@ package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Component
+import sk.streetofcode.courseplatformbackend.api.exception.InvalidAuthenticationException
+import java.util.UUID
 
 @Component
 class AuthenticationService {
     companion object {
         const val ADMIN_GROUP_NAME = "admin"
+        const val USER_GROUP_NAME = "user"
+        private const val SUB_CLAIM_NAME = "sub"
     }
 
     fun isAdmin(): Boolean {
@@ -17,7 +22,25 @@ class AuthenticationService {
         return authorities.contains(ADMIN_GROUP_NAME.toAuthority())
     }
 
+    fun isUser(): Boolean {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val authorities = authentication.authorities
+
+        return authorities.contains(USER_GROUP_NAME.toAuthority())
+    }
+
     private fun String.toAuthority() = SimpleGrantedAuthority(toRole())
 
     private fun String.toRole() = "ROLE_$this"
+
+    fun getUserId(): UUID {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val principal = authentication.credentials as Jwt
+        val claims = principal.claims
+        if (!claims.containsKey(SUB_CLAIM_NAME)) {
+            throw InvalidAuthenticationException("")
+        }
+
+        return UUID.fromString(claims[SUB_CLAIM_NAME] as String)
+    }
 }

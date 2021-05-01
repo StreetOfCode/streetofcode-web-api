@@ -16,7 +16,8 @@ data class CourseDto(
     val status: CourseStatus,
     val chapters: Set<CourseChapterDto>,
     val createdAt: OffsetDateTime,
-    val updatedAt: OffsetDateTime
+    val updatedAt: OffsetDateTime,
+    val lecturesCount: Int
 )
 
 data class CourseChapterDto(
