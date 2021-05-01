@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import sk.streetofcode.courseplatformbackend.api.CourseReviewService
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
@@ -22,7 +23,7 @@ import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import java.time.OffsetDateTime
 
 @Service
-class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepository: ChapterRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper) : CourseService {
+class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepository: ChapterRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper, val courseReviewService: CourseReviewService) : CourseService {
     override fun get(id: Long): CourseDto {
         return mapper.toCourseDto(
             courseRepository.findById(id)
@@ -96,11 +97,11 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepos
     }
 
     override fun getPublicCoursesHomepage(): List<CourseHomepageDto> {
-        return courseRepository.findAll().filter { course -> CourseStatus.PUBLIC == course.status }.map { course -> mapper.toCourseHomepage(course) }.toList()
+        return courseRepository.findAll().filter { course -> CourseStatus.PUBLIC == course.status }.map { course -> mapper.toCourseHomepage(course, courseReviewService.getCourseReviewsOverview(course.id!!)) }.toList()
     }
 
     override fun getAllCoursesHomepage(): List<CourseHomepageDto> {
-        return courseRepository.findAll().map { course -> mapper.toCourseHomepage(course) }.toList()
+        return courseRepository.findAll().map { course -> mapper.toCourseHomepage(course, courseReviewService.getCourseReviewsOverview(course.id!!)) }.toList()
     }
 
     override fun getPublicCourseOverview(id: Long): CourseOverviewDto {
@@ -110,7 +111,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepos
             if (CourseStatus.PUBLIC != course.get().status) {
                 throw AuthorizationException()
             } else {
-                return mapper.toCourseOverview(course.get())
+                return mapper.toCourseOverview(course.get(), courseReviewService.getCourseReviewsOverview(id))
             }
         } else {
             throw ResourceNotFoundException("Course with id $id not found")
@@ -121,7 +122,7 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepos
 
         val course = courseRepository.findById(id)
         if (course.isPresent) {
-            return mapper.toCourseOverview(course.get())
+            return mapper.toCourseOverview(course.get(), courseReviewService.getCourseReviewsOverview(id))
         } else {
             throw ResourceNotFoundException("Course with id $id not found")
         }

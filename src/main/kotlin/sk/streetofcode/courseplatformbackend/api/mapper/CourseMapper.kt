@@ -26,18 +26,19 @@ class CourseMapper() {
         )
     }
 
-    fun toCourseHomepage(course: Course): CourseHomepageDto {
+    fun toCourseHomepage(course: Course, courseReviewsOverview: CourseReviewsOverviewDto): CourseHomepageDto {
         return CourseHomepageDto(
             course.id!!,
             course.name,
             course.shortDescription,
             course.author,
             course.difficulty,
-            course.imageUrl
+            course.imageUrl,
+            courseReviewsOverview
         )
     }
 
-    fun toCourseOverview(course: Course): CourseOverviewDto {
+    fun toCourseOverview(course: Course, courseReviewsOverview: CourseReviewsOverviewDto): CourseOverviewDto {
 
         val chapters = course.chapters.map { chapter ->
             ChapterOverviewDto(
@@ -66,7 +67,8 @@ class CourseMapper() {
             course.createdAt.truncatedTo(ChronoUnit.SECONDS),
             course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
             chapters,
-            courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes }
+            courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes },
+            reviewsOverview = courseReviewsOverview
         )
     }
 

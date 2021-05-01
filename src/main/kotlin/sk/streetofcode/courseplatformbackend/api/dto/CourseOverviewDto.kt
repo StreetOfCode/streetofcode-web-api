@@ -17,7 +17,8 @@ data class CourseOverviewDto(
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime,
     val chapters: Set<ChapterOverviewDto>,
-    val courseDurationMinutes: Int
+    val courseDurationMinutes: Int,
+    val reviewsOverview: CourseReviewsOverviewDto
 )
 
 data class ChapterOverviewDto(

@@ -35,6 +35,12 @@ INSERT INTO lecture (id, chapter_id, name, content, video_url, video_duration_se
 (lecture_id_seq.nextval, 4, 'Part 1', 'Mega kontent', null, 5000, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
 (lecture_id_seq.nextval, 4, 'Part 2', 'Mega kontent druhy', null, 5000, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
+INSERT INTO course_review (id, user_id, course_id, rating, text, user_name, created_at, updated_at) VALUES
+(course_review_id_seq.nextval, 'bb9e0186-aaae-11eb-bcbc-0242ac130002', 1, 5, 'Mega kurz', 'Gabko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+(course_review_id_seq.nextval, 'c2c73db0-aaae-11eb-bcbc-0242ac130002', 1, 0, 'Na nic kurz', 'Kubko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+
+(course_review_id_seq.nextval, 'bb9e0186-aaae-11eb-bcbc-0242ac130002', 2, 3, 'Priemerny kurz', 'Kubko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+(course_review_id_seq.nextval, 'c2c73db0-aaae-11eb-bcbc-0242ac130002', 2, 1, 'Nie najhorsie, ale dalo by sa aj lepsie', 'Gabko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
 UPDATE course set lectures_count = 5 where id = 1;
 UPDATE course set lectures_count = 5 where id = 2;
