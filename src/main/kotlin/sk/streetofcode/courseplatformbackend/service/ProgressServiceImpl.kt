@@ -53,7 +53,7 @@ class ProgressServiceImpl(
             maybeFinishCourse(progressMetadata, courseLecturesCount)
             progressMetadataRepository.save(progressMetadata)
         } else {
-            progressMetadataRepository.save(UserProgressMetadata(userId, courseId))
+            progressMetadataRepository.save(UserProgressMetadata(userId, courseId, 1))
         }
     }
 

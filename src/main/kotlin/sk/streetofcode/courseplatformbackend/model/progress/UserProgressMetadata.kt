@@ -42,8 +42,8 @@ data class UserProgressMetadata(
     @Column(nullable = true, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var finishedAt: OffsetDateTime? = null
 ) {
-    constructor(userId: UUID, courseId: Long) :
-        this(null, userId, courseId, 0, ProgressStatus.IN_PROGRESS, OffsetDateTime.now(), OffsetDateTime.now(), null)
+    constructor(userId: UUID, courseId: Long, lecturesViewed: Int) :
+        this(null, userId, courseId, lecturesViewed, ProgressStatus.IN_PROGRESS, OffsetDateTime.now(), OffsetDateTime.now(), null)
 
     override fun equals(other: Any?) =
         other is UserProgressMetadata && UserProgressMetadataEssential(this) == UserProgressMetadataEssential(other)

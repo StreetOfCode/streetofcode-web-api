@@ -2,7 +2,15 @@ package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
@@ -37,8 +45,25 @@ data class Lecture(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(chapter: Chapter, name: String, lectureOrder: Int, content: String?, videoUrl: String?, videoDurationSeconds: Int) :
-        this(null, chapter, name, lectureOrder, content, videoUrl, videoDurationSeconds, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(
+        chapter: Chapter,
+        name: String,
+        lectureOrder: Int,
+        content: String?,
+        videoUrl: String?,
+        videoDurationSeconds: Int
+    ) :
+        this(
+            null,
+            chapter,
+            name,
+            lectureOrder,
+            content,
+            videoUrl,
+            videoDurationSeconds,
+            OffsetDateTime.now(),
+            OffsetDateTime.now()
+        )
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()

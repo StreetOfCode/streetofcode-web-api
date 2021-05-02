@@ -44,3 +44,7 @@ INSERT INTO course_review (id, user_id, course_id, rating, text, user_name, crea
 
 UPDATE course set lectures_count = 5 where id = 1;
 UPDATE course set lectures_count = 5 where id = 2;
+
+INSERT INTO lecture_comment(id, user_id, lecture_id, user_name, comment_text, created_at, updated_at) VALUES
+(lecture_comment_id_seq.nextval, 'e6bff8b2-7376-4e19-a1e7-c29f1f185faf', 1, 'jozko', 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_comment_id_seq.nextval, '93c6d283-8d2d-495b-b08f-9a18831d1f5e', 1, 'janka', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
