@@ -9,6 +9,7 @@ class CourseReviewMapper {
     fun toCourseReviewDto(courseReview: CourseReview): CourseReviewDto {
         return CourseReviewDto(
             id = courseReview.id!!,
+            userId = courseReview.userId,
             courseId = courseReview.courseId,
             rating = courseReview.rating,
             text = courseReview.text,

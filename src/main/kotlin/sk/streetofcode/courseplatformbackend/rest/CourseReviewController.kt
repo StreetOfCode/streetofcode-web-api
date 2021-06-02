@@ -15,13 +15,19 @@ import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 @RequestMapping("course-review")
 class CourseReviewController(private val courseReviewService: CourseReviewService, private val authenticationService: AuthenticationService) {
     @GetMapping("/course/{courseId}")
-    fun get(@PathVariable("courseId") courseId: Long): ResponseEntity<List<CourseReviewDto>> {
+    fun getCourseReviews(@PathVariable("courseId") courseId: Long): ResponseEntity<List<CourseReviewDto>> {
         return ResponseEntity.ok(courseReviewService.getCourseReviews(courseId))
     }
 
     @GetMapping("/course/{courseId}/overview")
     fun getOverview(@PathVariable("courseId") courseId: Long): ResponseEntity<CourseReviewsOverviewDto> {
         return ResponseEntity.ok(courseReviewService.getCourseReviewsOverview(courseId))
+    }
+
+    @GetMapping("/{id}")
+    @IsAuthenticated
+    fun get(@PathVariable("id") id: Long): ResponseEntity<CourseReviewDto> {
+        return ResponseEntity.ok(courseReviewService.get(id))
     }
 
     @PostMapping
