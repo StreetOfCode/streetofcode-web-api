@@ -6,14 +6,21 @@ import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
 
 @Component
 class ProgressMapper {
-    fun toUserProgressMetadataDto(userProgressMetadata: UserProgressMetadata, courseLecturesCount: Int): UserProgressMetadataDto {
+    fun toUserProgressMetadataDto(
+        userProgressMetadata: UserProgressMetadata,
+        courseLecturesCount: Int,
+        nextChapterId: Long?,
+        nextLectureId: Long?
+    ): UserProgressMetadataDto {
         return UserProgressMetadataDto(
             lecturesViewed = userProgressMetadata.lecturesViewed,
             courseLecturesCount = courseLecturesCount,
             status = userProgressMetadata.status,
             startedAt = userProgressMetadata.startedAt,
             lastUpdatedAt = userProgressMetadata.lastUpdatedAt,
-            finishedAt = userProgressMetadata.finishedAt
+            finishedAt = userProgressMetadata.finishedAt,
+            nextChapterId = nextChapterId,
+            nextLectureId = nextLectureId
         )
     }
 }

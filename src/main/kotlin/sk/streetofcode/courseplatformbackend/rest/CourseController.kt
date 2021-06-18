@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
@@ -68,9 +69,20 @@ class CourseController(val courseService: CourseService, val authenticationServi
     @GetMapping("/overview/{id}")
     fun getCourseOverview(@PathVariable("id") id: Long): ResponseEntity<CourseOverviewDto> {
         return if (authenticationService.isAdmin()) {
-            ResponseEntity.ok(courseService.getAnyCourseOverview(id))
+            ResponseEntity.ok(courseService.getAnyCourseOverview(authenticationService.getUserId(), id))
+        } else if (authenticationService.isAuthenticated()) {
+            ResponseEntity.ok(courseService.getPublicCourseOverview(authenticationService.getUserId(), id))
         } else {
-            ResponseEntity.ok(courseService.getPublicCourseOverview(id))
+            ResponseEntity.ok(courseService.getPublicCourseOverview(null, id))
+        }
+    }
+
+    @GetMapping("/my-courses")
+    fun getMyCourses(): ResponseEntity<List<CourseMyDto>> {
+        return if (!authenticationService.isAuthenticated()) {
+            ResponseEntity.ok(listOf())
+        } else {
+            ResponseEntity.ok(courseService.getMyCourses(authenticationService.getUserId()))
         }
     }
 }

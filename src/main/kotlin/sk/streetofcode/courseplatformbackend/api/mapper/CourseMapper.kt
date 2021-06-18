@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.api.mapper
 
 import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.dto.*
+import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.model.Chapter
 import sk.streetofcode.courseplatformbackend.model.Course
 import java.time.temporal.ChronoUnit
@@ -38,7 +39,28 @@ class CourseMapper() {
         )
     }
 
-    fun toCourseOverview(course: Course, courseReviewsOverview: CourseReviewsOverviewDto): CourseOverviewDto {
+    fun toCourseMy(
+        course: Course,
+        courseReviewsOverview: CourseReviewsOverviewDto,
+        userProgressMetadata: UserProgressMetadataDto
+    ): CourseMyDto {
+        return CourseMyDto(
+            course.id!!,
+            course.name,
+            course.shortDescription,
+            course.author,
+            course.difficulty,
+            course.imageUrl,
+            courseReviewsOverview,
+            userProgressMetadata
+        )
+    }
+
+    fun toCourseOverview(
+        course: Course,
+        courseReviewsOverview: CourseReviewsOverviewDto,
+        userProgressMetadata: UserProgressMetadataDto?
+    ): CourseOverviewDto {
 
         val chapters = course.chapters.map { chapter ->
             ChapterOverviewDto(
@@ -68,7 +90,8 @@ class CourseMapper() {
             course.updatedAt.truncatedTo(ChronoUnit.SECONDS),
             chapters,
             courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes },
-            reviewsOverview = courseReviewsOverview
+            reviewsOverview = courseReviewsOverview,
+            userProgressMetadata = userProgressMetadata
         )
     }
 

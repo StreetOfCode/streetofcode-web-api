@@ -9,5 +9,7 @@ data class UserProgressMetadataDto(
     val status: ProgressStatus,
     val startedAt: OffsetDateTime,
     val lastUpdatedAt: OffsetDateTime,
-    val finishedAt: OffsetDateTime?
+    val finishedAt: OffsetDateTime?,
+    val nextChapterId: Long?,
+    val nextLectureId: Long?
 )

@@ -10,4 +10,6 @@ interface ProgressService {
     fun resetProgress(userId: UUID, resetProgressDto: ResetProgressDto)
     fun getProgressOverview(userId: UUID, courseId: Long): CourseProgressOverviewDto
     fun getUserProgressMetadata(userId: UUID, courseId: Long): UserProgressMetadataDto
+    fun getUserProgressMetadataOrNull(userId: UUID, courseId: Long): UserProgressMetadataDto?
+    fun getStartedCourseIds(userId: UUID): List<Long>
 }

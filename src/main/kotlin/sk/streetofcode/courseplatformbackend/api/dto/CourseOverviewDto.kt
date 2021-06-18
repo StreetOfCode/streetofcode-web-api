@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.api.dto
 
+import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.model.Author
 import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import sk.streetofcode.courseplatformbackend.model.Difficulty
@@ -18,7 +19,8 @@ data class CourseOverviewDto(
     val updatedAt: OffsetDateTime,
     val chapters: Set<ChapterOverviewDto>,
     val courseDurationMinutes: Int,
-    val reviewsOverview: CourseReviewsOverviewDto
+    val reviewsOverview: CourseReviewsOverviewDto,
+    val userProgressMetadata: UserProgressMetadataDto?
 )
 
 data class ChapterOverviewDto(

@@ -2,9 +2,11 @@ package sk.streetofcode.courseplatformbackend.api
 
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
+import java.util.*
 
 interface CourseService {
     fun get(id: Long): CourseDto
@@ -14,6 +16,7 @@ interface CourseService {
     fun delete(id: Long): CourseDto
     fun getPublicCoursesHomepage(): List<CourseHomepageDto>
     fun getAllCoursesHomepage(): List<CourseHomepageDto>
-    fun getPublicCourseOverview(id: Long): CourseOverviewDto
-    fun getAnyCourseOverview(id: Long): CourseOverviewDto
+    fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto
+    fun getAnyCourseOverview(userId: UUID?, id: Long): CourseOverviewDto
+    fun getMyCourses(userId: UUID): List<CourseMyDto>
 }

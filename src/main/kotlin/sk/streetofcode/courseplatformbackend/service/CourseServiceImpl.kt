@@ -1,11 +1,13 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.CourseReviewService
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
@@ -21,9 +23,21 @@ import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Course
 import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import java.time.OffsetDateTime
+import java.util.*
 
 @Service
-class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepository: ChapterRepository, val authorRepository: AuthorRepository, val difficultyRepository: DifficultyRepository, val chapterServiceImpl: ChapterServiceImpl, val mapper: CourseMapper, val courseReviewService: CourseReviewService) : CourseService {
+class CourseServiceImpl(
+    val courseRepository: CourseRepository,
+    val chapterRepository: ChapterRepository,
+    val authorRepository: AuthorRepository,
+    val difficultyRepository: DifficultyRepository,
+    val chapterServiceImpl: ChapterServiceImpl,
+    val mapper: CourseMapper,
+    val courseReviewService: CourseReviewService,
+    // Use Lazy to prevent circular dependency error
+    @Lazy
+    val progressService: ProgressServiceImpl
+) : CourseService {
     override fun get(id: Long): CourseDto {
         return mapper.toCourseDto(
             courseRepository.findById(id)
@@ -104,27 +118,46 @@ class CourseServiceImpl(val courseRepository: CourseRepository, val chapterRepos
         return courseRepository.findAll().map { course -> mapper.toCourseHomepage(course, courseReviewService.getCourseReviewsOverview(course.id!!)) }.toList()
     }
 
-    override fun getPublicCourseOverview(id: Long): CourseOverviewDto {
+    override fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
 
         val course = courseRepository.findById(id)
         if (course.isPresent) {
             if (CourseStatus.PUBLIC != course.get().status) {
                 throw AuthorizationException()
             } else {
-                return mapper.toCourseOverview(course.get(), courseReviewService.getCourseReviewsOverview(id))
+                val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, id)
+                return mapper
+                    .toCourseOverview(
+                        course.get(),
+                        courseReviewService.getCourseReviewsOverview(id),
+                        progress
+                    )
             }
         } else {
             throw ResourceNotFoundException("Course with id $id not found")
         }
     }
 
-    override fun getAnyCourseOverview(id: Long): CourseOverviewDto {
+    override fun getAnyCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
 
         val course = courseRepository.findById(id)
         if (course.isPresent) {
-            return mapper.toCourseOverview(course.get(), courseReviewService.getCourseReviewsOverview(id))
+            val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, id)
+            return mapper.toCourseOverview(course.get(), courseReviewService.getCourseReviewsOverview(id), progress)
         } else {
             throw ResourceNotFoundException("Course with id $id not found")
         }
+    }
+
+    override fun getMyCourses(userId: UUID): List<CourseMyDto> {
+        val myCourseIds = progressService.getStartedCourseIds(userId)
+        return myCourseIds
+            .map { courseId ->
+                mapper.toCourseMy(
+                    courseRepository.findById(courseId).get(),
+                    courseReviewService.getCourseReviewsOverview(courseId),
+                    progressService.getUserProgressMetadata(userId, courseId)
+                )
+            }
     }
 }

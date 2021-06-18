@@ -5,6 +5,7 @@ import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.LectureService
 import sk.streetofcode.courseplatformbackend.api.ProgressService
+import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.ChapterProgressOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.CourseProgressOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.LectureProgressOverviewDto
@@ -16,6 +17,7 @@ import sk.streetofcode.courseplatformbackend.api.request.ResetProgressDto
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.progress.ProgressLectureRepository
 import sk.streetofcode.courseplatformbackend.db.repository.progress.UserProgressMetadataRepository
+import sk.streetofcode.courseplatformbackend.model.Course
 import sk.streetofcode.courseplatformbackend.model.progress.ProgressLecture
 import sk.streetofcode.courseplatformbackend.model.progress.ProgressStatus
 import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
@@ -104,13 +106,30 @@ class ProgressServiceImpl(
     }
 
     override fun getUserProgressMetadata(userId: UUID, courseId: Long): UserProgressMetadataDto {
-        val metadata = progressMetadataRepository.findByUserIdAndCourseId(
-            userId,
-            courseId
-        )
+        val metadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
             .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
         val courseLecturesCount = courseService.get(courseId).lecturesCount
-        return progressMapper.toUserProgressMetadataDto(metadata, courseLecturesCount)
+
+        val course = courseRepository.findById(courseId)
+            .orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
+
+        val firstUnseenLecture = getFirstUnseenLecture(userId, course)
+
+        return progressMapper.toUserProgressMetadataDto(metadata, courseLecturesCount, firstUnseenLecture?.chapter?.id, firstUnseenLecture?.id)
+    }
+
+    override fun getUserProgressMetadataOrNull(userId: UUID, courseId: Long): UserProgressMetadataDto? {
+        return try {
+            getUserProgressMetadata(userId, courseId)
+        } catch (e: ResourceNotFoundException) {
+            null
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+
+    override fun getStartedCourseIds(userId: UUID): List<Long> {
+        return progressMetadataRepository.getStartedCourseIds(userId)
     }
 
     private fun resetLectureProgress(userId: UUID, lectureId: Long) {
@@ -178,5 +197,19 @@ class ProgressServiceImpl(
         progressMetadata.lastUpdatedAt = OffsetDateTime.now()
         progressMetadata.lecturesViewed = progressMetadata.lecturesViewed + lecturesViewedDelta
         // todo log error if lecturesViewed is out of boundary (0, courseLecturesCount).. just to be sure
+    }
+
+    private fun getFirstUnseenLecture(userId: UUID, course: Course): LectureDto? {
+        val courseLectureIds = course.chapters
+            .flatMap { chapter -> chapter.lectures.map { lecture -> lecture.id!! } }
+        val seenLectureIds = progressLectureRepository.findAllByUserId(userId)
+            .map { lecture -> lecture.id }
+            .toSet()
+
+        return courseLectureIds
+            .asSequence()
+            .filter { !seenLectureIds.contains(it) }
+            .map { lectureId -> lectureService.get(lectureId) }
+            .firstOrNull()
     }
 }
