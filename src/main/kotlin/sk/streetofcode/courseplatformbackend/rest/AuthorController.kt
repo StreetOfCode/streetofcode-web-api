@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import sk.streetofcode.courseplatformbackend.api.AuthorService
+import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
@@ -33,6 +34,11 @@ class AuthorController(val authorService: AuthorService) {
     @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<Author> {
         return ResponseEntity.ok(authorService.get(id))
+    }
+
+    @GetMapping("{id}/overview")
+    fun getOverview(@PathVariable("id") id: Long): ResponseEntity<AuthorOverviewDto> {
+        return ResponseEntity.ok(authorService.getOverview(id))
     }
 
     @PostMapping
