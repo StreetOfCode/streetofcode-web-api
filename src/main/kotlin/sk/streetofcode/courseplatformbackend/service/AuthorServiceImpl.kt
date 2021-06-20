@@ -8,19 +8,18 @@ import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
-import sk.streetofcode.courseplatformbackend.api.mapper.AuthorMapper
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.model.Author
 import sk.streetofcode.courseplatformbackend.model.CourseStatus
+import sk.streetofcode.courseplatformbackend.model.toAuthorOverview
 
 @Service
 class AuthorServiceImpl(
     val authorRepository: AuthorRepository,
     val courseRepository: CourseRepository,
-    val authorMapper: AuthorMapper,
     val courseReviewService: CourseReviewService
 ) : AuthorService {
     override fun get(id: Long): Author {
@@ -35,8 +34,7 @@ class AuthorServiceImpl(
         val coursesToCourseReviewOverview = author.courses.filter { course -> course.status == CourseStatus.PUBLIC }
             .map { course -> Pair(course, courseReviewService.getCourseReviewsOverview(course.id!!)) }
 
-        return authorMapper.toAuthorOverview(
-            author,
+        return author.toAuthorOverview(
             coursesToCourseReviewOverview
         )
     }
@@ -70,17 +68,16 @@ class AuthorServiceImpl(
 
     @Transactional
     override fun delete(id: Long): Author {
-        val author = authorRepository.findById(id)
+        val author = authorRepository
+            .findById(id)
+            .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
 
-        if (author.isPresent) {
-            // Change difficultyId to null in all courses with this difficultyId
-            courseRepository.setAuthorsToNull(authorId = id)
+        // TODO shouldn't this be handled by the DB?
+        // Change difficultyId to null in all courses with this difficultyId
+        courseRepository.setAuthorsToNull(authorId = id)
 
-            authorRepository.deleteById(id)
+        authorRepository.deleteById(id)
 
-            return author.get()
-        } else {
-            throw ResourceNotFoundException("Author with id $id was not found")
-        }
+        return author
     }
 }

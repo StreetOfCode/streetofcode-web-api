@@ -2,6 +2,9 @@ package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import sk.streetofcode.courseplatformbackend.api.dto.AuthorCourseOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import javax.persistence.*
 
 @Entity
@@ -50,5 +53,28 @@ private data class AuthorEssential(
         name = author.name,
         url = author.url,
         description = author.description
+    )
+}
+
+fun Author.toAuthorOverview(courseToCourseReviewOverview: List<Pair<Course, CourseReviewsOverviewDto>>): AuthorOverviewDto {
+    return AuthorOverviewDto(
+        this.id!!,
+        this.name,
+        this.url,
+        this.description,
+        courseToCourseReviewOverview.map { it.toAuthorCourseOverviewDto() }
+    )
+}
+
+fun Pair<Course, CourseReviewsOverviewDto>.toAuthorCourseOverviewDto(): AuthorCourseOverviewDto {
+    val (course, overview) = this
+    return AuthorCourseOverviewDto(
+        course.id!!,
+        course.difficulty,
+        course.name,
+        course.shortDescription,
+        course.longDescription,
+        course.imageUrl,
+        overview
     )
 }

@@ -12,7 +12,6 @@ import sk.streetofcode.courseplatformbackend.api.dto.progress.LectureProgressOve
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
-import sk.streetofcode.courseplatformbackend.api.mapper.ProgressMapper
 import sk.streetofcode.courseplatformbackend.api.request.ResetProgressDto
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.progress.ProgressLectureRepository
@@ -21,12 +20,12 @@ import sk.streetofcode.courseplatformbackend.model.Course
 import sk.streetofcode.courseplatformbackend.model.progress.ProgressLecture
 import sk.streetofcode.courseplatformbackend.model.progress.ProgressStatus
 import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
+import sk.streetofcode.courseplatformbackend.model.progress.toUserProgressMetadataDto
 import java.time.OffsetDateTime
 import java.util.UUID
 
 @Service
 class ProgressServiceImpl(
-    private val progressMapper: ProgressMapper,
     private val progressMetadataRepository: UserProgressMetadataRepository,
     private val progressLectureRepository: ProgressLectureRepository,
     private val lectureService: LectureService,
@@ -115,7 +114,7 @@ class ProgressServiceImpl(
 
         val firstUnseenLecture = getFirstUnseenLecture(userId, course)
 
-        return progressMapper.toUserProgressMetadataDto(metadata, courseLecturesCount, firstUnseenLecture?.chapter?.id, firstUnseenLecture?.id)
+        return metadata.toUserProgressMetadataDto(courseLecturesCount, firstUnseenLecture?.chapter?.id, firstUnseenLecture?.id)
     }
 
     override fun getUserProgressMetadataOrNull(userId: UUID, courseId: Long): UserProgressMetadataDto? {

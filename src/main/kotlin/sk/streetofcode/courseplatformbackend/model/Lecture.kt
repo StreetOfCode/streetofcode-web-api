@@ -1,7 +1,11 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import sk.streetofcode.courseplatformbackend.api.dto.LectureChapterDto
+import sk.streetofcode.courseplatformbackend.api.dto.LectureCourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -86,5 +90,20 @@ private data class LectureEssential(
         videoUrl = lecture.videoUrl,
         createdAt = lecture.createdAt,
         updatedAt = lecture.updatedAt
+    )
+}
+
+fun Lecture.toLectureDto(): LectureDto {
+    return LectureDto(
+        this.id!!,
+        LectureChapterDto(this.chapter.id!!, this.chapter.name),
+        LectureCourseDto(this.chapter.course.id!!, this.chapter.course.lecturesCount),
+        this.name,
+        this.lectureOrder,
+        this.content,
+        this.videoUrl,
+        this.videoDurationSeconds,
+        this.createdAt.truncatedTo(ChronoUnit.SECONDS),
+        this.updatedAt.truncatedTo(ChronoUnit.SECONDS)
     )
 }

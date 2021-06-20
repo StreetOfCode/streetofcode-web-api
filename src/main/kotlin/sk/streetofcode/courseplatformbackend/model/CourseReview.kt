@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.Type
+import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.*
@@ -53,5 +54,16 @@ private data class CourseReviewEssential(
         userId = courseReview.userId,
         courseId = courseReview.courseId,
         createdAt = courseReview.createdAt
+    )
+}
+
+fun CourseReview.toCourseReviewDto(): CourseReviewDto {
+    return CourseReviewDto(
+        id = this.id!!,
+        userId = this.userId,
+        courseId = this.courseId,
+        rating = this.rating,
+        text = this.text,
+        userName = this.userName
     )
 }

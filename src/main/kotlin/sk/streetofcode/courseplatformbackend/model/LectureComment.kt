@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.Type
+import sk.streetofcode.courseplatformbackend.api.dto.LectureCommentDto
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Column
@@ -68,5 +69,15 @@ private data class LectureCommentEssential(
         lectureId = lectureComment.lecture.id!!,
         createdAt = lectureComment.createdAt,
         updatedAt = lectureComment.updatedAt
+    )
+}
+
+fun LectureComment.toLectureCommentDto(): LectureCommentDto {
+    return LectureCommentDto(
+        id = this.id!!,
+        userId = this.userId,
+        userName = this.userName,
+        commentText = this.commentText,
+        updatedAt = this.updatedAt
     )
 }

@@ -1,7 +1,11 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterCourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseChapterDto
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import javax.persistence.*
 
 @Entity
@@ -55,5 +59,24 @@ private data class ChapterEssential(
         chapterOrder = chapter.chapterOrder,
         createdAt = chapter.createdAt,
         updatedAt = chapter.updatedAt
+    )
+}
+
+fun Chapter.toChapterDto(): ChapterDto {
+    return ChapterDto(
+        this.id!!,
+        ChapterCourseDto(this.course.id!!, this.course.name),
+        this.name,
+        this.chapterOrder,
+        this.lectures.map { it.toLectureDto() }.toSet(),
+        this.createdAt.truncatedTo(ChronoUnit.SECONDS),
+        this.updatedAt.truncatedTo(ChronoUnit.SECONDS)
+    )
+}
+
+fun Chapter.toCourseChapterDto(): CourseChapterDto {
+    return CourseChapterDto(
+        this.id!!,
+        this.name
     )
 }

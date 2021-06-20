@@ -7,25 +7,26 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
-import sk.streetofcode.courseplatformbackend.api.mapper.CourseReviewMapper
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseReviewRepository
 import sk.streetofcode.courseplatformbackend.model.CourseReview
+import sk.streetofcode.courseplatformbackend.model.toCourseReviewDto
 import java.time.OffsetDateTime
 
 @Service
 class CourseReviewServiceImpl(
-    private val mapper: CourseReviewMapper,
     private val courseReviewRepository: CourseReviewRepository,
     private val courseRepository: CourseRepository,
     private val authenticationService: AuthenticationService
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
-        courseRepository.findById(courseId).orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
+        courseRepository
+            .findById(courseId)
+            .orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
 
-        return courseReviewRepository.findByCourseId(courseId).map { mapper.toCourseReviewDto(it) }
+        return courseReviewRepository.findByCourseId(courseId).map { it.toCourseReviewDto() }
     }
 
     override fun getCourseReviewsOverview(courseId: Long): CourseReviewsOverviewDto {
@@ -36,7 +37,10 @@ class CourseReviewServiceImpl(
     }
 
     override fun get(id: Long): CourseReviewDto {
-        return mapper.toCourseReviewDto(courseReviewRepository.findById(id).orElseThrow { ResourceNotFoundException("Course review with id $id was not found") })
+        return courseReviewRepository
+            .findById(id)
+            .orElseThrow { ResourceNotFoundException("Course review with id $id was not found") }
+            .toCourseReviewDto()
     }
 
     override fun add(addRequest: CourseReviewAddRequest): CourseReviewDto {
@@ -50,11 +54,9 @@ class CourseReviewServiceImpl(
 
         validateRating(addRequest.rating)
 
-        return mapper.toCourseReviewDto(
-            courseReviewRepository.save(
-                CourseReview(userId, addRequest.courseId, addRequest.rating, addRequest.text, addRequest.userName)
-            )
-        )
+        return courseReviewRepository
+            .save(CourseReview(userId, addRequest.courseId, addRequest.rating, addRequest.text, addRequest.userName))
+            .toCourseReviewDto()
     }
 
     override fun edit(id: Long, editRequest: CourseReviewEditRequest): CourseReviewDto {
@@ -68,7 +70,7 @@ class CourseReviewServiceImpl(
         review.userName = editRequest.userName
         review.updatedAt = OffsetDateTime.now()
 
-        return mapper.toCourseReviewDto(courseReviewRepository.save(review))
+        return courseReviewRepository.save(review).toCourseReviewDto()
     }
 
     override fun delete(id: Long): CourseReviewDto {
@@ -77,7 +79,7 @@ class CourseReviewServiceImpl(
         validateUserAuthorization(review)
 
         courseReviewRepository.deleteById(id)
-        return mapper.toCourseReviewDto(review)
+        return review.toCourseReviewDto()
     }
 
     private fun validateRating(rating: Int) {

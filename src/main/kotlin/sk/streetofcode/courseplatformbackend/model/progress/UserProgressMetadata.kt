@@ -1,6 +1,7 @@
 package sk.streetofcode.courseplatformbackend.model.progress
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import java.time.OffsetDateTime
 import java.util.UUID
 import javax.persistence.Column
@@ -75,5 +76,22 @@ private data class UserProgressMetadataEssential(
         startedAt = userProgressMetadata.startedAt,
         lastUpdatedAt = userProgressMetadata.lastUpdatedAt,
         finishedAt = userProgressMetadata.finishedAt
+    )
+}
+
+fun UserProgressMetadata.toUserProgressMetadataDto(
+    courseLecturesCount: Int,
+    nextChapterId: Long?,
+    nextLectureId: Long?
+): UserProgressMetadataDto {
+    return UserProgressMetadataDto(
+        lecturesViewed = this.lecturesViewed,
+        courseLecturesCount = courseLecturesCount,
+        status = this.status,
+        startedAt = this.startedAt,
+        lastUpdatedAt = this.lastUpdatedAt,
+        finishedAt = this.finishedAt,
+        nextChapterId = nextChapterId,
+        nextLectureId = nextLectureId
     )
 }

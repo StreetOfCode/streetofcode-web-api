@@ -7,12 +7,12 @@ import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationExceptio
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
-import sk.streetofcode.courseplatformbackend.api.mapper.LectureMapper
 import sk.streetofcode.courseplatformbackend.api.request.LectureCommentAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureCommentEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.LectureCommentRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.LectureComment
+import sk.streetofcode.courseplatformbackend.model.toLectureCommentDto
 import java.lang.Exception
 import java.time.OffsetDateTime
 import java.util.UUID
@@ -21,23 +21,20 @@ import java.util.UUID
 class LectureCommentServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureCommentRepository: LectureCommentRepository,
-    private val authenticationService: AuthenticationService,
-    private val mapper: LectureMapper
+    private val authenticationService: AuthenticationService
 ) : LectureCommentService {
 
     override fun getAll(lectureId: Long): List<LectureCommentDto> {
-        return lectureCommentRepository.findAllByLectureId(lectureId).map { lecture -> mapper.toLectureCommentDto(lecture) }
+        return lectureCommentRepository.findAllByLectureId(lectureId).map { it.toLectureCommentDto() }
     }
 
     override fun add(userId: UUID, lectureId: Long, addRequest: LectureCommentAddRequest): LectureCommentDto {
         val lecture = lectureRepository.findById(lectureId).orElseThrow { ResourceNotFoundException("Lecture with id $lectureId was not found") }
 
         try {
-            return mapper.toLectureCommentDto(
-                lectureCommentRepository.save(
-                    LectureComment(userId, lecture, addRequest.userName, addRequest.commentText)
-                )
-            )
+            return lectureCommentRepository
+                .save(LectureComment(userId, lecture, addRequest.userName, addRequest.commentText))
+                .toLectureCommentDto()
         } catch (e: Exception) {
             throw InternalErrorException("Could not save lecture comment")
         }
@@ -61,7 +58,7 @@ class LectureCommentServiceImpl(
             comment.commentText = editRequest.commentText
             comment.updatedAt = OffsetDateTime.now()
 
-            return mapper.toLectureCommentDto(lectureCommentRepository.save(comment))
+            return lectureCommentRepository.save(comment).toLectureCommentDto()
         } catch (e: Exception) {
             throw InternalErrorException("Could not edit lecture comment")
         }

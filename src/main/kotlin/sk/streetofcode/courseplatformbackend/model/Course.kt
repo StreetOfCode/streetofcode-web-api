@@ -1,7 +1,11 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import sk.streetofcode.courseplatformbackend.api.dto.*
+import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
 import javax.persistence.*
 
 @Entity
@@ -84,5 +88,88 @@ private data class CourseEssential(
         longDescription = course.longDescription,
         createdAt = course.createdAt,
         updatedAt = course.updatedAt
+    )
+}
+
+fun Course.toCourseDto(): CourseDto {
+    return CourseDto(
+        this.id!!,
+        this.author,
+        this.difficulty,
+        this.name,
+        this.shortDescription,
+        this.longDescription,
+        this.imageUrl,
+        this.status,
+        this.chapters.map { it.toCourseChapterDto() }.toSet(),
+        this.createdAt.truncatedTo(ChronoUnit.SECONDS),
+        this.updatedAt.truncatedTo(ChronoUnit.SECONDS),
+        this.lecturesCount
+    )
+}
+
+fun Course.toCourseHomepage(courseReviewsOverview: CourseReviewsOverviewDto): CourseHomepageDto {
+    return CourseHomepageDto(
+        this.id!!,
+        this.name,
+        this.shortDescription,
+        this.author,
+        this.difficulty,
+        this.imageUrl,
+        courseReviewsOverview
+    )
+}
+
+fun Course.toCourseMy(
+    courseReviewsOverview: CourseReviewsOverviewDto,
+    userProgressMetadata: UserProgressMetadataDto
+): CourseMyDto {
+    return CourseMyDto(
+        this.id!!,
+        this.name,
+        this.shortDescription,
+        this.author,
+        this.difficulty,
+        this.imageUrl,
+        courseReviewsOverview,
+        userProgressMetadata
+    )
+}
+
+fun Course.toCourseOverview(
+    courseReviewsOverview: CourseReviewsOverviewDto,
+    userProgressMetadata: UserProgressMetadataDto?
+): CourseOverviewDto {
+
+    val chapters = this.chapters.map { chapter ->
+        ChapterOverviewDto(
+            chapter.id!!,
+            chapter.name,
+            chapter.lectures.map { lecture ->
+                LectureOverviewDto(
+                    lecture.id!!,
+                    lecture.name,
+                    lecture.videoDurationSeconds
+                )
+            },
+            chapterDurationMinutes = chapter.lectures.sumBy { lecture -> TimeUnit.SECONDS.toMinutes(lecture.videoDurationSeconds.toLong()).toInt() }
+        )
+    }.toSet()
+
+    return CourseOverviewDto(
+        this.id!!,
+        this.name,
+        this.shortDescription,
+        this.longDescription,
+        this.imageUrl,
+        this.status,
+        this.author,
+        this.difficulty,
+        this.createdAt.truncatedTo(ChronoUnit.SECONDS),
+        this.updatedAt.truncatedTo(ChronoUnit.SECONDS),
+        chapters,
+        courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes },
+        reviewsOverview = courseReviewsOverview,
+        userProgressMetadata = userProgressMetadata
     )
 }
