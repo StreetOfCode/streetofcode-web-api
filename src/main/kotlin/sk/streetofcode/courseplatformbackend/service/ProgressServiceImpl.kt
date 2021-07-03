@@ -135,12 +135,13 @@ class ProgressServiceImpl(
         val lecture = lectureService.get(lectureId)
         val courseId = lecture.course.id
 
+        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
+            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
+
         // remove progress lecture
         progressLectureRepository.deleteByUserIdAndLectureId(userId, lectureId)
 
         // update progress metadata
-        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
-            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
         updateProgressMetadata(progressMetadata, -1)
         maybeResetFinishCourse(progressMetadata)
 
@@ -151,12 +152,14 @@ class ProgressServiceImpl(
         val chapter = chapterService.get(chapterId)
         val courseId = chapter.course.id
         val lectureIds = chapter.lectures.map { lectureDto -> lectureDto.id }
+
+        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
+            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
+
         // remove progress lectures
         progressLectureRepository.deleteByUserIdAndLectureIdIn(userId, lectureIds)
 
         // update progress metadata
-        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
-            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
         updateProgressMetadata(progressMetadata, -lectureIds.size)
         maybeResetFinishCourse(progressMetadata)
         progressMetadataRepository.save(progressMetadata)
@@ -166,12 +169,13 @@ class ProgressServiceImpl(
         val lectureIds = chapterService.getByCourseId(courseId).flatMap { chapterDto -> chapterDto.lectures }
             .map { lectureDto -> lectureDto.id }
 
+        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
+            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
+
         // remove progress lecture
         progressLectureRepository.deleteByUserIdAndLectureIdIn(userId, lectureIds)
 
         // update progress metadata
-        val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
-            .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
         updateProgressMetadata(progressMetadata, -progressMetadata.lecturesViewed) // reset to 0
         maybeResetFinishCourse(progressMetadata)
 
