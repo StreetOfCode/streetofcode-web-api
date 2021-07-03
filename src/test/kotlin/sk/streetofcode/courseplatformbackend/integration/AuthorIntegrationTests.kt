@@ -5,6 +5,7 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.AuthorAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.AuthorEditRequest
@@ -59,6 +60,21 @@ class AuthorIntegrationTests : IntegrationTests() {
 
             getAuthorNotFound(author.id!!)
         }
+
+        "get author overview" {
+            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "testDescription"))
+            val authorOverview = getAuthorOverview(author.id!!)
+
+            authorOverview.id shouldBe author.id
+            authorOverview.name shouldBe "testName"
+            authorOverview.description shouldBe "testDescription"
+            authorOverview.url shouldBe "testUrl"
+            authorOverview.courses.size shouldBe 0
+        }
+
+        "fail get author overview, not found" {
+            getAuthorOverviewNotFound(99)
+        }
     }
 
     private fun getAuthors(): ResponseEntity<List<Author>> {
@@ -102,6 +118,19 @@ class AuthorIntegrationTests : IntegrationTests() {
         return restWithAdminRole().deleteForEntity<Author>("/author/$authorId").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
+        }
+    }
+
+    private fun getAuthorOverview(authorId: Long): AuthorOverviewDto {
+        return restWithAdminRole().getForEntity<AuthorOverviewDto>("/author/$authorId/overview").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
+    }
+
+    private fun getAuthorOverviewNotFound(authorId: Long) {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/author/$authorId/overview").let {
+            it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 }
