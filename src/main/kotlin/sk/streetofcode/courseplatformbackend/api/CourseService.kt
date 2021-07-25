@@ -6,7 +6,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
-import java.util.*
+import java.util.UUID
 
 interface CourseService {
     fun get(id: Long): CourseDto

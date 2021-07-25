@@ -40,6 +40,7 @@ class LectureIntegrationTests : IntegrationTests() {
             fetchedLecture.content shouldBe "testContent"
             fetchedLecture.videoUrl shouldBe videoUrl
             fetchedLecture.videoDurationSeconds shouldBe videoDuration
+            fetchedLecture.course.lecturesCount shouldBe 6
         }
 
         "add lecture invalid videoUrl" {
@@ -75,8 +76,6 @@ class LectureIntegrationTests : IntegrationTests() {
 
         "delete lecture" {
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent"))
-
-            // todo test na lecturesCount
 
             val removedLecture = deleteLecture(lecture.id)
             removedLecture shouldBe lecture

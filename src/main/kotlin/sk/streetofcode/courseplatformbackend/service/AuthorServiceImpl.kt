@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.AuthorService
@@ -22,6 +23,11 @@ class AuthorServiceImpl(
     val courseRepository: CourseRepository,
     val courseReviewService: CourseReviewService
 ) : AuthorService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(AuthorServiceImpl::class.java)
+    }
+
     override fun get(id: Long): Author {
         return authorRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
@@ -49,6 +55,7 @@ class AuthorServiceImpl(
         try {
             return authorRepository.save(author)
         } catch (e: Exception) {
+            log.error("Problem with saving author to db", e)
             throw InternalErrorException("Could not save author")
         }
     }
@@ -72,7 +79,6 @@ class AuthorServiceImpl(
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
 
-        // TODO shouldn't this be handled by the DB?
         // Change difficultyId to null in all courses with this difficultyId
         courseRepository.setAuthorsToNull(authorId = id)
 

@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
-import java.util.*
+import java.util.UUID
 
 open class IntegrationTests : StringSpec() {
     override fun listeners(): List<TestListener> {

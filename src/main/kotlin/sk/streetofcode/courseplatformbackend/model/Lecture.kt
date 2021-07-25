@@ -6,6 +6,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.LectureCourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -14,6 +15,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.SequenceGenerator
 
 @Entity
@@ -43,6 +45,13 @@ data class Lecture(
     @Column(nullable = false, columnDefinition = "integer default 0")
     var videoDurationSeconds: Int,
 
+    @OneToMany(
+        mappedBy = "lecture",
+        cascade = [CascadeType.REMOVE],
+        fetch = FetchType.LAZY
+    )
+    val comments: MutableSet<LectureComment>,
+
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime,
 
@@ -65,6 +74,7 @@ data class Lecture(
             content,
             videoUrl,
             videoDurationSeconds,
+            mutableSetOf(),
             OffsetDateTime.now(),
             OffsetDateTime.now()
         )

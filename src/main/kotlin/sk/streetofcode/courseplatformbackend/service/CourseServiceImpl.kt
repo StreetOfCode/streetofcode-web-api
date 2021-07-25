@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -19,9 +20,14 @@ import sk.streetofcode.courseplatformbackend.db.repository.AuthorRepository
 import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
-import sk.streetofcode.courseplatformbackend.model.*
+import sk.streetofcode.courseplatformbackend.model.Course
+import sk.streetofcode.courseplatformbackend.model.CourseStatus
+import sk.streetofcode.courseplatformbackend.model.toCourseDto
+import sk.streetofcode.courseplatformbackend.model.toCourseHomepage
+import sk.streetofcode.courseplatformbackend.model.toCourseMy
+import sk.streetofcode.courseplatformbackend.model.toCourseOverview
 import java.time.OffsetDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 class CourseServiceImpl(
@@ -29,12 +35,16 @@ class CourseServiceImpl(
     val chapterRepository: ChapterRepository,
     val authorRepository: AuthorRepository,
     val difficultyRepository: DifficultyRepository,
-    val chapterServiceImpl: ChapterServiceImpl,
     val courseReviewService: CourseReviewService,
     // Use Lazy to prevent circular dependency error
     @Lazy
     val progressService: ProgressServiceImpl
 ) : CourseService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(CourseServiceImpl::class.java)
+    }
+
     override fun get(id: Long): CourseDto {
         return courseRepository
             .findById(id)
@@ -60,11 +70,11 @@ class CourseServiceImpl(
                 .save(Course(author, difficulty, addRequest.name, addRequest.shortDescription, addRequest.longDescription, addRequest.imageUrl, addRequest.status))
                 .toCourseDto()
         } catch (e: Exception) {
+            log.error("Problem with saving course to db", e)
             throw InternalErrorException("Could not save course")
         }
     }
 
-    // TODO refactor
     override fun edit(id: Long, editRequest: CourseEditRequest): CourseDto {
         val existingCourse = courseRepository
             .findById(id)
@@ -81,16 +91,15 @@ class CourseServiceImpl(
                 .findById(editRequest.difficultyId)
                 .orElseThrow { ResourceNotFoundException("Difficulty with id ${editRequest.difficultyId} was not found") }
 
-            val course = existingCourse
-            course.author = author
-            course.difficulty = difficulty
-            course.name = editRequest.name
-            course.shortDescription = editRequest.shortDescription
-            course.longDescription = editRequest.longDescription
-            course.imageUrl = editRequest.imageUrl
-            course.status = editRequest.status
-            course.updatedAt = OffsetDateTime.now()
-            return courseRepository.save(course).toCourseDto()
+            existingCourse.author = author
+            existingCourse.difficulty = difficulty
+            existingCourse.name = editRequest.name
+            existingCourse.shortDescription = editRequest.shortDescription
+            existingCourse.longDescription = editRequest.longDescription
+            existingCourse.imageUrl = editRequest.imageUrl
+            existingCourse.status = editRequest.status
+            existingCourse.updatedAt = OffsetDateTime.now()
+            return courseRepository.save(existingCourse).toCourseDto()
         }
     }
 

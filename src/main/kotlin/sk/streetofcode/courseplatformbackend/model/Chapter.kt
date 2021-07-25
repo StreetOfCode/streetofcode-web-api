@@ -6,7 +6,18 @@ import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseChapterDto
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
-import javax.persistence.*
+import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.OrderBy
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
@@ -65,7 +76,7 @@ private data class ChapterEssential(
 fun Chapter.toChapterDto(): ChapterDto {
     return ChapterDto(
         this.id!!,
-        ChapterCourseDto(this.course.id!!, this.course.name),
+        ChapterCourseDto(this.course.id!!, this.course.name, this.course.lecturesCount),
         this.name,
         this.chapterOrder,
         this.lectures.map { it.toLectureDto() }.toSet(),

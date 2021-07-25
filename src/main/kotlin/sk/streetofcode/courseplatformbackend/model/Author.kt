@@ -5,7 +5,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.courseplatformbackend.api.dto.AuthorCourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
-import javax.persistence.*
+import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.OneToMany
+import javax.persistence.OrderBy
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")

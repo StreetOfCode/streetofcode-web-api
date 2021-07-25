@@ -8,12 +8,13 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
-import sk.streetofcode.courseplatformbackend.api.dto.*
+import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
-import java.util.*
+import java.util.UUID
 
 @SpringBootTestAnnotation
 class CourseReviewIntegrationTests : IntegrationTests() {

@@ -2,20 +2,33 @@ package sk.streetofcode.courseplatformbackend.rest
 
 import org.json.JSONException
 import org.json.JSONObject
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
 import sk.streetofcode.courseplatformbackend.api.request.ChapterAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.ChapterEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
-import java.util.*
+import java.util.Optional
 
 @RestController
 @RequestMapping("chapter")
 class ChapterController(val chapterService: ChapterService) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(ChapterController::class.java)
+    }
 
     @GetMapping
     @IsAdmin
@@ -25,6 +38,7 @@ class ChapterController(val chapterService: ChapterService) {
                 val courseId = JSONObject(filter.get()).getLong("courseId")
                 chapterService.getByCourseId(courseId)
             } catch (e: JSONException) {
+                log.error("Problem with parsing filter parameter, check react-admin", e)
                 chapterService.getAll()
             }
 

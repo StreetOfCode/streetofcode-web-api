@@ -9,6 +9,6 @@ import javax.transaction.Transactional
 interface ChapterRepository : CrudRepository<Chapter, Long> {
     fun findByCourseId(courseId: Long): List<Chapter>
 
-    @Transactional // TODO not sure how to use this
+    @Transactional
     fun deleteByCourseId(courseId: Long)
 }

@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.LectureCommentService
 import sk.streetofcode.courseplatformbackend.api.dto.LectureCommentDto
@@ -13,7 +14,6 @@ import sk.streetofcode.courseplatformbackend.db.repository.LectureCommentReposit
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.LectureComment
 import sk.streetofcode.courseplatformbackend.model.toLectureCommentDto
-import java.lang.Exception
 import java.time.OffsetDateTime
 import java.util.UUID
 
@@ -23,6 +23,10 @@ class LectureCommentServiceImpl(
     private val lectureCommentRepository: LectureCommentRepository,
     private val authenticationService: AuthenticationService
 ) : LectureCommentService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(LectureCommentServiceImpl::class.java)
+    }
 
     override fun getAll(lectureId: Long): List<LectureCommentDto> {
         return lectureCommentRepository.findAllByLectureId(lectureId).map { it.toLectureCommentDto() }
@@ -36,6 +40,7 @@ class LectureCommentServiceImpl(
                 .save(LectureComment(userId, lecture, addRequest.userName, addRequest.commentText))
                 .toLectureCommentDto()
         } catch (e: Exception) {
+            log.error("Problem with saving lectureComment to db", e)
             throw InternalErrorException("Could not save lecture comment")
         }
     }
@@ -60,6 +65,7 @@ class LectureCommentServiceImpl(
 
             return lectureCommentRepository.save(comment).toLectureCommentDto()
         } catch (e: Exception) {
+            log.error("Problem with editing lectureComment", e)
             throw InternalErrorException("Could not edit lecture comment")
         }
     }

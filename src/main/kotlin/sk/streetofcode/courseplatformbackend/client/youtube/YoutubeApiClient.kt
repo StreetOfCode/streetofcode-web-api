@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.client.youtube
 
 import org.json.JSONException
 import org.json.JSONObject
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
@@ -11,6 +12,10 @@ import java.time.Duration
 
 @Service
 class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtubeProperties: YoutubeProperties) {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(YoutubeApiClient::class.java)
+    }
 
     fun getVideoDurationInSeconds(videoEmbedUrl: String? = null): Int {
         if (videoEmbedUrl == null) {
@@ -36,6 +41,7 @@ class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtu
         return try {
             (JSONObject(responseJsonString).getJSONArray("items")[0] as JSONObject).getJSONObject("contentDetails").getString("duration")
         } catch (e: JSONException) {
+            log.error("Could not parse videoUrl: $videoEmbedUrl  Response from YouTube API: $responseJsonString", e)
             throw InternalErrorException("Could not parse videoUrl: $videoEmbedUrl  Response from YouTube API: $responseJsonString")
         }
     }

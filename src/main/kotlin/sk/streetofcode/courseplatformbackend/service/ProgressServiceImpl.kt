@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.CourseService
@@ -11,6 +12,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.progress.CourseProgressOver
 import sk.streetofcode.courseplatformbackend.api.dto.progress.LectureProgressOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
+import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.ResetProgressDto
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
@@ -34,6 +36,10 @@ class ProgressServiceImpl(
     private val courseRepository: CourseRepository
 ) : ProgressService {
 
+    companion object {
+        private val log = LoggerFactory.getLogger(ProgressServiceImpl::class.java)
+    }
+
     override fun updateProgress(userId: UUID, lectureId: Long) {
         // if this lecture is already viewed then don't save it again
         if (progressLectureRepository.findByUserIdAndLectureId(userId, lectureId).isPresent) {
@@ -50,7 +56,7 @@ class ProgressServiceImpl(
         val maybeProgressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
         if (maybeProgressMetadata.isPresent) {
             val progressMetadata = maybeProgressMetadata.get()
-            updateProgressMetadata(progressMetadata, 1)
+            updateProgressMetadata(progressMetadata, 1, courseLecturesCount)
             maybeFinishCourse(progressMetadata, courseLecturesCount)
             progressMetadataRepository.save(progressMetadata)
         } else {
@@ -142,7 +148,7 @@ class ProgressServiceImpl(
         progressLectureRepository.deleteByUserIdAndLectureId(userId, lectureId)
 
         // update progress metadata
-        updateProgressMetadata(progressMetadata, -1)
+        updateProgressMetadata(progressMetadata, -1, lecture.course.lecturesCount)
         maybeResetFinishCourse(progressMetadata)
 
         progressMetadataRepository.save(progressMetadata)
@@ -160,7 +166,7 @@ class ProgressServiceImpl(
         progressLectureRepository.deleteByUserIdAndLectureIdIn(userId, lectureIds)
 
         // update progress metadata
-        updateProgressMetadata(progressMetadata, -lectureIds.size)
+        updateProgressMetadata(progressMetadata, -lectureIds.size, chapter.course.lecturesCount)
         maybeResetFinishCourse(progressMetadata)
         progressMetadataRepository.save(progressMetadata)
     }
@@ -176,7 +182,7 @@ class ProgressServiceImpl(
         progressLectureRepository.deleteByUserIdAndLectureIdIn(userId, lectureIds)
 
         // update progress metadata
-        updateProgressMetadata(progressMetadata, -progressMetadata.lecturesViewed) // reset to 0
+        updateProgressMetadata(progressMetadata, -progressMetadata.lecturesViewed, lectureIds.size) // reset to 0
         maybeResetFinishCourse(progressMetadata)
 
         progressMetadataRepository.save(progressMetadata)
@@ -196,10 +202,19 @@ class ProgressServiceImpl(
         }
     }
 
-    private fun updateProgressMetadata(progressMetadata: UserProgressMetadata, lecturesViewedDelta: Int) {
-        progressMetadata.lastUpdatedAt = OffsetDateTime.now()
-        progressMetadata.lecturesViewed = progressMetadata.lecturesViewed + lecturesViewedDelta
-        // todo log error if lecturesViewed is out of boundary (0, courseLecturesCount).. just to be sure
+    private fun updateProgressMetadata(progressMetadata: UserProgressMetadata, lecturesViewedDelta: Int, courseLecturesCount: Int) {
+        val updatedLecturesViewed = progressMetadata.lecturesViewed + lecturesViewedDelta
+        if (updatedLecturesViewed in 0..courseLecturesCount) {
+            progressMetadata.lastUpdatedAt = OffsetDateTime.now()
+            progressMetadata.lecturesViewed = updatedLecturesViewed
+        } else {
+            log.error(
+                "Something is terribly wrong in updating progress metadata, because apparently " +
+                    "new updatedLecturesViewed $updatedLecturesViewed is out of bound. Course has total of $courseLecturesCount" +
+                    ". Progress may be corrupted."
+            )
+            throw InternalErrorException("Problem in internal logic of updating progress metadata")
+        }
     }
 
     private fun getFirstUnseenLecture(userId: UUID, course: Course): LectureDto? {

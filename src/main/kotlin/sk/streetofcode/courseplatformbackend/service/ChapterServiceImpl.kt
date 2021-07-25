@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.ChapterService
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterDto
@@ -13,11 +14,15 @@ import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.Chapter
 import sk.streetofcode.courseplatformbackend.model.toChapterDto
-import java.lang.Exception
 import java.time.OffsetDateTime
 
 @Service
 class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRepository: CourseRepository, val lectureRepository: LectureRepository) : ChapterService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(ChapterServiceImpl::class.java)
+    }
+
     override fun get(id: Long): ChapterDto {
         return chapterRepository
             .findById(id)
@@ -43,6 +48,7 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
                 .save(Chapter(course, addRequest.name, addRequest.chapterOrder))
                 .toChapterDto()
         } catch (e: Exception) {
+            log.error("Problem with saving chapter to db", e)
             throw InternalErrorException("Could not save chapter")
         }
     }
@@ -55,11 +61,10 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
         if (id != editRequest.id) {
             throw BadRequestException("PathVariable id is not equal to request id field")
         } else {
-            val chapter = existingChapter
-            chapter.name = editRequest.name
-            chapter.chapterOrder = editRequest.chapterOrder
-            chapter.updatedAt = OffsetDateTime.now()
-            return chapterRepository.save(chapter).toChapterDto()
+            existingChapter.name = editRequest.name
+            existingChapter.chapterOrder = editRequest.chapterOrder
+            existingChapter.updatedAt = OffsetDateTime.now()
+            return chapterRepository.save(existingChapter).toChapterDto()
         }
     }
 
@@ -68,7 +73,6 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Chapter with id $id was not found") }
 
-        // TODO shouldn't this be done by the database? CASCADE?
         // Remove all lectures if this course is removed
         lectureRepository.deleteByChapterId(id)
 

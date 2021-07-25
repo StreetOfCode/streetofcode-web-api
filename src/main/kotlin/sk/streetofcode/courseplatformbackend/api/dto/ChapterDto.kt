@@ -14,5 +14,6 @@ data class ChapterDto(
 
 data class ChapterCourseDto(
     val id: Long,
-    val name: String
+    val name: String,
+    val lecturesCount: Int
 )

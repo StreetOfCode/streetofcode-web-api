@@ -1,12 +1,31 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import sk.streetofcode.courseplatformbackend.api.dto.*
+import sk.streetofcode.courseplatformbackend.api.dto.ChapterOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.LectureOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
-import javax.persistence.*
+import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.OrderBy
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")

@@ -4,7 +4,11 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import sk.streetofcode.courseplatformbackend.configuration.properties.SwaggerProperties
 import springfox.documentation.RequestHandler
-import springfox.documentation.builders.*
+import springfox.documentation.builders.AuthorizationCodeGrantBuilder
+import springfox.documentation.builders.OAuthBuilder
+import springfox.documentation.builders.PathSelectors
+import springfox.documentation.builders.TokenEndpointBuilder
+import springfox.documentation.builders.TokenRequestEndpointBuilder
 import springfox.documentation.service.AuthorizationScope
 import springfox.documentation.service.GrantType
 import springfox.documentation.service.SecurityReference

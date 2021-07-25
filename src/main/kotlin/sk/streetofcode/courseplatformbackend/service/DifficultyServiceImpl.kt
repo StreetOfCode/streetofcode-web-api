@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service
 
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.DifficultyService
@@ -11,10 +12,14 @@ import sk.streetofcode.courseplatformbackend.api.request.DifficultyEditRequest
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Difficulty
-import java.lang.Exception
 
 @Service
 class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val courseRepository: CourseRepository) : DifficultyService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(DifficultyServiceImpl::class.java)
+    }
+
     override fun get(id: Long): Difficulty {
         return difficultyRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Difficulty with id $id was not found") }
@@ -30,6 +35,7 @@ class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val 
         try {
             return difficultyRepository.save(difficulty)
         } catch (e: Exception) {
+            log.error("Problem with saving difficulty do db", e)
             throw InternalErrorException("Could not save difficulty")
         }
     }

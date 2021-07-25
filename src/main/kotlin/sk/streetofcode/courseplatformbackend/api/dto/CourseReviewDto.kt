@@ -1,6 +1,6 @@
 package sk.streetofcode.courseplatformbackend.api.dto
 
-import java.util.*
+import java.util.UUID
 
 data class CourseReviewDto(
     val id: Long,

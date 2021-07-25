@@ -1,5 +1,6 @@
 package sk.streetofcode.courseplatformbackend.service.email
 
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.MailException
 import org.springframework.mail.SimpleMailMessage
@@ -13,6 +14,7 @@ import java.net.SocketTimeoutException
 class EmailFeedbackServiceImpl(private val mailSender: JavaMailSender) : EmailFeedbackService {
 
     companion object {
+        private val log = LoggerFactory.getLogger(EmailFeedbackServiceImpl::class.java)
         const val SUBJECT_PREFIX = "SoC feedback form - "
         const val SUBJECT_EMPTY = "no subject provided"
     }
@@ -34,11 +36,9 @@ class EmailFeedbackServiceImpl(private val mailSender: JavaMailSender) : EmailFe
         try {
             mailSender.send(message)
         } catch (e: MailException) {
-            e.printStackTrace()
-            // TODO log error
+            log.error("Problem with sending feedback email", e)
         } catch (e: SocketTimeoutException) {
-            e.printStackTrace()
-            // TODO log error
+            log.error("Timeout when reading from socket", e)
         }
     }
 

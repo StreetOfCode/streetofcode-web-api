@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import sk.streetofcode.courseplatformbackend.model.CourseReview
-import java.util.*
+import java.util.UUID
 
 interface CourseReviewsOverviewProjection {
     val averageRating: Double?
