@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.courseplatformbackend.api.dto.LectureChapterDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureCourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
+import sk.streetofcode.courseplatformbackend.model.quiz.Quiz
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.CascadeType
@@ -16,6 +17,7 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.SequenceGenerator
 
 @Entity
@@ -56,7 +58,11 @@ data class Lecture(
     val createdAt: OffsetDateTime,
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
-    var updatedAt: OffsetDateTime
+    var updatedAt: OffsetDateTime,
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "quiz_id", nullable = true)
+    var quiz: Quiz? = null
 ) {
     constructor(
         chapter: Chapter,
@@ -76,8 +82,32 @@ data class Lecture(
             videoDurationSeconds,
             mutableSetOf(),
             OffsetDateTime.now(),
-            OffsetDateTime.now()
+            OffsetDateTime.now(),
+            null
         )
+
+    constructor(
+        chapter: Chapter,
+        name: String,
+        lectureOrder: Int,
+        content: String?,
+        videoUrl: String?,
+        videoDurationSeconds: Int,
+        quiz: Quiz
+    ) :
+            this(
+                null,
+                chapter,
+                name,
+                lectureOrder,
+                content,
+                videoUrl,
+                videoDurationSeconds,
+                mutableSetOf(),
+                OffsetDateTime.now(),
+                OffsetDateTime.now(),
+                quiz
+            )
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()
