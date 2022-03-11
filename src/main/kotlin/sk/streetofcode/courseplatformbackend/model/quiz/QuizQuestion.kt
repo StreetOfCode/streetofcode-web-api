@@ -1,6 +1,7 @@
 package sk.streetofcode.courseplatformbackend.model.quiz
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import org.hibernate.annotations.Where
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionDto
 import javax.persistence.*
 
@@ -30,10 +31,18 @@ data class QuizQuestion(
         cascade = [CascadeType.ALL],
         fetch = FetchType.LAZY
     )
-    val answers: MutableSet<QuizQuestionAnswer>
+    val answers: MutableSet<QuizQuestionAnswer>,
+
+    @OneToMany(
+        mappedBy = "question",
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.LAZY
+    )
+    @Where(clause = "is_correct = true")
+    val correctAnswers: MutableSet<QuizQuestionAnswer>
 ) {
     constructor(quiz: Quiz, questionOrder: Int, text: String, isMultipleChoice: Boolean) :
-            this(null, quiz, questionOrder, text, isMultipleChoice, mutableSetOf())
+            this(null, quiz, questionOrder, text, isMultipleChoice, mutableSetOf(), mutableSetOf())
 
     override fun equals(other: Any?) = other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
     override fun hashCode() = QuizQuestionEssential(this).hashCode()
