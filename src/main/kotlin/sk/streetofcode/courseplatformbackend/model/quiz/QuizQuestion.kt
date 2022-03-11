@@ -23,10 +23,17 @@ data class QuizQuestion(
     var text: String,
 
     @Column(nullable = false)
-    var isMultipleChoice: Boolean
+    var isMultipleChoice: Boolean,
+
+    @OneToMany(
+        mappedBy = "question",
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.LAZY
+    )
+    val answers: MutableSet<QuizQuestionAnswer>
 ) {
     constructor(quiz: Quiz, questionOrder: Int, text: String, isMultipleChoice: Boolean) :
-            this(null, quiz, questionOrder, text, isMultipleChoice)
+            this(null, quiz, questionOrder, text, isMultipleChoice, mutableSetOf())
 
     override fun equals(other: Any?) = other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
     override fun hashCode() = QuizQuestionEssential(this).hashCode()
@@ -53,6 +60,7 @@ fun QuizQuestion.toQuizQuestionDto(): QuizQuestionDto {
         quiz = this.quiz.toQuizDto(),
         questionOrder = this.questionOrder,
         text = this.text,
-        isMultipleChoice = this.isMultipleChoice
+        isMultipleChoice = this.isMultipleChoice,
+        answers = this.answers.map { it.toQuizQuestionAnswerDto() }.toSet()
     )
 }

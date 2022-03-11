@@ -2,7 +2,6 @@ INSERT INTO author (id, name, description, url) VALUES
 (author_id_seq.nextval, 'Jakub', 'Jahič', 'http://streetofcode.sk/wp-content/uploads/2020/03/00100lPORTRAIT_00100_BURST20190815135005128_COVER1.jpg' ),
 (author_id_seq.nextval, 'Gabo', 'Kerekeš', 'url' );
 
-
 INSERT INTO difficulty (id, name, description) VALUES
 (difficulty_id_seq.nextval, 'Beginner', 'Jednoduche'),
 (difficulty_id_seq.nextval, 'Intermediate', 'Pokrocile');
@@ -48,3 +47,28 @@ UPDATE course set lectures_count = 5 where id = 2;
 INSERT INTO lecture_comment(id, user_id, lecture_id, user_name, comment_text, created_at, updated_at) VALUES
 (lecture_comment_id_seq.nextval, 'e6bff8b2-7376-4e19-a1e7-c29f1f185faf', 1, 'jozko', 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (lecture_comment_id_seq.nextval, '93c6d283-8d2d-495b-b08f-9a18831d1f5e', 1, 'janka', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
+
+INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) VALUES
+(quiz_id_seq.nextval, 1, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
+
+INSERT INTO quiz_question(id, quiz_id, question_order, text, is_multiple_choice) VALUES
+(quiz_question_id_seq.nextval, 1, 0, '2+2?', false),
+(quiz_question_id_seq.nextval, 1, 1, '2*2', false),
+(quiz_question_id_seq.nextval, 1, 2, '8-4', false);
+
+INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
+(quiz_question_answer_id_seq.nextval, 1, '1', false),
+(quiz_question_answer_id_seq.nextval, 1, '2', true),
+(quiz_question_answer_id_seq.nextval, 1, '3', false),
+(quiz_question_answer_id_seq.nextval, 1, '4', false),
+(quiz_question_answer_id_seq.nextval, 2, '1', false),
+(quiz_question_answer_id_seq.nextval, 2, '2', false),
+(quiz_question_answer_id_seq.nextval, 2, '3', false),
+(quiz_question_answer_id_seq.nextval, 2, '4', true),
+(quiz_question_answer_id_seq.nextval, 3, '1', false),
+(quiz_question_answer_id_seq.nextval, 3, '2', false),
+(quiz_question_answer_id_seq.nextval, 3, '3', false),
+(quiz_question_answer_id_seq.nextval, 3, '4', true);
+
+INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
+(quiz_question_user_answer_id_seq.nextval, 1, 2, 'e6bff8b2-7376-4e19-a1e7-c29f1f185faf', '2007-12-03T10:15:30+01:00', 3);

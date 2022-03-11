@@ -1,8 +1,10 @@
 package sk.streetofcode.courseplatformbackend.model.quiz
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import org.hibernate.annotations.Type
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionUserAnswerDto
 import java.time.OffsetDateTime
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -21,14 +23,18 @@ data class QuizQuestionUserAnswer(
     @JoinColumn(name = "answer_id", nullable = false)
     var answer: QuizQuestionAnswer,
 
+    @Column(nullable = false)
+    @Type(type = "uuid-char")
+    val userId: UUID,
+
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime,
 
     @Column(nullable = false)
     var tryCount: Int
 ) {
-    constructor(question: QuizQuestion, answer: QuizQuestionAnswer, tryCount: Int) :
-        this(null, question, answer, OffsetDateTime.now(), tryCount)
+    constructor(question: QuizQuestion, answer: QuizQuestionAnswer, userId: UUID, tryCount: Int) :
+        this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
 
     override fun equals(other: Any?) = other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(other)
     override fun hashCode() = QuizQuestionUserAnswerEssential(this).hashCode()
@@ -40,12 +46,14 @@ private data class QuizQuestionUserAnswerEssential(
     val question: QuizQuestion,
     val answer: QuizQuestionAnswer,
     val createdAt: OffsetDateTime,
+    val userId: UUID,
     val tryCount: Int
 ) {
     constructor(quizQuestionUserAnswer: QuizQuestionUserAnswer) : this(
         question = quizQuestionUserAnswer.question,
         answer = quizQuestionUserAnswer.answer,
         createdAt = quizQuestionUserAnswer.createdAt,
+        userId = quizQuestionUserAnswer.userId,
         tryCount = quizQuestionUserAnswer.tryCount
     )
 }
@@ -54,6 +62,7 @@ fun QuizQuestionUserAnswer.toQuizQuestionUserAnswerDto(): QuizQuestionUserAnswer
     return QuizQuestionUserAnswerDto(
         id = this.id!!,
         question = this.question.toQuizQuestionDto(),
-        answer = this.answer.toQuizQuestionAnswerDto()
+        answer = this.answer.toQuizQuestionAnswerDto(),
+        userId = this.userId
     )
 }

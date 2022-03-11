@@ -5,5 +5,6 @@ data class QuizQuestionDto(
     val quiz: QuizDto,
     val questionOrder: Int,
     val text: String,
-    val isMultipleChoice: Boolean
+    val isMultipleChoice: Boolean,
+    val answers: Set<QuizQuestionAnswerDto>
 )
