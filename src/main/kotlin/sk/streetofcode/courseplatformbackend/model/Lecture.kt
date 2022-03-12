@@ -86,29 +86,6 @@ data class Lecture(
             null
         )
 
-    constructor(
-        chapter: Chapter,
-        name: String,
-        lectureOrder: Int,
-        content: String?,
-        videoUrl: String?,
-        videoDurationSeconds: Int,
-        quiz: Quiz
-    ) :
-        this(
-            null,
-            chapter,
-            name,
-            lectureOrder,
-            content,
-            videoUrl,
-            videoDurationSeconds,
-            mutableSetOf(),
-            OffsetDateTime.now(),
-            OffsetDateTime.now(),
-            quiz
-        )
-
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()
     override fun toString() = LectureEssential(this).toString().replaceFirst("LectureEssential", "Lecture")
