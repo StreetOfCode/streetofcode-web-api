@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.api.dto.quiz
 
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
 import java.time.OffsetDateTime
+import kotlin.Long
 
 data class QuizDto(
     val id: Long,
@@ -10,5 +11,5 @@ data class QuizDto(
     val subtitle: String?,
     val createdAt: OffsetDateTime,
     val finishedMessage: String?,
-    val questions: Set<QuizQuestionDto>
+    val questionIds: Set<Long>
 )

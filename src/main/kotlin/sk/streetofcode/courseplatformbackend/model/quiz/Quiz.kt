@@ -66,12 +66,12 @@ private data class QuizEssential(
 
 fun Quiz.toQuizDto(): QuizDto {
     return QuizDto(
-        id = this.id!!,
-        lecture = this.lecture.toLectureDto(),
-        title = this.title,
-        subtitle = this.subtitle,
-        createdAt = this.createdAt.truncatedTo(ChronoUnit.SECONDS),
-        finishedMessage = this.finishedMessage,
-        questions = this.questions.map { it.toQuizQuestionDto() }.toSet()
+        id = id!!,
+        lecture = lecture.toLectureDto(),
+        title = title,
+        subtitle = subtitle,
+        createdAt = createdAt.truncatedTo(ChronoUnit.SECONDS),
+        finishedMessage = finishedMessage,
+        questionIds = questions.map { it.id!! }.toSet()
     )
 }

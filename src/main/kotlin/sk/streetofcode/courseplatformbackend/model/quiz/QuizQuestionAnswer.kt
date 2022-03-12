@@ -46,7 +46,7 @@ private data class QuizQuestionAnswerEssential(
 fun QuizQuestionAnswer.toQuizQuestionAnswerDto(): QuizQuestionAnswerDto {
     return QuizQuestionAnswerDto(
         id = this.id!!,
-        question = this.question.toQuizQuestionDto(),
+        questionId = this.question.id!!,
         text = this.text
     )
 }
