@@ -24,7 +24,7 @@ data class QuizQuestion(
     var text: String,
 
     @Column(nullable = false)
-    var isMultipleChoice: Boolean,
+    var type: QuizQuestionType,
 
     @OneToMany(
         mappedBy = "question",
@@ -41,8 +41,8 @@ data class QuizQuestion(
     @Where(clause = "is_correct = true")
     val correctAnswers: MutableSet<QuizQuestionAnswer>
 ) {
-    constructor(quiz: Quiz, questionOrder: Int, text: String, isMultipleChoice: Boolean) :
-        this(null, quiz, questionOrder, text, isMultipleChoice, mutableSetOf(), mutableSetOf())
+    constructor(quiz: Quiz, questionOrder: Int, text: String, type: QuizQuestionType) :
+        this(null, quiz, questionOrder, text, type, mutableSetOf(), mutableSetOf())
 
     override fun equals(other: Any?) = other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
     override fun hashCode() = QuizQuestionEssential(this).hashCode()
@@ -53,13 +53,13 @@ private data class QuizQuestionEssential(
     val quiz: Quiz,
     val questionOrder: Int,
     val text: String,
-    val isMultipleChoice: Boolean
+    val type: QuizQuestionType
 ) {
     constructor(question: QuizQuestion) : this(
         quiz = question.quiz,
         questionOrder = question.questionOrder,
         text = question.text,
-        isMultipleChoice = question.isMultipleChoice
+        type = question.type
     )
 }
 
@@ -69,7 +69,11 @@ fun QuizQuestion.toQuizQuestionDto(): QuizQuestionDto {
         quiz = this.quiz.toQuizDto(),
         questionOrder = this.questionOrder,
         text = this.text,
-        isMultipleChoice = this.isMultipleChoice,
+        type = this.type,
         answers = this.answers.map { it.toQuizQuestionAnswerDto() }.toSet()
     )
+}
+
+enum class QuizQuestionType {
+    SINGLE_CHOICE, MULTIPLE_CHOICE
 }
