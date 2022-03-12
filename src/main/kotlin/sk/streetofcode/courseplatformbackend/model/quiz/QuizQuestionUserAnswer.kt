@@ -41,7 +41,6 @@ data class QuizQuestionUserAnswer(
     override fun toString() = QuizQuestionUserAnswerEssential(this).toString().replaceFirst("QuizQuestionUserAnswerEssential", "")
 }
 
-
 private data class QuizQuestionUserAnswerEssential(
     val question: QuizQuestion,
     val answer: QuizQuestionAnswer,

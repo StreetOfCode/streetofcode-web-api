@@ -95,19 +95,19 @@ data class Lecture(
         videoDurationSeconds: Int,
         quiz: Quiz
     ) :
-            this(
-                null,
-                chapter,
-                name,
-                lectureOrder,
-                content,
-                videoUrl,
-                videoDurationSeconds,
-                mutableSetOf(),
-                OffsetDateTime.now(),
-                OffsetDateTime.now(),
-                quiz
-            )
+        this(
+            null,
+            chapter,
+            name,
+            lectureOrder,
+            content,
+            videoUrl,
+            videoDurationSeconds,
+            mutableSetOf(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
+            quiz
+        )
 
     override fun equals(other: Any?) = other is Lecture && LectureEssential(this) == LectureEssential(other)
     override fun hashCode() = LectureEssential(this).hashCode()

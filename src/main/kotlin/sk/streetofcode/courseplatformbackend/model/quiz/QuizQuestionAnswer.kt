@@ -24,7 +24,7 @@ data class QuizQuestionAnswer(
     var isCorrect: Boolean
 ) {
     constructor(question: QuizQuestion, text: String, isCorrect: Boolean) :
-            this(null, question, text, isCorrect)
+        this(null, question, text, isCorrect)
 
     override fun equals(other: Any?) = other is QuizQuestionAnswer && QuizQuestionAnswerEssential(this) == QuizQuestionAnswerEssential(other)
     override fun hashCode() = QuizQuestionAnswerEssential(this).hashCode()

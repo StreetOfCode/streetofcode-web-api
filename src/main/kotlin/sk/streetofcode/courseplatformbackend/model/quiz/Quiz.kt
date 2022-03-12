@@ -41,7 +41,7 @@ data class Quiz(
     var questions: MutableSet<QuizQuestion>
 ) {
     constructor(lecture: Lecture, title: String, subtitle: String?, createdAt: OffsetDateTime, finishedMessage: String?) :
-            this(null, lecture, title, subtitle, createdAt, finishedMessage, mutableSetOf())
+        this(null, lecture, title, subtitle, createdAt, finishedMessage, mutableSetOf())
 
     override fun equals(other: Any?) = other is Quiz && QuizEssential(this) == QuizEssential(other)
     override fun hashCode() = QuizEssential(this).hashCode()
@@ -75,4 +75,3 @@ fun Quiz.toQuizDto(): QuizDto {
         questions = this.questions.map { it.toQuizQuestionDto() }.toSet()
     )
 }
-
