@@ -28,7 +28,7 @@ data class QuizQuestionAnswer(
 
     override fun equals(other: Any?) = other is QuizQuestionAnswer && QuizQuestionAnswerEssential(this) == QuizQuestionAnswerEssential(other)
     override fun hashCode() = QuizQuestionAnswerEssential(this).hashCode()
-    override fun toString() = QuizQuestionAnswerEssential(this).toString().replaceFirst("QuizQuestionAnswerEssential", "")
+    override fun toString() = QuizQuestionAnswerEssential(this).toString().replaceFirst("QuizQuestionAnswerEssential", "QuizQuestionAnswer")
 }
 
 private data class QuizQuestionAnswerEssential(

@@ -38,19 +38,19 @@ data class QuizQuestionUserAnswer(
 
     override fun equals(other: Any?) = other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(other)
     override fun hashCode() = QuizQuestionUserAnswerEssential(this).hashCode()
-    override fun toString() = QuizQuestionUserAnswerEssential(this).toString().replaceFirst("QuizQuestionUserAnswerEssential", "")
+    override fun toString() = QuizQuestionUserAnswerEssential(this).toString().replaceFirst("QuizQuestionUserAnswerEssential", "QuizQuestionUserAnswer")
 }
 
 private data class QuizQuestionUserAnswerEssential(
-    val question: QuizQuestion,
-    val answer: QuizQuestionAnswer,
+    val questionId: Long,
+    val answerId: Long,
     val createdAt: OffsetDateTime,
     val userId: UUID,
     val tryCount: Int
 ) {
     constructor(quizQuestionUserAnswer: QuizQuestionUserAnswer) : this(
-        question = quizQuestionUserAnswer.question,
-        answer = quizQuestionUserAnswer.answer,
+        questionId = quizQuestionUserAnswer.question.id!!,
+        answerId = quizQuestionUserAnswer.answer.id!!,
         createdAt = quizQuestionUserAnswer.createdAt,
         userId = quizQuestionUserAnswer.userId,
         tryCount = quizQuestionUserAnswer.tryCount

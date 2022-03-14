@@ -17,7 +17,6 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
-import javax.persistence.OneToOne
 import javax.persistence.SequenceGenerator
 
 @Entity
@@ -60,9 +59,9 @@ data class Lecture(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime,
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = true)
-    var quiz: Quiz? = null
+    var quiz: Set<Quiz>? = null
 ) {
     constructor(
         chapter: Chapter,

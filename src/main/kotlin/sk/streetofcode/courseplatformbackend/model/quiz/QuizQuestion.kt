@@ -24,6 +24,7 @@ data class QuizQuestion(
     var text: String,
 
     @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
     var type: QuizQuestionType,
 
     @OneToMany(
@@ -46,7 +47,7 @@ data class QuizQuestion(
 
     override fun equals(other: Any?) = other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
     override fun hashCode() = QuizQuestionEssential(this).hashCode()
-    override fun toString() = QuizQuestionEssential(this).toString().replaceFirst("QuizQuestionEssential", "")
+    override fun toString() = QuizQuestionEssential(this).toString().replaceFirst("QuizQuestionEssential", "QuizQuestion")
 }
 
 private data class QuizQuestionEssential(

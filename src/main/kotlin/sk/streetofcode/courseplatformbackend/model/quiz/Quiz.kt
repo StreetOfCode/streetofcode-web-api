@@ -45,18 +45,18 @@ data class Quiz(
 
     override fun equals(other: Any?) = other is Quiz && QuizEssential(this) == QuizEssential(other)
     override fun hashCode() = QuizEssential(this).hashCode()
-    override fun toString() = QuizEssential(this).toString().replaceFirst("QuizEssential", "")
+    override fun toString() = QuizEssential(this).toString().replaceFirst("QuizEssential", "Quiz")
 }
 
 private data class QuizEssential(
-    val lecture: Lecture,
+    val lectureId: Long,
     val title: String,
     val subtitle: String?,
     val createdAt: OffsetDateTime,
     val finishedMessage: String?
 ) {
     constructor(quiz: Quiz) : this(
-        lecture = quiz.lecture,
+        lectureId = quiz.lecture.id!!,
         title = quiz.title,
         subtitle = quiz.subtitle,
         createdAt = quiz.createdAt,

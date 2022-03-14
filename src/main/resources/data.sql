@@ -51,10 +51,10 @@ INSERT INTO lecture_comment(id, user_id, lecture_id, user_name, comment_text, cr
 INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) VALUES
 (quiz_id_seq.nextval, 1, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
 
-INSERT INTO quiz_question(id, quiz_id, question_order, text, is_multiple_choice) VALUES
-(quiz_question_id_seq.nextval, 1, 0, '2+2?', false),
-(quiz_question_id_seq.nextval, 1, 1, '2*2', false),
-(quiz_question_id_seq.nextval, 1, 2, '8-4', false);
+INSERT INTO quiz_question(id, quiz_id, question_order, text, type) VALUES
+(quiz_question_id_seq.nextval, 1, 0, '2+2?', 'SINGLE_CHOICE'),
+(quiz_question_id_seq.nextval, 1, 1, '2*2', 'SINGLE_CHOICE'),
+(quiz_question_id_seq.nextval, 1, 2, '8-4', 'MULTIPLE_CHOICE');
 
 INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (quiz_question_answer_id_seq.nextval, 1, '1', false),
@@ -67,7 +67,7 @@ INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (quiz_question_answer_id_seq.nextval, 2, '4', true),
 (quiz_question_answer_id_seq.nextval, 3, '1', false),
 (quiz_question_answer_id_seq.nextval, 3, '2', false),
-(quiz_question_answer_id_seq.nextval, 3, '3', false),
+(quiz_question_answer_id_seq.nextval, 3, '+4', true),
 (quiz_question_answer_id_seq.nextval, 3, '4', true);
 
 INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
