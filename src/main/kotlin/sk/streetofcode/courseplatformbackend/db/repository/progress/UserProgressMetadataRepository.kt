@@ -16,7 +16,7 @@ interface UserProgressMetadataRepository : CrudRepository<UserProgressMetadata, 
         WHERE progress.userId = :userId
         GROUP BY progress.courseId
         ORDER BY progress.lastUpdatedAt 
-    """
+        """
     )
     fun getStartedCourseIds(userId: UUID): List<Long>
 }
