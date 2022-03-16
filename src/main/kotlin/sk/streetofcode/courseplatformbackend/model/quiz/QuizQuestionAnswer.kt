@@ -32,12 +32,12 @@ data class QuizQuestionAnswer(
 }
 
 private data class QuizQuestionAnswerEssential(
-    val question: QuizQuestion,
+    val questionId: Long,
     val text: String,
     val isCorrect: Boolean
 ) {
     constructor(quizQuestionAnswer: QuizQuestionAnswer) : this(
-        question = quizQuestionAnswer.question,
+        questionId = quizQuestionAnswer.question.id!!,
         text = quizQuestionAnswer.text,
         isCorrect = quizQuestionAnswer.isCorrect
     )

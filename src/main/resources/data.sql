@@ -52,9 +52,9 @@ INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) 
 (quiz_id_seq.nextval, 1, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
 
 INSERT INTO quiz_question(id, quiz_id, question_order, text, type) VALUES
-(quiz_question_id_seq.nextval, 1, 0, '2+2?', 'SINGLE_CHOICE'),
-(quiz_question_id_seq.nextval, 1, 1, '2*2', 'SINGLE_CHOICE'),
-(quiz_question_id_seq.nextval, 1, 2, '8-4', 'MULTIPLE_CHOICE');
+(quiz_question_id_seq.nextval, 1, 1, '2+2?', 'SINGLE_CHOICE'),
+(quiz_question_id_seq.nextval, 1, 2, '2*2', 'SINGLE_CHOICE'),
+(quiz_question_id_seq.nextval, 1, 3, '8-4', 'MULTIPLE_CHOICE');
 
 INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (quiz_question_answer_id_seq.nextval, 1, '1', false),

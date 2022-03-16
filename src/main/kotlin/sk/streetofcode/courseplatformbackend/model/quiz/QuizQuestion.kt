@@ -51,13 +51,13 @@ data class QuizQuestion(
 }
 
 private data class QuizQuestionEssential(
-    val quiz: Quiz,
+    val quizId: Long,
     val questionOrder: Int,
     val text: String,
     val type: QuizQuestionType
 ) {
     constructor(question: QuizQuestion) : this(
-        quiz = question.quiz,
+        quizId = question.quiz.id!!,
         questionOrder = question.questionOrder,
         text = question.text,
         type = question.type
