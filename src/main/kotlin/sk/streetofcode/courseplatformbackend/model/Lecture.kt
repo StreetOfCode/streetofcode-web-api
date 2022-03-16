@@ -61,7 +61,7 @@ data class Lecture(
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = true)
-    var quiz: Set<Quiz>? = null
+    var quiz: HashSet<Quiz>? = null
 ) {
     constructor(
         chapter: Chapter,
