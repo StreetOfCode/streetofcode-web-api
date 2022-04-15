@@ -6,7 +6,6 @@ import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
@@ -32,16 +31,16 @@ class CourseIntegrationTests : IntegrationTests() {
             courses.size shouldBe 2
         }
 
-        "get courses for homepage with admin role" {
-            val coursesResponse = getCoursesHomepageWithAdminRole()
+        "get courses overview with admin role" {
+            val coursesResponse = getCoursesOverviewWithAdminRole()
             coursesResponse.statusCode shouldBe HttpStatus.OK
 
             val courses = coursesResponse.body!!
             courses.size shouldBe 2
         }
 
-        "get courses for homepage with user role" {
-            val coursesResponse = getCoursesHomepageWithUserRole()
+        "get courses overview with user role" {
+            val coursesResponse = getCoursesOverviewWithUserRole()
             coursesResponse.statusCode shouldBe HttpStatus.OK
 
             val courses = coursesResponse.body!!
@@ -117,12 +116,12 @@ class CourseIntegrationTests : IntegrationTests() {
         return restTemplate.getForEntity<Unit>("/course").statusCode shouldBe HttpStatus.UNAUTHORIZED
     }
 
-    private fun getCoursesHomepageWithAdminRole(): ResponseEntity<List<CourseHomepageDto>> {
-        return restWithAdminRole().getForEntity("/course/home-page")
+    private fun getCoursesOverviewWithAdminRole(): ResponseEntity<List<CourseOverviewDto>> {
+        return restWithAdminRole().getForEntity("/course/overview")
     }
 
-    private fun getCoursesHomepageWithUserRole(): ResponseEntity<List<CourseHomepageDto>> {
-        return restWithUserRole().getForEntity("/course/home-page")
+    private fun getCoursesOverviewWithUserRole(): ResponseEntity<List<CourseOverviewDto>> {
+        return restWithUserRole().getForEntity("/course/overview")
     }
 
     private fun getCourse(courseId: Long): CourseDto {

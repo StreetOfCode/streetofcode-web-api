@@ -1,6 +1,6 @@
 INSERT INTO author (id, name, description, url) VALUES
 (author_id_seq.nextval, 'Jakub', 'Jahič', 'http://streetofcode.sk/wp-content/uploads/2020/03/00100lPORTRAIT_00100_BURST20190815135005128_COVER1.jpg' ),
-(author_id_seq.nextval, 'Gabo', 'Kerekeš', 'url' );
+(author_id_seq.nextval, 'Gabo', 'Kerekeš', 'http://streetofcode.sk/wp-content/uploads/2021/05/Frame-9.png' );
 
 INSERT INTO difficulty (id, name, skill_level) VALUES
 (difficulty_id_seq.nextval, 'Začiatočník', 1),
@@ -8,8 +8,8 @@ INSERT INTO difficulty (id, name, skill_level) VALUES
 (difficulty_id_seq.nextval, 'Pokročilý', 3);
 
 INSERT INTO course (id, author_id, difficulty_id, name, short_description, long_description, image_url, status, created_at, updated_at) VALUES
-(course_id_seq.nextval, 1, 1, 'Informatika 101', 'Uvod do informatiky', 'Tento kurz ta nauci lorem ipsum', 'http://streetofcode.sk/wp-content/uploads/2020/03/screen-coding-programming-web-design-2061168.jpg', 'PUBLIC', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(course_id_seq.nextval, 2, 2, 'Kryptografia', 'Uvod do kryptografie', 'Jeden z tych lepsich kurzov o kryptografii', null, 'DRAFT', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
+(course_id_seq.nextval, 1, 1, 'Informatika 101', 'Úvod do informatiky a programovania', 'Tento kurz ta nauci lorem ipsum', 'http://streetofcode.sk/wp-content/uploads/2022/04/python-logo.png', 'PUBLIC', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(course_id_seq.nextval, 2, 2, 'Kryptografia', 'Úvod do kryptografie', 'Jeden z tych lepsich kurzov o kryptografii', 'http://streetofcode.sk/wp-content/uploads/2022/04/kotlin-logo.png', 'DRAFT', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
 INSERT INTO chapter (id, course_id, name, chapter_order, created_at, updated_at) VALUES
 (chapter_id_seq.nextval, 1, 'Uvodna kapitolka do informatiky', 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),

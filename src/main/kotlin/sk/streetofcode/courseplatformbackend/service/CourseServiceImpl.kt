@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.CourseReviewService
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseHomepageDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
@@ -23,7 +22,6 @@ import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Course
 import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import sk.streetofcode.courseplatformbackend.model.toCourseDto
-import sk.streetofcode.courseplatformbackend.model.toCourseHomepage
 import sk.streetofcode.courseplatformbackend.model.toCourseMy
 import sk.streetofcode.courseplatformbackend.model.toCourseOverview
 import java.time.OffsetDateTime
@@ -112,18 +110,18 @@ class CourseServiceImpl(
         return course
     }
 
-    override fun getPublicCoursesHomepage(): List<CourseHomepageDto> {
+    override fun getPublicCoursesOverview(): List<CourseOverviewDto> {
         return courseRepository
             .findAll()
             .filter { CourseStatus.PUBLIC == it.status }
-            .map { it.toCourseHomepage(courseReviewService.getCourseReviewsOverview(it.id!!)) }
+            .map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
             .toList()
     }
 
-    override fun getAllCoursesHomepage(): List<CourseHomepageDto> {
+    override fun getAllCoursesOverview(): List<CourseOverviewDto> {
         return courseRepository
             .findAll()
-            .map { it.toCourseHomepage(courseReviewService.getCourseReviewsOverview(it.id!!)) }
+            .map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
             .toList()
     }
 
