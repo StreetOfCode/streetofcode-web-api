@@ -2,10 +2,10 @@ INSERT INTO author (id, name, description, url) VALUES
 (author_id_seq.nextval, 'Jakub', 'Jahič', 'http://streetofcode.sk/wp-content/uploads/2020/03/00100lPORTRAIT_00100_BURST20190815135005128_COVER1.jpg' ),
 (author_id_seq.nextval, 'Gabo', 'Kerekeš', 'url' );
 
-INSERT INTO difficulty (id, name, description) VALUES
-(difficulty_id_seq.nextval, 'Beginner', 'Jednoduche'),
-(difficulty_id_seq.nextval, 'Intermediate', 'Pokrocile');
-
+INSERT INTO difficulty (id, name, skill_level) VALUES
+(difficulty_id_seq.nextval, 'Začiatočník', 1),
+(difficulty_id_seq.nextval, 'Mierne pokročilý', 2),
+(difficulty_id_seq.nextval, 'Pokročilý', 3);
 
 INSERT INTO course (id, author_id, difficulty_id, name, short_description, long_description, image_url, status, created_at, updated_at) VALUES
 (course_id_seq.nextval, 1, 1, 'Informatika 101', 'Uvod do informatiky', 'Tento kurz ta nauci lorem ipsum', 'http://streetofcode.sk/wp-content/uploads/2020/03/screen-coding-programming-web-design-2061168.jpg', 'PUBLIC', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),

@@ -18,39 +18,39 @@ class DifficultyIntegrationTests : IntegrationTests() {
             val difficultiesResponse = getDifficulties()
             difficultiesResponse.statusCode shouldBe HttpStatus.OK
             val contentRange = difficultiesResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("difficulty 0-2/2")
+            contentRange shouldBe listOf("difficulty 0-3/3")
 
             val difficulties = difficultiesResponse.body!!
-            difficulties.size shouldBe 2
+            difficulties.size shouldBe 3
         }
 
         "add difficulty" {
-            val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
+            val difficulty = addDifficulty(DifficultyAddRequest("testName", 1))
 
             val fetchedDifficulty = getDifficulty(difficulty.id!!)
             fetchedDifficulty.name shouldBe "testName"
-            fetchedDifficulty.description shouldBe "testDescription"
+            fetchedDifficulty.skillLevel shouldBe 1
         }
 
         "edit difficulty" {
-            editDifficultyNotFound(999, DifficultyEditRequest(1, "", ""))
+            editDifficultyNotFound(999, DifficultyEditRequest(1, "", 3))
 
-            val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
+            val difficulty = addDifficulty(DifficultyAddRequest("testName", 3))
 
             val editedDifficulty = editDifficulty(
                 difficulty.id!!,
-                DifficultyEditRequest(difficulty.id!!, "editedTestName", "editedTestDescription")
+                DifficultyEditRequest(difficulty.id!!, "editedTestName", 4)
             )
 
             val fetchedDifficulty = getDifficulty(editedDifficulty.id!!)
             fetchedDifficulty.id shouldBe difficulty.id
             fetchedDifficulty.courses shouldBe difficulty.courses
             fetchedDifficulty.name shouldBe "editedTestName"
-            fetchedDifficulty.description shouldBe "editedTestDescription"
+            fetchedDifficulty.skillLevel shouldBe 4
         }
 
         "delete difficulty" {
-            val difficulty = addDifficulty(DifficultyAddRequest("testName", "testDescription"))
+            val difficulty = addDifficulty(DifficultyAddRequest("testName", 2))
 
             val removedDifficulty = deleteDifficulty(difficulty.id!!)
             removedDifficulty.shouldBe(difficulty)

@@ -25,7 +25,7 @@ data class Difficulty(
     val name: String,
 
     @Column(nullable = false)
-    val description: String,
+    val skillLevel: Int,
 
     @OneToMany(
         mappedBy = "difficulty",
@@ -36,11 +36,11 @@ data class Difficulty(
     @JsonIgnore
     val courses: MutableSet<Course> = mutableSetOf()
 ) {
-    constructor(name: String, description: String) :
-        this(null, name, description, mutableSetOf())
+    constructor(name: String, skillLevel: Int) :
+        this(null, name, skillLevel, mutableSetOf())
 
-    constructor(id: Long, name: String, description: String) :
-        this(id, name, description, mutableSetOf())
+    constructor(id: Long, name: String, skillLevel: Int) :
+        this(id, name, skillLevel, mutableSetOf())
 
     override fun equals(other: Any?) = other is Difficulty && DifficultyEssential(this) == DifficultyEssential(other)
     override fun hashCode() = DifficultyEssential(this).hashCode()
@@ -49,10 +49,10 @@ data class Difficulty(
 
 private data class DifficultyEssential(
     val name: String,
-    val description: String
+    val skillLevel: Int
 ) {
     constructor(difficulty: Difficulty) : this(
         name = difficulty.name,
-        description = difficulty.description
+        skillLevel = difficulty.skillLevel
     )
 }
