@@ -48,7 +48,7 @@ data class Course(
     @Column(nullable = false)
     var shortDescription: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     var longDescription: String,
 
     @Column(nullable = true)
