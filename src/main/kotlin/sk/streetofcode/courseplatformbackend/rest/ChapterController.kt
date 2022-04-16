@@ -38,7 +38,6 @@ class ChapterController(val chapterService: ChapterService) {
                 val courseId = JSONObject(filter.get()).getLong("courseId")
                 chapterService.getByCourseId(courseId)
             } catch (e: JSONException) {
-                log.error("Problem with parsing filter parameter, check react-admin", e)
                 chapterService.getAll()
             }
 
