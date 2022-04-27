@@ -10,11 +10,13 @@ data class ChapterProgressOverviewDto(
     val id: Long,
     val name: String,
     val viewed: Boolean,
+    val chapterDurationMinutes: Int,
     val lectures: List<LectureProgressOverviewDto>
 )
 
 data class LectureProgressOverviewDto(
     val id: Long,
     val name: String,
-    val viewed: Boolean
+    val viewed: Boolean,
+    val videoDurationSeconds: Int
 )

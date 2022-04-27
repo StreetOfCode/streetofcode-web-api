@@ -158,7 +158,9 @@ fun Course.toCourseOverview(
                     lecture.videoDurationSeconds
                 )
             },
-            chapterDurationMinutes = chapter.lectures.sumBy { lecture -> TimeUnit.SECONDS.toMinutes(lecture.videoDurationSeconds.toLong()).toInt() }
+            chapterDurationMinutes = chapter.lectures.sumOf { lecture ->
+                TimeUnit.SECONDS.toMinutes(lecture.videoDurationSeconds.toLong()).toInt()
+            }
         )
     }.toSet()
 
@@ -174,7 +176,7 @@ fun Course.toCourseOverview(
         this.createdAt.truncatedTo(ChronoUnit.SECONDS),
         this.updatedAt.truncatedTo(ChronoUnit.SECONDS),
         chapters,
-        courseDurationMinutes = chapters.sumBy { chapter -> chapter.chapterDurationMinutes },
+        courseDurationMinutes = chapters.sumOf { chapter -> chapter.chapterDurationMinutes },
         reviewsOverview = courseReviewsOverview,
         userProgressMetadata = userProgressMetadata
     )

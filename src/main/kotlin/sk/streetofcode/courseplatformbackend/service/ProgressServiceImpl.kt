@@ -25,6 +25,7 @@ import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
 import sk.streetofcode.courseplatformbackend.model.progress.toUserProgressMetadataDto
 import java.time.OffsetDateTime
 import java.util.UUID
+import java.util.concurrent.TimeUnit
 
 @Service
 class ProgressServiceImpl(
@@ -93,11 +94,15 @@ class ProgressServiceImpl(
                 id = courseChapter.id!!,
                 name = courseChapter.name,
                 viewed = allLecturesViewedFromAllCourses.containsAll(courseChapter.lectures.map { lecture -> lecture.id!! }),
+                chapterDurationMinutes = courseChapter.lectures.sumOf { lecture ->
+                    TimeUnit.SECONDS.toMinutes(lecture.videoDurationSeconds.toLong()).toInt()
+                },
                 lectures = courseChapter.lectures.map { chapterLecture ->
                     LectureProgressOverviewDto(
                         id = chapterLecture.id!!,
                         name = chapterLecture.name,
-                        viewed = allLecturesViewedFromAllCourses.contains(chapterLecture.id)
+                        viewed = allLecturesViewedFromAllCourses.contains(chapterLecture.id),
+                        videoDurationSeconds = chapterLecture.videoDurationSeconds
                     )
                 }
             )
