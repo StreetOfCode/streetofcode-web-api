@@ -49,7 +49,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         "get course review" {
             setUserId(UUID.randomUUID())
 
-            val addedReview = addCourseReview(CourseReviewAddRequest(1, 4, "testText", "testUserName"))
+            val addedReview = addCourseReview(CourseReviewAddRequest(1, 4.5, "testText", "testUserName"))
 
             val receivedReview = getCourseReview(addedReview.id)
             receivedReview shouldBe addedReview
@@ -62,7 +62,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
             val courseReviewsBefore = getCourseReviews(courseId)
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
-            val addedReview = addCourseReview(CourseReviewAddRequest(courseId, 4, "testText", "testUserName"))
+            val addedReview = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
 
             val courseReviewsAfter = getCourseReviews(courseId)
 
@@ -77,15 +77,15 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "fail adding course review - non-existing course" {
-            failAddingCourseReview(CourseReviewAddRequest(0, 0, "", ""), HttpStatus.NOT_FOUND)
+            failAddingCourseReview(CourseReviewAddRequest(0, 0.0, "", ""), HttpStatus.NOT_FOUND)
         }
 
         "fail adding course review - invalid rating" {
-            failAddingCourseReview(CourseReviewAddRequest(1, 6, "", ""), HttpStatus.BAD_REQUEST)
+            failAddingCourseReview(CourseReviewAddRequest(1, 6.0, "", ""), HttpStatus.BAD_REQUEST)
         }
 
         "fail adding course review - user already added review for given course" {
-            failAddingCourseReview(CourseReviewAddRequest(1, 5, "", ""), HttpStatus.BAD_REQUEST)
+            failAddingCourseReview(CourseReviewAddRequest(1, 5.0, "", ""), HttpStatus.BAD_REQUEST)
         }
 
         "edit course review" {
@@ -93,15 +93,15 @@ class CourseReviewIntegrationTests : IntegrationTests() {
 
             val courseId = 1L
 
-            val reviewToEdit = addCourseReview(CourseReviewAddRequest(courseId, 4, "testText", "testUserName"))
+            val reviewToEdit = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
-            editCourseReview(reviewToEdit.id, CourseReviewEditRequest(5, "updatedText", "updatedUserName"))
+            editCourseReview(reviewToEdit.id, CourseReviewEditRequest(4.5, "updatedText", "updatedUserName"))
 
             val editedReview = getCourseReview(reviewToEdit.id)
             editedReview.id shouldBe reviewToEdit.id
             editedReview.courseId shouldBe reviewToEdit.courseId
-            editedReview.rating shouldBe 5
+            editedReview.rating shouldBe 4.5
             editedReview.text shouldBe "updatedText"
             editedReview.userName shouldBe "updatedUserName"
 
@@ -118,15 +118,15 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "fail editing course review - non-existing review" {
-            failEditingCourseReview(0, CourseReviewEditRequest(0, "", ""), HttpStatus.NOT_FOUND)
+            failEditingCourseReview(0, CourseReviewEditRequest(0.0, "", ""), HttpStatus.NOT_FOUND)
         }
 
         "fail editing course review - invalid rating" {
-            failEditingCourseReview(1, CourseReviewEditRequest(6, "", ""), HttpStatus.BAD_REQUEST)
+            failEditingCourseReview(1, CourseReviewEditRequest(6.0, "", ""), HttpStatus.BAD_REQUEST)
         }
 
         "fail editing course review - review not created by user" {
-            failEditingCourseReview(2, CourseReviewEditRequest(5, "", ""), HttpStatus.FORBIDDEN)
+            failEditingCourseReview(2, CourseReviewEditRequest(5.0, "", ""), HttpStatus.FORBIDDEN)
         }
 
         "delete course review" {
@@ -134,7 +134,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
 
             val courseId = 1L
 
-            val reviewToBeDeleted = addCourseReview(CourseReviewAddRequest(courseId, 4, "testText", "testUserName"))
+            val reviewToBeDeleted = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
             val deletedReview = deleteCourseReview(reviewToBeDeleted.id)
@@ -217,14 +217,14 @@ class CourseReviewIntegrationTests : IntegrationTests() {
     }
 
     // formula from https://math.stackexchange.com/a/957376
-    private fun addValueToAverage(originalAverage: Double, count: Long, value: Int) = originalAverage + ((value - originalAverage) / (count + 1))
+    private fun addValueToAverage(originalAverage: Double, count: Long, value: Double) = originalAverage + ((value - originalAverage) / (count + 1))
 
     // formula from https://math.stackexchange.com/a/1567345
-    private fun removeValueFromAverage(originalAverage: Double, count: Long, value: Int) = (originalAverage * count - value) / (count - 1)
+    private fun removeValueFromAverage(originalAverage: Double, count: Long, value: Double) = (originalAverage * count - value) / (count - 1)
 
     // used to calculate new expected average rating - I found no other way to test it and it seems like a
     // reasonable thing to test
-    private fun replaceValueInAverage(originalAverage: Double, count: Long, oldValue: Int, newValue: Int): Double {
+    private fun replaceValueInAverage(originalAverage: Double, count: Long, oldValue: Double, newValue: Double): Double {
         // we first add the new value to the average
         val newAverageWithNewValueAdded = addValueToAverage(originalAverage, count, newValue)
         // then we subtract the original value from the new average

@@ -82,7 +82,7 @@ class CourseReviewServiceImpl(
         return review.toCourseReviewDto()
     }
 
-    private fun validateRating(rating: Int) {
+    private fun validateRating(rating: Double) {
         if (rating < 0 || rating > 5) {
             throw BadRequestException("Rating must be between 0 and 5")
         }

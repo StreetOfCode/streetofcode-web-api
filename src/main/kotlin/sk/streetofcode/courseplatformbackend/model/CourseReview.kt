@@ -28,7 +28,7 @@ data class CourseReview(
     var courseId: Long,
 
     @Column(nullable = false)
-    var rating: Int,
+    var rating: Double,
 
     @Column(nullable = true, columnDefinition = "TEXT")
     var text: String?,
@@ -42,7 +42,7 @@ data class CourseReview(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(userId: UUID, courseId: Long, rating: Int, text: String?, userName: String?) :
+    constructor(userId: UUID, courseId: Long, rating: Double, text: String?, userName: String?) :
         this(null, userId, courseId, rating, text, userName, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is CourseReview && CourseReviewEssential(this) == CourseReviewEssential(other)
