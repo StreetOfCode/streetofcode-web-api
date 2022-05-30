@@ -57,8 +57,7 @@ class SwaggerConfig(val swaggerProperties: SwaggerProperties) {
 
     private fun grantTypes(): List<GrantType> {
         val tokenRequestConsumer =
-            Consumer<TokenRequestEndpointBuilder> {
-                    tokenRequestEndpointBuilder ->
+            Consumer<TokenRequestEndpointBuilder> { tokenRequestEndpointBuilder ->
                 tokenRequestEndpointBuilder.url(swaggerProperties.authorizeUri)
             }
 

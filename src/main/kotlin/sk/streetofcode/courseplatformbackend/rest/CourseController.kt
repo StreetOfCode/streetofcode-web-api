@@ -18,6 +18,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAdmin
+import sk.streetofcode.courseplatformbackend.configuration.annotation.IsAuthenticated
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 @RestController
@@ -84,11 +85,8 @@ class CourseController(val courseService: CourseService, val authenticationServi
     }
 
     @GetMapping("/my-courses")
+    @IsAuthenticated
     fun getMyCourses(): ResponseEntity<List<CourseMyDto>> {
-        return if (!authenticationService.isAuthenticated()) {
-            ResponseEntity.ok(listOf())
-        } else {
-            ResponseEntity.ok(courseService.getMyCourses(authenticationService.getUserId()))
-        }
+        return ResponseEntity.ok(courseService.getMyCourses(authenticationService.getUserId()))
     }
 }

@@ -34,6 +34,7 @@ open class IntegrationTests : StringSpec() {
         beforeTest {
             Mockito.`when`(authenticationService.isAdmin()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isUser()).thenCallRealMethod()
+            Mockito.`when`(authenticationService.isAuthenticated()).thenCallRealMethod()
             setUserId(UUID.fromString("bb9e0186-aaae-11eb-bcbc-0242ac130002"))
         }
     }
