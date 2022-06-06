@@ -3,7 +3,6 @@ package sk.streetofcode.courseplatformbackend.model.quiz
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizDto
 import sk.streetofcode.courseplatformbackend.model.Lecture
-import sk.streetofcode.courseplatformbackend.model.toLectureDto
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import javax.persistence.*
@@ -18,7 +17,7 @@ data class Quiz(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id")
-    val lecture: Lecture,
+    var lecture: Lecture,
 
     @Column(nullable = false)
     var title: String,
@@ -40,8 +39,8 @@ data class Quiz(
     @OrderBy("question_order")
     var questions: MutableSet<QuizQuestion>
 ) {
-    constructor(lecture: Lecture, title: String, subtitle: String?, createdAt: OffsetDateTime, finishedMessage: String?) :
-        this(null, lecture, title, subtitle, createdAt, finishedMessage, mutableSetOf())
+    constructor(lecture: Lecture, title: String, subtitle: String?, finishedMessage: String?) :
+        this(null, lecture, title, subtitle, OffsetDateTime.now(), finishedMessage, mutableSetOf())
 
     override fun equals(other: Any?) = other is Quiz && QuizEssential(this) == QuizEssential(other)
     override fun hashCode() = QuizEssential(this).hashCode()
@@ -67,7 +66,7 @@ private data class QuizEssential(
 fun Quiz.toQuizDto(): QuizDto {
     return QuizDto(
         id = id!!,
-        lecture = lecture.toLectureDto(),
+        lectureId = lecture.id!!,
         title = title,
         subtitle = subtitle,
         createdAt = createdAt.truncatedTo(ChronoUnit.SECONDS),

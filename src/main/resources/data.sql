@@ -58,9 +58,9 @@ INSERT INTO quiz_question(id, quiz_id, question_order, text, type) VALUES
 
 INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (quiz_question_answer_id_seq.nextval, 1, '1', false),
-(quiz_question_answer_id_seq.nextval, 1, '2', true),
+(quiz_question_answer_id_seq.nextval, 1, '2', false),
 (quiz_question_answer_id_seq.nextval, 1, '3', false),
-(quiz_question_answer_id_seq.nextval, 1, '4', false),
+(quiz_question_answer_id_seq.nextval, 1, '4', true),
 (quiz_question_answer_id_seq.nextval, 2, '1', false),
 (quiz_question_answer_id_seq.nextval, 2, '2', false),
 (quiz_question_answer_id_seq.nextval, 2, '3', false),
