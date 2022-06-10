@@ -8,6 +8,7 @@ data class CourseAddRequest(
     val name: String,
     val shortDescription: String,
     val longDescription: String,
+    val resources: String? = null,
     val trailerUrl: String? = null,
     val thumbnailUrl: String? = null,
     val iconUrl: String,

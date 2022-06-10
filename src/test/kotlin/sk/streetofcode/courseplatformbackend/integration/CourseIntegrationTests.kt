@@ -49,7 +49,7 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get course overview" {
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
 
             getCourseOverviewWithUserRoleThrowsAuthorizationException(course.id)
 
@@ -58,6 +58,7 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
+            fetchedCourse.resources shouldBe "resources"
             fetchedCourse.trailerUrl shouldBe "trailerUrl"
             fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
             fetchedCourse.iconUrl shouldBe "iconUrl"
@@ -67,13 +68,14 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "add course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
+            fetchedCourse.resources shouldBe null
             fetchedCourse.trailerUrl shouldBe "trailerUrl"
             fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
             fetchedCourse.iconUrl shouldBe "iconUrl"
@@ -81,19 +83,20 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "edit course" {
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
             val editedCourse = editCourse(
                 course.id,
-                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
+                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
             )
 
             val fetchedCourse = getCourse(editedCourse.id)
             fetchedCourse.name shouldBe "editedTestName"
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
+            fetchedCourse.resources shouldBe "editedResources"
             fetchedCourse.trailerUrl shouldBe "editedTrailerUrl"
             fetchedCourse.thumbnailUrl shouldBe "editedThumbnailUrl"
             fetchedCourse.iconUrl shouldBe "editedIconUrl"
@@ -101,7 +104,7 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "delete course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", null, "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)

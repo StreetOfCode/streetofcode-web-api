@@ -51,6 +51,12 @@ data class Course(
     @Column(nullable = false, columnDefinition = "TEXT")
     var longDescription: String,
 
+    /***
+     * Course can have resources, which is a readme text containing links and stuff
+     */
+    @Column(nullable = true, columnDefinition = "TEXT")
+    var resources: String? = null,
+
     @Column(nullable = true)
     var trailerUrl: String? = null,
 
@@ -81,8 +87,8 @@ data class Course(
     @Column(nullable = false, columnDefinition = "integer default 0")
     var lecturesCount: Int
 ) {
-    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
-        this(null, author, difficulty, name, shortDescription, longDescription, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
+    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, resources: String?, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
+        this(null, author, difficulty, name, shortDescription, longDescription, resources, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()
@@ -123,6 +129,7 @@ fun Course.toCourseDto(): CourseDto {
         this.name,
         this.shortDescription,
         this.longDescription,
+        this.resources,
         this.trailerUrl,
         this.thumbnailUrl,
         this.iconUrl,
@@ -177,6 +184,7 @@ fun Course.toCourseOverview(
         this.name,
         this.shortDescription,
         this.longDescription,
+        this.resources,
         this.trailerUrl,
         this.thumbnailUrl,
         this.iconUrl,

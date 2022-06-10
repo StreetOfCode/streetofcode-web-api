@@ -72,6 +72,7 @@ class CourseServiceImpl(
                         addRequest.name,
                         addRequest.shortDescription,
                         addRequest.longDescription,
+                        addRequest.resources,
                         addRequest.trailerUrl,
                         addRequest.thumbnailUrl,
                         addRequest.iconUrl,
@@ -106,6 +107,7 @@ class CourseServiceImpl(
             existingCourse.name = editRequest.name
             existingCourse.shortDescription = editRequest.shortDescription
             existingCourse.longDescription = editRequest.longDescription
+            existingCourse.resources = editRequest.resources
             existingCourse.trailerUrl = editRequest.trailerUrl
             existingCourse.thumbnailUrl = editRequest.thumbnailUrl
             existingCourse.iconUrl = editRequest.iconUrl
