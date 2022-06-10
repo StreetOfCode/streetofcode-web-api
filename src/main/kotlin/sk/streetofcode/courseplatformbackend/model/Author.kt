@@ -83,7 +83,7 @@ fun Pair<Course, CourseReviewsOverviewDto>.toAuthorCourseOverviewDto(): AuthorCo
         course.name,
         course.shortDescription,
         course.longDescription,
-        course.imageUrl,
+        course.iconUrl,
         overview
     )
 }

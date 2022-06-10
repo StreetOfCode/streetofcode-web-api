@@ -52,7 +52,13 @@ data class Course(
     var longDescription: String,
 
     @Column(nullable = true)
-    var imageUrl: String? = null,
+    var trailerUrl: String? = null,
+
+    @Column(nullable = true)
+    var thumbnailUrl: String? = null,
+
+    @Column(nullable = false)
+    var iconUrl: String,
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -75,8 +81,8 @@ data class Course(
     @Column(nullable = false, columnDefinition = "integer default 0")
     var lecturesCount: Int
 ) {
-    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, imageUrl: String?, status: CourseStatus) :
-        this(null, author, difficulty, name, shortDescription, longDescription, imageUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
+    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
+        this(null, author, difficulty, name, shortDescription, longDescription, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()
@@ -117,7 +123,9 @@ fun Course.toCourseDto(): CourseDto {
         this.name,
         this.shortDescription,
         this.longDescription,
-        this.imageUrl,
+        this.trailerUrl,
+        this.thumbnailUrl,
+        this.iconUrl,
         this.status,
         this.chapters.map { it.toCourseChapterDto() }.toSet(),
         this.createdAt.truncatedTo(ChronoUnit.SECONDS),
@@ -136,7 +144,7 @@ fun Course.toCourseMy(
         this.shortDescription,
         this.author,
         this.difficulty,
-        this.imageUrl,
+        this.iconUrl,
         courseReviewsOverview,
         userProgressMetadata
     )
@@ -169,7 +177,9 @@ fun Course.toCourseOverview(
         this.name,
         this.shortDescription,
         this.longDescription,
-        this.imageUrl,
+        this.trailerUrl,
+        this.thumbnailUrl,
+        this.iconUrl,
         this.status,
         this.author,
         this.difficulty,

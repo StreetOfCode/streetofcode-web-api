@@ -9,6 +9,8 @@ data class CourseEditRequest(
     val name: String,
     val shortDescription: String,
     val longDescription: String,
-    val imageUrl: String? = null,
+    val trailerUrl: String? = null,
+    val thumbnailUrl: String? = null,
+    val iconUrl: String,
     val status: CourseStatus
 )

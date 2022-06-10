@@ -10,7 +10,7 @@ data class CourseMyDto(
     val shortDescription: String,
     val author: Author? = null,
     val difficulty: Difficulty? = null,
-    val imageUrl: String? = null,
+    val iconUrl: String? = null,
     val reviewsOverview: CourseReviewsOverviewDto,
     val userProgressMetadata: UserProgressMetadataDto
 )

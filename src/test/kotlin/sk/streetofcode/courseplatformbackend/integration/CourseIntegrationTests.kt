@@ -49,7 +49,7 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get course overview" {
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.DRAFT))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
 
             getCourseOverviewWithUserRoleThrowsAuthorizationException(course.id)
 
@@ -58,44 +58,50 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
-            fetchedCourse.imageUrl shouldBe "imageUrl"
+            fetchedCourse.trailerUrl shouldBe "trailerUrl"
+            fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
+            fetchedCourse.iconUrl shouldBe "iconUrl"
             fetchedCourse.status shouldBe CourseStatus.DRAFT
             fetchedCourse.author!!.id shouldBe 1
             fetchedCourse.difficulty!!.id shouldBe 1
         }
 
         "add course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
-            fetchedCourse.imageUrl shouldBe "imageUrl"
+            fetchedCourse.trailerUrl shouldBe "trailerUrl"
+            fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
+            fetchedCourse.iconUrl shouldBe "iconUrl"
             fetchedCourse.status shouldBe CourseStatus.PRIVATE
         }
 
         "edit course" {
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "imageUrl", CourseStatus.PUBLIC))
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PUBLIC))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
             val editedCourse = editCourse(
                 course.id,
-                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedImageUrl", CourseStatus.PRIVATE)
+                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
             )
 
             val fetchedCourse = getCourse(editedCourse.id)
             fetchedCourse.name shouldBe "editedTestName"
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
-            fetchedCourse.imageUrl shouldBe "editedImageUrl"
+            fetchedCourse.trailerUrl shouldBe "editedTrailerUrl"
+            fetchedCourse.thumbnailUrl shouldBe "editedThumbnailUrl"
+            fetchedCourse.iconUrl shouldBe "editedIconUrl"
             fetchedCourse.status shouldBe CourseStatus.PRIVATE
         }
 
         "delete course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "imageUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)

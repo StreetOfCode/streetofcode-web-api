@@ -65,7 +65,19 @@ class CourseServiceImpl(
 
         try {
             return courseRepository
-                .save(Course(author, difficulty, addRequest.name, addRequest.shortDescription, addRequest.longDescription, addRequest.imageUrl, addRequest.status))
+                .save(
+                    Course(
+                        author,
+                        difficulty,
+                        addRequest.name,
+                        addRequest.shortDescription,
+                        addRequest.longDescription,
+                        addRequest.trailerUrl,
+                        addRequest.thumbnailUrl,
+                        addRequest.iconUrl,
+                        addRequest.status
+                    )
+                )
                 .toCourseDto()
         } catch (e: Exception) {
             log.error("Problem with saving course to db", e)
@@ -94,7 +106,9 @@ class CourseServiceImpl(
             existingCourse.name = editRequest.name
             existingCourse.shortDescription = editRequest.shortDescription
             existingCourse.longDescription = editRequest.longDescription
-            existingCourse.imageUrl = editRequest.imageUrl
+            existingCourse.trailerUrl = editRequest.trailerUrl
+            existingCourse.thumbnailUrl = editRequest.thumbnailUrl
+            existingCourse.iconUrl = editRequest.iconUrl
             existingCourse.status = editRequest.status
             existingCourse.updatedAt = OffsetDateTime.now()
             return courseRepository.save(existingCourse).toCourseDto()

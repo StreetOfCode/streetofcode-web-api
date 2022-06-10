@@ -16,6 +16,6 @@ data class AuthorCourseOverviewDto(
     val name: String,
     val shortDescription: String,
     val longDescription: String,
-    val imageUrl: String? = null,
+    val iconUrl: String,
     var reviewsOverview: CourseReviewsOverviewDto
 )
