@@ -9,6 +9,7 @@ import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
@@ -36,7 +37,8 @@ class CourseServiceImpl(
     val courseReviewService: CourseReviewService,
     // Use Lazy to prevent circular dependency error
     @Lazy
-    val progressService: ProgressServiceImpl
+    val progressService: ProgressServiceImpl,
+    val authenticationService: AuthenticationService
 ) : CourseService {
 
     companion object {
@@ -130,19 +132,36 @@ class CourseServiceImpl(
         return courseRepository
             .findAll()
             .filter { CourseStatus.PUBLIC == it.status }
-            .map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
+            .map {
+                it.toCourseOverview(
+                    courseReviewService.getCourseReviewsOverview(it.id!!),
+                    getProgressMetadata(it.id)
+                )
+            }
             .toList()
     }
 
     override fun getAllCoursesOverview(): List<CourseOverviewDto> {
         return courseRepository
             .findAll()
-            .map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
+            .map {
+                it.toCourseOverview(
+                    courseReviewService.getCourseReviewsOverview(it.id!!),
+                    getProgressMetadata(it.id)
+                )
+            }
             .toList()
     }
 
-    override fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
+    private fun getProgressMetadata(courseId: Long): UserProgressMetadataDto? {
+        return if (authenticationService.isAuthenticated()) {
+            progressService.getUserProgressMetadataOrNull(authenticationService.getUserId(), courseId)
+        } else {
+            null
+        }
+    }
 
+    override fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
         val course = courseRepository
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
@@ -159,7 +178,6 @@ class CourseServiceImpl(
     }
 
     override fun getAnyCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
-
         val course = courseRepository
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
