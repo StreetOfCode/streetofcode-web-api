@@ -59,8 +59,11 @@ data class Lecture(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime,
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "quiz_id", nullable = true)
+    @OneToMany(
+        mappedBy = "lecture",
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.LAZY
+    )
     var quiz: MutableSet<Quiz>? = null
 ) {
     constructor(
