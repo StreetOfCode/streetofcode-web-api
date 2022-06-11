@@ -6,6 +6,6 @@ data class QuizQuestionUserAnswerDto(
     val id: Long,
     val question: QuizQuestionDto,
     val answer: QuizQuestionAnswerDto,
-    val userId: UUID,
+    val userId: String,
     val tryCount: Int
 )

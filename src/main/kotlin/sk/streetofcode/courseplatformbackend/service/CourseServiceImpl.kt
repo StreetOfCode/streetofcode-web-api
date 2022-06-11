@@ -26,7 +26,6 @@ import sk.streetofcode.courseplatformbackend.model.toCourseDto
 import sk.streetofcode.courseplatformbackend.model.toCourseMy
 import sk.streetofcode.courseplatformbackend.model.toCourseOverview
 import java.time.OffsetDateTime
-import java.util.UUID
 
 @Service
 class CourseServiceImpl(
@@ -161,7 +160,7 @@ class CourseServiceImpl(
         }
     }
 
-    override fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
+    override fun getPublicCourseOverview(userId: String?, id: Long): CourseOverviewDto {
         val course = courseRepository
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
@@ -177,7 +176,7 @@ class CourseServiceImpl(
         }
     }
 
-    override fun getAnyCourseOverview(userId: UUID?, id: Long): CourseOverviewDto {
+    override fun getAnyCourseOverview(userId: String?, id: Long): CourseOverviewDto {
         val course = courseRepository
             .findById(id)
             .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
@@ -186,7 +185,7 @@ class CourseServiceImpl(
         return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(id), progress)
     }
 
-    override fun getMyCourses(userId: UUID): List<CourseMyDto> {
+    override fun getMyCourses(userId: String): List<CourseMyDto> {
         val myCourseIds = progressService.getStartedCourseIds(userId)
         return myCourseIds
             .map { courseId ->

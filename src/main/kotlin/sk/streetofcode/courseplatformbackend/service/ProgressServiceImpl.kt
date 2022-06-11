@@ -24,7 +24,6 @@ import sk.streetofcode.courseplatformbackend.model.progress.ProgressStatus
 import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
 import sk.streetofcode.courseplatformbackend.model.progress.toUserProgressMetadataDto
 import java.time.OffsetDateTime
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 @Service
@@ -41,7 +40,7 @@ class ProgressServiceImpl(
         private val log = LoggerFactory.getLogger(ProgressServiceImpl::class.java)
     }
 
-    override fun updateProgress(userId: UUID, lectureId: Long) {
+    override fun updateProgress(userId: String, lectureId: Long) {
         // if this lecture is already viewed then don't save it again
         if (progressLectureRepository.findByUserIdAndLectureId(userId, lectureId).isPresent) {
             return
@@ -65,7 +64,7 @@ class ProgressServiceImpl(
         }
     }
 
-    override fun resetProgress(userId: UUID, resetProgressDto: ResetProgressDto) {
+    override fun resetProgress(userId: String, resetProgressDto: ResetProgressDto) {
         when {
             resetProgressDto.lectureId != null -> {
                 resetLectureProgress(userId, resetProgressDto.lectureId)
@@ -82,7 +81,7 @@ class ProgressServiceImpl(
         }
     }
 
-    override fun getProgressOverview(userId: UUID, courseId: Long): CourseProgressOverviewDto {
+    override fun getProgressOverview(userId: String, courseId: Long): CourseProgressOverviewDto {
         val course = courseRepository.findById(courseId)
             .orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
 
@@ -116,7 +115,7 @@ class ProgressServiceImpl(
         )
     }
 
-    override fun getUserProgressMetadata(userId: UUID, courseId: Long): UserProgressMetadataDto {
+    override fun getUserProgressMetadata(userId: String, courseId: Long): UserProgressMetadataDto {
         val metadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
             .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
         val courseLecturesCount = courseService.get(courseId).lecturesCount
@@ -129,7 +128,7 @@ class ProgressServiceImpl(
         return metadata.toUserProgressMetadataDto(courseLecturesCount, firstUnseenLecture?.chapter?.id, firstUnseenLecture?.id)
     }
 
-    override fun getUserProgressMetadataOrNull(userId: UUID, courseId: Long): UserProgressMetadataDto? {
+    override fun getUserProgressMetadataOrNull(userId: String, courseId: Long): UserProgressMetadataDto? {
         return try {
             getUserProgressMetadata(userId, courseId)
         } catch (e: ResourceNotFoundException) {
@@ -139,11 +138,11 @@ class ProgressServiceImpl(
         }
     }
 
-    override fun getStartedCourseIds(userId: UUID): List<Long> {
+    override fun getStartedCourseIds(userId: String): List<Long> {
         return progressMetadataRepository.getStartedCourseIds(userId)
     }
 
-    private fun resetLectureProgress(userId: UUID, lectureId: Long) {
+    private fun resetLectureProgress(userId: String, lectureId: Long) {
         val lecture = lectureService.get(lectureId)
         val courseId = lecture.course.id
 
@@ -160,7 +159,7 @@ class ProgressServiceImpl(
         progressMetadataRepository.save(progressMetadata)
     }
 
-    private fun resetChapterProgress(userId: UUID, chapterId: Long) {
+    private fun resetChapterProgress(userId: String, chapterId: Long) {
         val chapter = chapterService.get(chapterId)
         val courseId = chapter.course.id
         val lectureIds = chapter.lectures.map { lectureDto -> lectureDto.id }
@@ -177,7 +176,7 @@ class ProgressServiceImpl(
         progressMetadataRepository.save(progressMetadata)
     }
 
-    private fun resetCourseProgress(userId: UUID, courseId: Long) {
+    private fun resetCourseProgress(userId: String, courseId: Long) {
         val lectureIds = chapterService.getByCourseId(courseId).flatMap { chapterDto -> chapterDto.lectures }
             .map { lectureDto -> lectureDto.id }
 
@@ -223,7 +222,7 @@ class ProgressServiceImpl(
         }
     }
 
-    private fun getFirstUnseenLecture(userId: UUID, course: Course): LectureDto? {
+    private fun getFirstUnseenLecture(userId: String, course: Course): LectureDto? {
         val courseLectureIds = course.chapters
             .flatMap { chapter -> chapter.lectures.map { lecture -> lecture.id!! } }
         val seenLectureIds = progressLectureRepository.findAllByUserId(userId)

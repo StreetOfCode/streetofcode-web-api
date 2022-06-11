@@ -3,7 +3,6 @@ package sk.streetofcode.courseplatformbackend.model.progress
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import java.time.OffsetDateTime
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -22,7 +21,7 @@ data class UserProgressMetadata(
     val id: Long? = null,
 
     @Column(nullable = false)
-    val userId: UUID,
+    val userId: String,
 
     @Column(nullable = false)
     val courseId: Long,
@@ -43,7 +42,7 @@ data class UserProgressMetadata(
     @Column(nullable = true, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var finishedAt: OffsetDateTime? = null
 ) {
-    constructor(userId: UUID, courseId: Long, lecturesViewed: Int) :
+    constructor(userId: String, courseId: Long, lecturesViewed: Int) :
         this(null, userId, courseId, lecturesViewed, ProgressStatus.IN_PROGRESS, OffsetDateTime.now(), OffsetDateTime.now(), null)
 
     override fun equals(other: Any?) =
@@ -59,7 +58,7 @@ enum class ProgressStatus {
 }
 
 private data class UserProgressMetadataEssential(
-    val userId: UUID,
+    val userId: String,
     val courseId: Long,
     val lecturesViewed: Int,
     val status: ProgressStatus,

@@ -1,10 +1,8 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import org.hibernate.annotations.Type
 import sk.streetofcode.courseplatformbackend.api.dto.LectureCommentDto
 import java.time.OffsetDateTime
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -24,8 +22,7 @@ data class LectureComment(
     val id: Long? = null,
 
     @Column(nullable = false)
-    @Type(type = "uuid-char")
-    val userId: UUID,
+    val userId: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
@@ -43,7 +40,7 @@ data class LectureComment(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(userId: UUID, lecture: Lecture, userName: String, commentText: String) :
+    constructor(userId: String, lecture: Lecture, userName: String, commentText: String) :
         this(null, userId, lecture, userName, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
@@ -54,7 +51,7 @@ data class LectureComment(
 }
 
 private data class LectureCommentEssential(
-    val userId: UUID,
+    val userId: String,
     val userName: String,
     val commentText: String,
     val lectureId: Long,

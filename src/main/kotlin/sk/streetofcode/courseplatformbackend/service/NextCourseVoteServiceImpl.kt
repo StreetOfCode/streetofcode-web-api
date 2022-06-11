@@ -10,7 +10,6 @@ import sk.streetofcode.courseplatformbackend.db.repository.vote.NextCourseVoteOp
 import sk.streetofcode.courseplatformbackend.db.repository.vote.NextCourseVoteRepository
 import sk.streetofcode.courseplatformbackend.model.vote.NextCourseVote
 import sk.streetofcode.courseplatformbackend.model.vote.NextCourseVoteOption
-import java.util.UUID
 
 @Service
 class NextCourseVoteServiceImpl(
@@ -22,7 +21,7 @@ class NextCourseVoteServiceImpl(
         private val log = LoggerFactory.getLogger(DifficultyServiceImpl::class.java)
     }
 
-    override fun getOptions(userId: UUID?): List<NextCourseVoteOption> {
+    override fun getOptions(userId: String?): List<NextCourseVoteOption> {
         if (userId != null && nextCourseVoteRepository.existsByUserId(userId)) {
             throw PreconditionFailedException("User has already voted")
         }
@@ -30,7 +29,7 @@ class NextCourseVoteServiceImpl(
         return nextCourseOptionRepository.findAll().toList()
     }
 
-    override fun addVote(userId: UUID?, voteRequest: VoteNextCoursesRequest) {
+    override fun addVote(userId: String?, voteRequest: VoteNextCoursesRequest) {
         try {
             nextCourseVoteRepository.saveAll(voteRequest.courseVoteOptionIds.map { NextCourseVote(userId, it) })
         } catch (e: Exception) {

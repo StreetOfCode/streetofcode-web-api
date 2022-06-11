@@ -6,7 +6,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.exception.InvalidAuthenticationException
-import java.util.UUID
 
 @Component
 class AuthenticationService {
@@ -36,7 +35,7 @@ class AuthenticationService {
 
     private fun String.toRole() = "ROLE_$this"
 
-    fun getUserId(): UUID {
+    fun getUserId(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         assert(authentication is AnonymousAuthenticationToken)
 
@@ -46,6 +45,6 @@ class AuthenticationService {
             throw InvalidAuthenticationException("")
         }
 
-        return UUID.fromString(claims[SUB_CLAIM_NAME] as String)
+        return claims[SUB_CLAIM_NAME] as String
     }
 }

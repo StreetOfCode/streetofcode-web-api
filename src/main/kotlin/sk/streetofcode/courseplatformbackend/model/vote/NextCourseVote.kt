@@ -1,8 +1,6 @@
 package sk.streetofcode.courseplatformbackend.model.vote
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import org.hibernate.annotations.Type
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -19,13 +17,12 @@ data class NextCourseVote(
     val id: Long? = null,
 
     @Column(nullable = true)
-    @Type(type = "uuid-char")
-    val userId: UUID? = null,
+    val userId: String? = null,
 
     @Column(nullable = false)
     var nextCourseOptionId: Long
 ) {
-    constructor(userId: UUID?, nextCourseOptionId: Long) : this(null, userId, nextCourseOptionId)
+    constructor(userId: String?, nextCourseOptionId: Long) : this(null, userId, nextCourseOptionId)
 
     override fun equals(other: Any?) =
         other is NextCourseVote && NextCourseVoteEssential(this) == NextCourseVoteEssential(
@@ -38,7 +35,7 @@ data class NextCourseVote(
 }
 
 private data class NextCourseVoteEssential(
-    val userId: UUID?,
+    val userId: String?,
     val nextCourseOptionId: Long
 ) {
     constructor(nextCourseVote: NextCourseVote) : this(

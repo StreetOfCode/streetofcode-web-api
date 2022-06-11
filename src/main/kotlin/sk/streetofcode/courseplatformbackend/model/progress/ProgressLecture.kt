@@ -2,7 +2,6 @@ package sk.streetofcode.courseplatformbackend.model.progress
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.time.OffsetDateTime
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -19,7 +18,7 @@ data class ProgressLecture(
     val id: Long? = null,
 
     @Column(nullable = false)
-    val userId: UUID,
+    val userId: String,
 
     @Column(nullable = false)
     val lectureId: Long,
@@ -27,7 +26,7 @@ data class ProgressLecture(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime
 ) {
-    constructor(userId: UUID, lectureId: Long) :
+    constructor(userId: String, lectureId: Long) :
         this(null, userId, lectureId, OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is ProgressLecture && ProgressLectureEssential(this) == ProgressLectureEssential(other)
@@ -36,7 +35,7 @@ data class ProgressLecture(
 }
 
 private data class ProgressLectureEssential(
-    val userId: UUID,
+    val userId: String,
     val lectureId: Long,
     val createdAt: OffsetDateTime
 

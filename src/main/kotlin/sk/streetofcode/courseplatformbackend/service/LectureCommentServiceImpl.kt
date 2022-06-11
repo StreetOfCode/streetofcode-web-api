@@ -15,7 +15,6 @@ import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
 import sk.streetofcode.courseplatformbackend.model.LectureComment
 import sk.streetofcode.courseplatformbackend.model.toLectureCommentDto
 import java.time.OffsetDateTime
-import java.util.UUID
 
 @Service
 class LectureCommentServiceImpl(
@@ -32,7 +31,7 @@ class LectureCommentServiceImpl(
         return lectureCommentRepository.findAllByLectureId(lectureId).map { it.toLectureCommentDto() }
     }
 
-    override fun add(userId: UUID, lectureId: Long, addRequest: LectureCommentAddRequest): LectureCommentDto {
+    override fun add(userId: String, lectureId: Long, addRequest: LectureCommentAddRequest): LectureCommentDto {
         val lecture = lectureRepository.findById(lectureId).orElseThrow { ResourceNotFoundException("Lecture with id $lectureId was not found") }
 
         try {
@@ -46,7 +45,7 @@ class LectureCommentServiceImpl(
     }
 
     override fun edit(
-        userId: UUID,
+        userId: String,
         lectureId: Long,
         commentId: Long,
         editRequest: LectureCommentEditRequest
@@ -70,7 +69,7 @@ class LectureCommentServiceImpl(
         }
     }
 
-    override fun delete(userId: UUID, lectureId: Long, commentId: Long) {
+    override fun delete(userId: String, lectureId: Long, commentId: Long) {
         val comment = lectureCommentRepository.findById(commentId).orElseThrow { ResourceNotFoundException("Lecture comment with id $commentId was not found") }
         if (lectureId != comment.lecture.id) {
             throw BadRequestException("Comment has different lectureId")

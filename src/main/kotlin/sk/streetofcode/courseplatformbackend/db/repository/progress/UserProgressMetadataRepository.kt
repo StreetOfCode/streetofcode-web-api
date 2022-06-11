@@ -5,11 +5,10 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
 import java.util.Optional
-import java.util.UUID
 
 @Repository
 interface UserProgressMetadataRepository : CrudRepository<UserProgressMetadata, Long> {
-    fun findByUserIdAndCourseId(userId: UUID, courseId: Long): Optional<UserProgressMetadata>
+    fun findByUserIdAndCourseId(userId: String, courseId: Long): Optional<UserProgressMetadata>
     @Query(
         """
         SELECT progress.courseId from UserProgressMetadata as progress 
@@ -18,5 +17,5 @@ interface UserProgressMetadataRepository : CrudRepository<UserProgressMetadata, 
         ORDER BY progress.lastUpdatedAt 
         """
     )
-    fun getStartedCourseIds(userId: UUID): List<Long>
+    fun getStartedCourseIds(userId: String): List<Long>
 }

@@ -12,14 +12,13 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
-import java.util.UUID
 
 open class IntegrationTests : StringSpec() {
     override fun listeners(): List<TestListener> {
         return listOf(SpringListener)
     }
 
-    protected var userId: UUID = UUID.fromString("bb9e0186-aaae-11eb-bcbc-0242ac130002")
+    protected var userId: String = "bb9e0186-aaae-11eb-bcbc-0242ac130002"
 
     @Autowired
     protected lateinit var restTemplate: TestRestTemplate
@@ -35,12 +34,12 @@ open class IntegrationTests : StringSpec() {
             Mockito.`when`(authenticationService.isAdmin()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isUser()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isAuthenticated()).thenCallRealMethod()
-            setUserId(UUID.fromString("bb9e0186-aaae-11eb-bcbc-0242ac130002"))
+            setUserId("bb9e0186-aaae-11eb-bcbc-0242ac130002")
         }
     }
 
     @JvmName("setUserId_custom")
-    protected fun setUserId(userId: UUID) {
+    protected fun setUserId(userId: String) {
         this.userId = userId
         Mockito.`when`(authenticationService.getUserId()).thenReturn(userId)
     }

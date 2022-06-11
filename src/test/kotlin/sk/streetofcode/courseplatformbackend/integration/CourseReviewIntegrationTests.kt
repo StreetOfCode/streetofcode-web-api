@@ -47,7 +47,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "get course review" {
-            setUserId(UUID.randomUUID())
+            setUserId(UUID.randomUUID().toString())
 
             val addedReview = addCourseReview(CourseReviewAddRequest(1, 4.5, "testText", "testUserName"))
 
@@ -56,7 +56,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "add course review" {
-            setUserId(UUID.randomUUID())
+            setUserId(UUID.randomUUID().toString())
 
             val courseId = 1L
             val courseReviewsBefore = getCourseReviews(courseId)
@@ -89,7 +89,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "edit course review" {
-            setUserId(UUID.randomUUID())
+            setUserId(UUID.randomUUID().toString())
 
             val courseId = 1L
 
@@ -130,7 +130,7 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "delete course review" {
-            setUserId(UUID.randomUUID())
+            setUserId(UUID.randomUUID().toString())
 
             val courseId = 1L
 

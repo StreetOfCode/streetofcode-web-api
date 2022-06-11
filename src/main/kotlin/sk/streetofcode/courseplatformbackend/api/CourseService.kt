@@ -5,7 +5,6 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
-import java.util.UUID
 
 interface CourseService {
     fun get(id: Long): CourseDto
@@ -15,7 +14,7 @@ interface CourseService {
     fun delete(id: Long): CourseDto
     fun getPublicCoursesOverview(): List<CourseOverviewDto>
     fun getAllCoursesOverview(): List<CourseOverviewDto>
-    fun getPublicCourseOverview(userId: UUID?, id: Long): CourseOverviewDto
-    fun getAnyCourseOverview(userId: UUID?, id: Long): CourseOverviewDto
-    fun getMyCourses(userId: UUID): List<CourseMyDto>
+    fun getPublicCourseOverview(userId: String?, id: Long): CourseOverviewDto
+    fun getAnyCourseOverview(userId: String?, id: Long): CourseOverviewDto
+    fun getMyCourses(userId: String): List<CourseMyDto>
 }

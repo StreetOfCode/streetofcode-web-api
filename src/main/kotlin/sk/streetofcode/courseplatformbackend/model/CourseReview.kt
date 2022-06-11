@@ -1,10 +1,8 @@
 package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import org.hibernate.annotations.Type
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
 import java.time.OffsetDateTime
-import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -21,8 +19,7 @@ data class CourseReview(
     val id: Long? = null,
 
     @Column(nullable = false)
-    @Type(type = "uuid-char")
-    val userId: UUID,
+    val userId: String,
 
     @Column(nullable = false)
     var courseId: Long,
@@ -42,7 +39,7 @@ data class CourseReview(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(userId: UUID, courseId: Long, rating: Double, text: String?, userName: String?) :
+    constructor(userId: String, courseId: Long, rating: Double, text: String?, userName: String?) :
         this(null, userId, courseId, rating, text, userName, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is CourseReview && CourseReviewEssential(this) == CourseReviewEssential(other)
@@ -51,7 +48,7 @@ data class CourseReview(
 }
 
 private data class CourseReviewEssential(
-    val userId: UUID,
+    val userId: String,
     val courseId: Long,
     val createdAt: OffsetDateTime
 ) {

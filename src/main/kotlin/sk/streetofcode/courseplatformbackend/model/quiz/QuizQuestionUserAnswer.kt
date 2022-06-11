@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.model.quiz
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import org.hibernate.annotations.Type
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionUserAnswerDto
 import java.time.OffsetDateTime
 import java.util.*
@@ -24,8 +23,7 @@ data class QuizQuestionUserAnswer(
     var answer: QuizQuestionAnswer,
 
     @Column(nullable = false)
-    @Type(type = "uuid-char")
-    val userId: UUID,
+    val userId: String,
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime,
@@ -33,7 +31,7 @@ data class QuizQuestionUserAnswer(
     @Column(nullable = false)
     var tryCount: Int
 ) {
-    constructor(question: QuizQuestion, answer: QuizQuestionAnswer, userId: UUID, tryCount: Int) :
+    constructor(question: QuizQuestion, answer: QuizQuestionAnswer, userId: String, tryCount: Int) :
         this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
 
     override fun equals(other: Any?) = other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(other)
@@ -45,7 +43,7 @@ private data class QuizQuestionUserAnswerEssential(
     val questionId: Long,
     val answerId: Long,
     val createdAt: OffsetDateTime,
-    val userId: UUID,
+    val userId: String,
     val tryCount: Int
 ) {
     constructor(quizQuestionUserAnswer: QuizQuestionUserAnswer) : this(
