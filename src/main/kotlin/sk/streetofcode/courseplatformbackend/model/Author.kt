@@ -2,9 +2,8 @@ package sk.streetofcode.courseplatformbackend.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import sk.streetofcode.courseplatformbackend.api.dto.AuthorCourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.AuthorOverviewDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
+import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -28,7 +27,13 @@ data class Author(
     val name: String,
 
     @Column(nullable = false)
-    val url: String,
+    val imageUrl: String,
+
+    @Column(nullable = false)
+    val coursesTitle: String,
+
+    @Column(nullable = false)
+    val email: String,
 
     @Column(nullable = false)
     val description: String,
@@ -42,11 +47,11 @@ data class Author(
     @OrderBy("id")
     val courses: MutableSet<Course> = mutableSetOf()
 ) {
-    constructor(id: Long, name: String, url: String, description: String) :
-        this(id, name, url, description, mutableSetOf())
+    constructor(id: Long, name: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
+        this(id, name, imageUrl, coursesTitle, email, description, mutableSetOf())
 
-    constructor(name: String, url: String, description: String) :
-        this(null, name, url, description, mutableSetOf())
+    constructor(name: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
+        this(null, name, imageUrl, coursesTitle, email, description, mutableSetOf())
 
     override fun equals(other: Any?) = other is Author && AuthorEssential(this) == AuthorEssential(other)
     override fun hashCode() = AuthorEssential(this).hashCode()
@@ -55,35 +60,28 @@ data class Author(
 
 private data class AuthorEssential(
     val name: String,
-    val url: String,
+    val imageUrl: String,
+    val coursesTitle: String,
+    val email: String,
     val description: String
 ) {
     constructor(author: Author) : this(
         name = author.name,
-        url = author.url,
+        imageUrl = author.imageUrl,
+        coursesTitle = author.coursesTitle,
+        email = author.email,
         description = author.description
     )
 }
 
-fun Author.toAuthorOverview(courseToCourseReviewOverview: List<Pair<Course, CourseReviewsOverviewDto>>): AuthorOverviewDto {
+fun Author.toAuthorOverview(courseOverviewsDto: List<CourseOverviewDto>): AuthorOverviewDto {
     return AuthorOverviewDto(
         this.id!!,
         this.name,
-        this.url,
+        this.imageUrl,
+        this.coursesTitle,
+        this.email,
         this.description,
-        courseToCourseReviewOverview.map { it.toAuthorCourseOverviewDto() }
-    )
-}
-
-fun Pair<Course, CourseReviewsOverviewDto>.toAuthorCourseOverviewDto(): AuthorCourseOverviewDto {
-    val (course, overview) = this
-    return AuthorCourseOverviewDto(
-        course.id!!,
-        course.difficulty,
-        course.name,
-        course.shortDescription,
-        course.longDescription,
-        course.iconUrl,
-        overview
+        courseOverviewsDto
     )
 }

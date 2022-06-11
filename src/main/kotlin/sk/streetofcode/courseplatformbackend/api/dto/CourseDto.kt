@@ -7,8 +7,8 @@ import java.time.OffsetDateTime
 
 data class CourseDto(
     val id: Long,
-    val author: Author? = null,
-    val difficulty: Difficulty? = null,
+    val author: Author,
+    val difficulty: Difficulty,
     val name: String,
     val shortDescription: String,
     val longDescription: String,

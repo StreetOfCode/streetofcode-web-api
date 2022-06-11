@@ -35,12 +35,12 @@ data class Course(
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = true)
-    var author: Author? = null,
+    @JoinColumn(name = "author_id")
+    var author: Author,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "difficulty_id", nullable = true)
-    var difficulty: Difficulty? = null,
+    @JoinColumn(name = "difficulty_id")
+    var difficulty: Difficulty,
 
     @Column(nullable = false)
     var name: String,

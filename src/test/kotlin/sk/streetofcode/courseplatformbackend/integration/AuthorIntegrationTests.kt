@@ -26,34 +26,45 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "add author" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "testDescription"))
+            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
 
             val fetchedAuthor = getAuthor(author.id!!)
             fetchedAuthor.name shouldBe "testName"
-            fetchedAuthor.url shouldBe "testUrl"
+            fetchedAuthor.imageUrl shouldBe "testUrl"
             fetchedAuthor.description shouldBe "testDescription"
+            fetchedAuthor.coursesTitle shouldBe "title"
+            fetchedAuthor.email shouldBe "email"
         }
 
         "edit author" {
-            editAuthorNotFound(999, AuthorEditRequest(1, "", "", ""))
+            editAuthorNotFound(999, AuthorEditRequest(1, "", "", "", "", ""))
 
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "testDescription"))
+            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
 
             val editedAuthor = editAuthor(
                 author.id!!,
-                AuthorEditRequest(author.id!!, "editedTestName", "editedTestUrl", "editedTestDescription")
+                AuthorEditRequest(
+                    author.id!!,
+                    "editedTestName",
+                    "editedTestUrl",
+                    "editedTitle",
+                    "editedEmail",
+                    "editedTestDescription"
+                )
             )
 
             val fetchedAuthor = getAuthor(editedAuthor.id!!)
             fetchedAuthor.id shouldBe author.id
             fetchedAuthor.courses shouldBe author.courses
             fetchedAuthor.name shouldBe "editedTestName"
-            fetchedAuthor.url shouldBe "editedTestUrl"
+            fetchedAuthor.imageUrl shouldBe "editedTestUrl"
+            fetchedAuthor.coursesTitle shouldBe "editedTitle"
+            fetchedAuthor.email shouldBe "editedEmail"
             fetchedAuthor.description shouldBe "editedTestDescription"
         }
 
         "delete author" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "testDescription"))
+            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
 
             val removedAuthor = deleteAuthor(author.id!!)
             removedAuthor.shouldBe(author)
@@ -62,13 +73,15 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "get author overview" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "testDescription"))
+            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
             val authorOverview = getAuthorOverview(author.id!!)
 
             authorOverview.id shouldBe author.id
             authorOverview.name shouldBe "testName"
             authorOverview.description shouldBe "testDescription"
-            authorOverview.url shouldBe "testUrl"
+            authorOverview.imageUrl shouldBe "testUrl"
+            authorOverview.description shouldBe "testDescription"
+            authorOverview.coursesTitle shouldBe "title"
             authorOverview.courses.size shouldBe 0
         }
 
