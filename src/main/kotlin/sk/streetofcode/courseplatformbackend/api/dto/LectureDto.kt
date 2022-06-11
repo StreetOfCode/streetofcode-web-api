@@ -24,3 +24,7 @@ data class LectureCourseDto(
     val id: Long,
     val lecturesCount: Int
 )
+
+enum class LectureType {
+    VIDEO, TEXT, QUIZ
+}

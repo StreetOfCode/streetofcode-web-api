@@ -36,5 +36,6 @@ data class ChapterOverviewDto(
 data class LectureOverviewDto(
     val id: Long,
     val name: String,
-    val videoDurationSeconds: Int
+    val videoDurationSeconds: Int,
+    val lectureType: LectureType
 )

@@ -1,5 +1,7 @@
 package sk.streetofcode.courseplatformbackend.api.dto.progress
 
+import sk.streetofcode.courseplatformbackend.api.dto.LectureType
+
 data class CourseProgressOverviewDto(
     val lecturesViewed: Int,
     val courseLecturesCount: Int,
@@ -18,5 +20,6 @@ data class LectureProgressOverviewDto(
     val id: Long,
     val name: String,
     val viewed: Boolean,
-    val videoDurationSeconds: Int
+    val videoDurationSeconds: Int,
+    val lectureType: LectureType
 )

@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.LectureService
 import sk.streetofcode.courseplatformbackend.api.dto.LectureDto
+import sk.streetofcode.courseplatformbackend.api.dto.LectureType
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
 import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
@@ -27,6 +28,16 @@ class LectureServiceImpl(
 
     companion object {
         private val log = LoggerFactory.getLogger(LectureServiceImpl::class.java)
+
+        fun determineLectureType(lecture: Lecture): LectureType {
+            return if (lecture.quiz != null && lecture.quiz!!.size > 0) {
+                LectureType.QUIZ
+            } else if (lecture.videoUrl != null) {
+                LectureType.VIDEO
+            } else {
+                LectureType.TEXT
+            }
+        }
     }
 
     override fun get(id: Long): LectureDto {

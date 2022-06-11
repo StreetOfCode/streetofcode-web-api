@@ -8,6 +8,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
+import sk.streetofcode.courseplatformbackend.service.LectureServiceImpl
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
@@ -170,7 +171,8 @@ fun Course.toCourseOverview(
                 LectureOverviewDto(
                     lecture.id!!,
                     lecture.name,
-                    lecture.videoDurationSeconds
+                    lecture.videoDurationSeconds,
+                    LectureServiceImpl.determineLectureType(lecture)
                 )
             },
             chapterDurationMinutes = chapter.lectures.sumOf { lecture ->
