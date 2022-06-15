@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.stereotype.Component
 import sk.streetofcode.courseplatformbackend.api.exception.InvalidAuthenticationException
+import sk.streetofcode.courseplatformbackend.configuration.SecurityConfiguration.Companion.AUTHORITY_PREFIX
 
 @Component
 class AuthenticationService {
@@ -33,7 +34,7 @@ class AuthenticationService {
 
     private fun String.toAuthority() = SimpleGrantedAuthority(toRole())
 
-    private fun String.toRole() = "ROLE_$this"
+    private fun String.toRole() = "${AUTHORITY_PREFIX}$this"
 
     fun getUserId(): String {
         val authentication = SecurityContextHolder.getContext().authentication
