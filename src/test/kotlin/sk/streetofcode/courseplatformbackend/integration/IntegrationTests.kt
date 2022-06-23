@@ -18,7 +18,7 @@ open class IntegrationTests : StringSpec() {
         return listOf(SpringListener)
     }
 
-    protected var userId: String = "bb9e0186-aaae-11eb-bcbc-0242ac130002"
+    protected var userId: String = "moNoTwZcU5Nwg4qMBBVW9uJBQM12"
 
     @Autowired
     protected lateinit var restTemplate: TestRestTemplate
@@ -34,7 +34,7 @@ open class IntegrationTests : StringSpec() {
             Mockito.`when`(authenticationService.isAdmin()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isUser()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isAuthenticated()).thenCallRealMethod()
-            setUserId("bb9e0186-aaae-11eb-bcbc-0242ac130002")
+            setUserId("moNoTwZcU5Nwg4qMBBVW9uJBQM12")
         }
     }
 
