@@ -82,6 +82,6 @@ INSERT INTO next_course_vote_option(id, name) VALUES
 (next_course_vote_option_id_seq.nextval, 'C#'),
 (next_course_vote_option_id_seq.nextval, 'SQL');
 
-INSERT INTO user(firebase_id, name, email, image_url) VALUES
-('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png'),
-('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg');
+INSERT INTO user(firebase_id, name, email, image_url, receive_newsletter) VALUES
+('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png', true),
+('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg', false);

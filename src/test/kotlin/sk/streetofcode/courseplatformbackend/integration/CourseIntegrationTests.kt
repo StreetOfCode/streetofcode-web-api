@@ -63,8 +63,8 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
             fetchedCourse.iconUrl shouldBe "iconUrl"
             fetchedCourse.status shouldBe CourseStatus.DRAFT
-            fetchedCourse.author!!.id shouldBe 1
-            fetchedCourse.difficulty!!.id shouldBe 1
+            fetchedCourse.author.id shouldBe 1
+            fetchedCourse.difficulty.id shouldBe 1
         }
 
         "add course" {

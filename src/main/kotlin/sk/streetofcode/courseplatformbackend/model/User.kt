@@ -16,6 +16,9 @@ data class User(
     @Column(nullable = false)
     val email: String,
 
+    @Column(nullable = true)
+    val imageUrl: String? = null,
+
     @Column(nullable = false)
-    val imageUrl: String,
+    val receiveNewsletter: Boolean,
 )

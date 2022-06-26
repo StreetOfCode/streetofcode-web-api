@@ -28,10 +28,15 @@ class UserServiceImpl(
         if (userRepository.existsById(id)) {
             throw ConflictException("User with id $id already added")
         }
-        return userRepository.save(User(userAddRequest.id, userAddRequest.name, userAddRequest.email, userAddRequest.imageUrl))
+        // TODO maybe send discord invitation
+        // TODO what to do with newsletter
+        return userRepository.save(User(userAddRequest.id, userAddRequest.name, userAddRequest.email, userAddRequest.imageUrl, userAddRequest.receiveNewsletter))
     }
 
     override fun edit(id: String, userEditRequest: UserEditRequest): User {
-        return userRepository.save(User(id, userEditRequest.name, userEditRequest.email, userEditRequest.imageUrl))
+        val user = userRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
+
+        return userRepository.save(User(id, userEditRequest.name, userEditRequest.email, userEditRequest.imageUrl, user.receiveNewsletter))
     }
 }

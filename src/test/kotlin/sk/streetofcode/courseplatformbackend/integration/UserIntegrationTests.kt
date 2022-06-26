@@ -32,15 +32,16 @@ class UserIntegrationTests : IntegrationTests() {
         }
 
         "post user" {
-            val newUserId ="QgXv1QVvoYZF6W46pwH51PzpJx73"
+            val newUserId = "QgXv1QVvoYZF6W46pwH51PzpJx73"
             setUserId(newUserId)
             val expectedUser = User(
                 newUserId,
                 "John Bool",
                 "john.bool.bool@gmail.com",
-                "wtf"
+                "wtf",
+                false
             )
-            val user = postUser(UserAddRequest(expectedUser.firebaseId, expectedUser.name, expectedUser.email, expectedUser.imageUrl))
+            val user = postUser(UserAddRequest(expectedUser.firebaseId, expectedUser.name, expectedUser.email, expectedUser.imageUrl, false, false))
             user shouldBe expectedUser
         }
 
@@ -49,7 +50,8 @@ class UserIntegrationTests : IntegrationTests() {
                 "moNoTwZcU5Nwg4qMBBVW9uJBQM12",
                 "Gabushko",
                 "gabriel@streetofcode.sk",
-                "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png"
+                "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png",
+                true
             )
             val user = putUser(UserEditRequest(updatedUser.name, updatedUser.email, updatedUser.imageUrl))
             user.name shouldBe updatedUser.name
