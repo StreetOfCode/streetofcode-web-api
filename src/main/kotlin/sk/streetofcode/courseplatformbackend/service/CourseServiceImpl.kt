@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.courseplatformbackend.api.CourseReviewService
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetadataDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
@@ -23,7 +22,6 @@ import sk.streetofcode.courseplatformbackend.db.repository.DifficultyRepository
 import sk.streetofcode.courseplatformbackend.model.Course
 import sk.streetofcode.courseplatformbackend.model.CourseStatus
 import sk.streetofcode.courseplatformbackend.model.toCourseDto
-import sk.streetofcode.courseplatformbackend.model.toCourseMy
 import sk.streetofcode.courseplatformbackend.model.toCourseOverview
 import java.time.OffsetDateTime
 
@@ -185,14 +183,14 @@ class CourseServiceImpl(
         return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(id), progress)
     }
 
-    override fun getMyCourses(userId: String): List<CourseMyDto> {
+    override fun getMyCourses(userId: String): List<CourseOverviewDto> {
         val myCourseIds = progressService.getStartedCourseIds(userId)
         return myCourseIds
             .map { courseId ->
                 courseRepository
                     .findById(courseId)
                     .get()
-                    .toCourseMy(
+                    .toCourseOverview(
                         courseReviewService.getCourseReviewsOverview(courseId),
                         progressService.getUserProgressMetadata(userId, courseId)
                     )

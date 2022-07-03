@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.courseplatformbackend.api.CourseService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.request.CourseAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseEditRequest
@@ -86,7 +85,7 @@ class CourseController(val courseService: CourseService, val authenticationServi
 
     @GetMapping("/my-courses")
     @IsAuthenticated
-    fun getMyCourses(): ResponseEntity<List<CourseMyDto>> {
+    fun getMyCourses(): ResponseEntity<List<CourseOverviewDto>> {
         return ResponseEntity.ok(courseService.getMyCourses(authenticationService.getUserId()))
     }
 }

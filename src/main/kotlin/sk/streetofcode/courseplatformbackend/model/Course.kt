@@ -3,7 +3,6 @@ package sk.streetofcode.courseplatformbackend.model
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.courseplatformbackend.api.dto.ChapterOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseDto
-import sk.streetofcode.courseplatformbackend.api.dto.CourseMyDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.LectureOverviewDto
@@ -139,22 +138,6 @@ fun Course.toCourseDto(): CourseDto {
         this.createdAt.truncatedTo(ChronoUnit.SECONDS),
         this.updatedAt.truncatedTo(ChronoUnit.SECONDS),
         this.lecturesCount
-    )
-}
-
-fun Course.toCourseMy(
-    courseReviewsOverview: CourseReviewsOverviewDto,
-    userProgressMetadata: UserProgressMetadataDto
-): CourseMyDto {
-    return CourseMyDto(
-        this.id!!,
-        this.name,
-        this.shortDescription,
-        this.author,
-        this.difficulty,
-        this.iconUrl,
-        courseReviewsOverview,
-        userProgressMetadata
     )
 }
 
