@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.CourseReviewService
+import sk.streetofcode.courseplatformbackend.api.UserService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
@@ -19,7 +20,8 @@ import java.time.OffsetDateTime
 class CourseReviewServiceImpl(
     private val courseReviewRepository: CourseReviewRepository,
     private val courseRepository: CourseRepository,
-    private val authenticationService: AuthenticationService
+    private val authenticationService: AuthenticationService,
+    private val userService: UserService
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
         courseRepository
@@ -47,7 +49,7 @@ class CourseReviewServiceImpl(
         courseRepository.findById(addRequest.courseId).orElseThrow { ResourceNotFoundException("Course with id ${addRequest.courseId} was not found") }
 
         val userId = authenticationService.getUserId()
-        val existingReview = courseReviewRepository.findByUserIdAndCourseId(userId, addRequest.courseId)
+        val existingReview = courseReviewRepository.findByUserFirebaseIdAndCourseId(userId, addRequest.courseId)
         if (existingReview != null) {
             throw BadRequestException("User has already submitted a review for the given course")
         }
@@ -55,7 +57,7 @@ class CourseReviewServiceImpl(
         validateRating(addRequest.rating)
 
         return courseReviewRepository
-            .save(CourseReview(userId, addRequest.courseId, addRequest.rating, addRequest.text, addRequest.userName))
+            .save(CourseReview(userService.get(userId), addRequest.courseId, addRequest.rating, addRequest.text))
             .toCourseReviewDto()
     }
 
@@ -67,7 +69,6 @@ class CourseReviewServiceImpl(
 
         review.rating = editRequest.rating
         review.text = editRequest.text
-        review.userName = editRequest.userName
         review.updatedAt = OffsetDateTime.now()
 
         return courseReviewRepository.save(review).toCourseReviewDto()
@@ -90,7 +91,7 @@ class CourseReviewServiceImpl(
 
     private fun validateUserAuthorization(review: CourseReview) {
         val userId = authenticationService.getUserId()
-        if (review.userId != userId && !authenticationService.isAdmin()) {
+        if (review.user.firebaseId != userId && !authenticationService.isAdmin()) {
             throw AuthorizationException()
         }
     }

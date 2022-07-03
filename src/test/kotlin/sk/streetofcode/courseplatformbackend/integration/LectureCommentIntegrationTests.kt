@@ -14,7 +14,6 @@ import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotat
 class LectureCommentIntegrationTests : IntegrationTests() {
 
     companion object {
-        const val dummyUserName = "userName"
         const val dummyCommentText = "commentText"
     }
 
@@ -26,14 +25,14 @@ class LectureCommentIntegrationTests : IntegrationTests() {
 
         "add lecture comment" {
             val lectureId = 2L
-            val comment = addLectureComment(lectureId, LectureCommentAddRequest(dummyUserName, dummyCommentText))
+            val comment = addLectureComment(lectureId, LectureCommentAddRequest(dummyCommentText))
 
             val fetchedComments = getLectureComments(lectureId)
             fetchedComments.size shouldBe 1
 
             val fetchedComment = fetchedComments[0]
             fetchedComment.commentText shouldBe dummyCommentText
-            fetchedComment.userName shouldBe dummyUserName
+
             fetchedComment.id shouldBe comment.id
             fetchedComment.updatedAt.toEpochSecond() shouldBe comment.updatedAt.toEpochSecond()
             fetchedComment.userId shouldBe comment.userId
@@ -42,38 +41,36 @@ class LectureCommentIntegrationTests : IntegrationTests() {
         "fail add lecture comment, lecture not found" {
             addLectureCommentNotFoundLecture(
                 99L,
-                LectureCommentAddRequest(dummyUserName, dummyCommentText)
+                LectureCommentAddRequest(dummyCommentText)
             )
         }
 
         "edit lecture comment" {
             val lectureId = 2L
-            val addedComment = addLectureComment(lectureId, LectureCommentAddRequest(dummyUserName, dummyCommentText))
+            val addedComment = addLectureComment(lectureId, LectureCommentAddRequest(dummyCommentText))
 
-            val editedUserName = "editedUserName"
             val editedCommentText = "editedCommentText"
-            val editedComment = editLectureComment(lectureId, addedComment.id, LectureCommentEditRequest(editedUserName, editedCommentText))
+            val editedComment = editLectureComment(lectureId, addedComment.id, LectureCommentEditRequest(editedCommentText))
 
             editedComment.commentText shouldBe editedCommentText
-            editedComment.userName shouldBe editedUserName
             editedComment.id shouldBe addedComment.id
             editedComment.updatedAt.toEpochSecond() shouldBe addedComment.updatedAt.toEpochSecond()
             editedComment.userId shouldBe addedComment.userId
         }
 
         "fail, edit lecture comment, comment not found" {
-            editLectureCommentNotFound(1, 99, LectureCommentEditRequest(dummyUserName, dummyCommentText))
+            editLectureCommentNotFound(1, 99, LectureCommentEditRequest(dummyCommentText))
         }
 
         "fail, edit lecture comment, lectureId not correct" {
-            editLectureCommentBadRequest(99, 1, LectureCommentEditRequest(dummyUserName, dummyCommentText))
+            editLectureCommentBadRequest(99, 1, LectureCommentEditRequest(dummyCommentText))
         }
 
         "delete lecture comment" {
             val lectureId = 2L
 
             getLectureComments(lectureId).size shouldBe 2
-            val addedComment = addLectureComment(lectureId, LectureCommentAddRequest(dummyUserName, dummyCommentText))
+            val addedComment = addLectureComment(lectureId, LectureCommentAddRequest(dummyCommentText))
             getLectureComments(lectureId).size shouldBe 3
             deleteLectureComment(lectureId, addedComment.id)
             getLectureComments(lectureId).size shouldBe 2

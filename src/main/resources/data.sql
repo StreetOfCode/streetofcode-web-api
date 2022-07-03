@@ -11,6 +11,9 @@ INSERT INTO course (id, author_id, difficulty_id, name, short_description, long_
 (course_id_seq.nextval, 1, 1, 'Informatika 101', 'Úvod do informatiky a programovania', STRINGDECODE('## Čo sa naučíš\n\n- Algoritmy\n- Python\n- Logicky myslieť\n- Binárnu sústavu\n\n## Čo už treba vedieť\n\nJe dôležité vedieť algoritmy, kriticky myslieť a poznať všetky podcasty naspamäť. \nOdporúčame si najprv prejsť kurz [Kotlin základy](/course/2). \n\nOkrem toho sme dali dokopy pár linkov, ktoré by ti mohli v tom taktiež pomôcť.\n\n- [What is Kotlin](https://www.youtube.com)'), '- [What is Kotlin]https://(www.youtube.com)', 'https://www.youtube.com/embed/z1At9Jk4sqE', null, 'http://streetofcode.sk/wp-content/uploads/2022/04/python-logo.png', 'PUBLIC', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (course_id_seq.nextval, 2, 2, 'Kryptografia', 'Úvod do kryptografie', STRINGDECODE('Jeden z tych lepsich kurzov o kryptografii'), null, null, 'http://streetofcode.sk/wp-content/uploads/2022/06/Frame-70.png', 'http://streetofcode.sk/wp-content/uploads/2022/04/kotlin-logo.png', 'DRAFT', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
+UPDATE course set lectures_count = 5 where id = 1;
+UPDATE course set lectures_count = 5 where id = 2;
+
 INSERT INTO chapter (id, course_id, name, chapter_order, created_at, updated_at) VALUES
 (chapter_id_seq.nextval, 1, 'Uvodna kapitolka do informatiky', 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (chapter_id_seq.nextval, 1, 'Ako vznikol pocitac', 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
@@ -34,19 +37,19 @@ INSERT INTO lecture (id, chapter_id, name, content, video_url, video_duration_se
 (lecture_id_seq.nextval, 4, 'Part 1', 'Mega kontent', null, 5000, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
 (lecture_id_seq.nextval, 4, 'Part 2', 'Mega kontent druhy', null, 5000, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
-INSERT INTO course_review (id, user_id, course_id, rating, text, user_name, created_at, updated_at) VALUES
-(course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 5, 'Mega kurz', 'Gabko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
-(course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 0, 'Na nic kurz', 'Kubko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+INSERT INTO user(firebase_id, name, email, image_url, receive_newsletter) VALUES
+('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png', true),
+('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg', false);
 
-(course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 2, 3, 'Priemerny kurz', 'Kubko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
-(course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 2, 1, 'Nie najhorsie, ale dalo by sa aj lepsie', 'Gabko', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
+INSERT INTO course_review (id, user_firebase_id, course_id, rating, text, created_at, updated_at) VALUES
+(course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 5, 'Mega kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+(course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 0, 'Na nic kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+(course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 2, 3, 'Priemerny kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
+(course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 2, 1, 'Nie najhorsie, ale dalo by sa aj lepsie', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
-UPDATE course set lectures_count = 5 where id = 1;
-UPDATE course set lectures_count = 5 where id = 2;
-
-INSERT INTO lecture_comment(id, user_id, lecture_id, user_name, comment_text, created_at, updated_at) VALUES
-(lecture_comment_id_seq.nextval, 'xi286fXTiJOWzzTyifbLJn6feHC2', 1, 'jozko', 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(lecture_comment_id_seq.nextval, '93c6d283-8d2d-495b-b08f-9a18831d1f5e', 1, 'janka', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
+INSERT INTO lecture_comment(id, user_firebase_id, lecture_id, comment_text, created_at, updated_at) VALUES
+(lecture_comment_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(lecture_comment_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
 
 INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) VALUES
 (quiz_id_seq.nextval, 1, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
@@ -71,7 +74,7 @@ INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (quiz_question_answer_id_seq.nextval, 3, '4', true);
 
 INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
-(quiz_question_user_answer_id_seq.nextval, 1, 2, 'xi286fXTiJOWzzTyifbLJn6feHC2', '2007-12-03T10:15:30+01:00', 3);
+(quiz_question_user_answer_id_seq.nextval, 1, 2, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', '2007-12-03T10:15:30+01:00', 3);
 
 INSERT INTO next_course_vote_option(id, name) VALUES
 (next_course_vote_option_id_seq.nextval, 'Python'),
@@ -81,7 +84,3 @@ INSERT INTO next_course_vote_option(id, name) VALUES
 (next_course_vote_option_id_seq.nextval, 'Git'),
 (next_course_vote_option_id_seq.nextval, 'C#'),
 (next_course_vote_option_id_seq.nextval, 'SQL');
-
-INSERT INTO user(firebase_id, name, email, image_url, receive_newsletter) VALUES
-('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png', true),
-('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg', false);

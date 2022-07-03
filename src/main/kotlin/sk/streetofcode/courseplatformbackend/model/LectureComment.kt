@@ -21,15 +21,13 @@ data class LectureComment(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "lecture_comment_id_seq")
     val id: Long? = null,
 
-    @Column(nullable = false)
-    val userId: String,
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_firebase_id", nullable = false)
+    val user: User,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
     val lecture: Lecture,
-
-    @Column(nullable = false)
-    var userName: String,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     var commentText: String,
@@ -40,8 +38,8 @@ data class LectureComment(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(userId: String, lecture: Lecture, userName: String, commentText: String) :
-        this(null, userId, lecture, userName, commentText, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(user: User, lecture: Lecture, commentText: String) :
+        this(null, user, lecture, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is LectureComment && LectureCommentEssential(this) == LectureCommentEssential(other)
@@ -60,8 +58,8 @@ private data class LectureCommentEssential(
 
 ) {
     constructor(lectureComment: LectureComment) : this(
-        userId = lectureComment.userId,
-        userName = lectureComment.userName,
+        userId = lectureComment.user.firebaseId,
+        userName = lectureComment.user.name,
         commentText = lectureComment.commentText,
         lectureId = lectureComment.lecture.id!!,
         createdAt = lectureComment.createdAt,
@@ -72,8 +70,9 @@ private data class LectureCommentEssential(
 fun LectureComment.toLectureCommentDto(): LectureCommentDto {
     return LectureCommentDto(
         id = this.id!!,
-        userId = this.userId,
-        userName = this.userName,
+        userId = this.user.firebaseId,
+        userName = this.user.name,
+        imageUrl = this.user.imageUrl,
         commentText = this.commentText,
         updatedAt = this.updatedAt
     )

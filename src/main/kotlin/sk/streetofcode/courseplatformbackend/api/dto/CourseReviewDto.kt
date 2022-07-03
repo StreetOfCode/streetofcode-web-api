@@ -6,7 +6,8 @@ data class CourseReviewDto(
     val courseId: Long,
     val rating: Double,
     val text: String?,
-    val userName: String?
+    val userName: String,
+    val imageUrl: String?
 )
 
 data class CourseReviewsOverviewDto(

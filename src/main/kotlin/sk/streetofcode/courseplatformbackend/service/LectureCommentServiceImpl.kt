@@ -3,6 +3,7 @@ package sk.streetofcode.courseplatformbackend.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.LectureCommentService
+import sk.streetofcode.courseplatformbackend.api.UserService
 import sk.streetofcode.courseplatformbackend.api.dto.LectureCommentDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
@@ -20,7 +21,8 @@ import java.time.OffsetDateTime
 class LectureCommentServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureCommentRepository: LectureCommentRepository,
-    private val authenticationService: AuthenticationService
+    private val authenticationService: AuthenticationService,
+    private val userService: UserService
 ) : LectureCommentService {
 
     companion object {
@@ -36,7 +38,7 @@ class LectureCommentServiceImpl(
 
         try {
             return lectureCommentRepository
-                .save(LectureComment(userId, lecture, addRequest.userName, addRequest.commentText))
+                .save(LectureComment(userService.get(authenticationService.getUserId()), lecture, addRequest.commentText))
                 .toLectureCommentDto()
         } catch (e: Exception) {
             log.error("Problem with saving lectureComment to db", e)
@@ -58,7 +60,6 @@ class LectureCommentServiceImpl(
         validateUserAuthorization(comment)
 
         try {
-            comment.userName = editRequest.userName
             comment.commentText = editRequest.commentText
             comment.updatedAt = OffsetDateTime.now()
 
@@ -83,7 +84,7 @@ class LectureCommentServiceImpl(
     // Only user who written the comment and admin can manipulate with it
     private fun validateUserAuthorization(comment: LectureComment) {
         val userId = authenticationService.getUserId()
-        if (comment.userId != userId && !authenticationService.isAdmin()) {
+        if (comment.user.firebaseId != userId && !authenticationService.isAdmin()) {
             throw AuthorizationException()
         }
     }

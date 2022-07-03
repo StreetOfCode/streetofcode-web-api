@@ -5,9 +5,12 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
 import java.time.OffsetDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.SequenceGenerator
 
 @Entity
@@ -18,8 +21,9 @@ data class CourseReview(
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_review_id_seq")
     val id: Long? = null,
 
-    @Column(nullable = false)
-    val userId: String,
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_firebase_id", nullable = false)
+    val user: User,
 
     @Column(nullable = false)
     var courseId: Long,
@@ -30,17 +34,14 @@ data class CourseReview(
     @Column(nullable = true, columnDefinition = "TEXT")
     var text: String?,
 
-    @Column(nullable = true)
-    var userName: String?,
-
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime,
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(userId: String, courseId: Long, rating: Double, text: String?, userName: String?) :
-        this(null, userId, courseId, rating, text, userName, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(user: User, courseId: Long, rating: Double, text: String?) :
+        this(null, user, courseId, rating, text, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is CourseReview && CourseReviewEssential(this) == CourseReviewEssential(other)
     override fun hashCode() = CourseReviewEssential(this).hashCode()
@@ -50,11 +51,13 @@ data class CourseReview(
 private data class CourseReviewEssential(
     val userId: String,
     val courseId: Long,
+    val userName: String,
     val createdAt: OffsetDateTime
 ) {
     constructor(courseReview: CourseReview) : this(
-        userId = courseReview.userId,
+        userId = courseReview.user.firebaseId,
         courseId = courseReview.courseId,
+        userName = courseReview.user.name,
         createdAt = courseReview.createdAt
     )
 }
@@ -62,10 +65,11 @@ private data class CourseReviewEssential(
 fun CourseReview.toCourseReviewDto(): CourseReviewDto {
     return CourseReviewDto(
         id = this.id!!,
-        userId = this.userId,
+        userId = this.user.firebaseId,
         courseId = this.courseId,
         rating = this.rating,
         text = this.text,
-        userName = this.userName
+        userName = this.user.name,
+        imageUrl = this.user.imageUrl
     )
 }

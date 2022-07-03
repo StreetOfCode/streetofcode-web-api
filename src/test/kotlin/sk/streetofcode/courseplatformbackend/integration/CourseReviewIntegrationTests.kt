@@ -13,8 +13,9 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewEditRequest
+import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
 import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
-import java.util.UUID
+import sk.streetofcode.courseplatformbackend.model.User
 
 @SpringBootTestAnnotation
 class CourseReviewIntegrationTests : IntegrationTests() {
@@ -47,29 +48,33 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "get course review" {
-            setUserId(UUID.randomUUID().toString())
+            createRandomUser()
 
-            val addedReview = addCourseReview(CourseReviewAddRequest(1, 4.5, "testText", "testUserName"))
+            val addedReview = addCourseReview(CourseReviewAddRequest(1, 4.5, "testText"))
 
             val receivedReview = getCourseReview(addedReview.id)
             receivedReview shouldBe addedReview
         }
 
         "add course review" {
-            setUserId(UUID.randomUUID().toString())
+            createRandomUser()
 
             val courseId = 1L
             val courseReviewsBefore = getCourseReviews(courseId)
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
-            val addedReview = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
+            val addedReview = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText"))
 
             val courseReviewsAfter = getCourseReviews(courseId)
 
             courseReviewsAfter.size shouldBe courseReviewsBefore.size + 1
             addedReview shouldBeIn courseReviewsAfter
 
-            val expectedAverage = addValueToAverage(courseReviewOverviewBefore.averageRating, courseReviewOverviewBefore.numberOfReviews, addedReview.rating)
+            val expectedAverage = addValueToAverage(
+                courseReviewOverviewBefore.averageRating,
+                courseReviewOverviewBefore.numberOfReviews,
+                addedReview.rating
+            )
 
             val courseReviewOverviewAfter = getCourseReviewOverview(courseId)
             courseReviewOverviewAfter.numberOfReviews shouldBe courseReviewOverviewBefore.numberOfReviews + 1
@@ -77,33 +82,32 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "fail adding course review - non-existing course" {
-            failAddingCourseReview(CourseReviewAddRequest(0, 0.0, "", ""), HttpStatus.NOT_FOUND)
+            failAddingCourseReview(CourseReviewAddRequest(0, 0.0, ""), HttpStatus.NOT_FOUND)
         }
 
         "fail adding course review - invalid rating" {
-            failAddingCourseReview(CourseReviewAddRequest(1, 6.0, "", ""), HttpStatus.BAD_REQUEST)
+            failAddingCourseReview(CourseReviewAddRequest(1, 6.0, ""), HttpStatus.BAD_REQUEST)
         }
 
         "fail adding course review - user already added review for given course" {
-            failAddingCourseReview(CourseReviewAddRequest(1, 5.0, "", ""), HttpStatus.BAD_REQUEST)
+            failAddingCourseReview(CourseReviewAddRequest(1, 5.0, ""), HttpStatus.BAD_REQUEST)
         }
 
         "edit course review" {
-            setUserId(UUID.randomUUID().toString())
+            createRandomUser()
 
             val courseId = 1L
 
-            val reviewToEdit = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
+            val reviewToEdit = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText"))
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
-            editCourseReview(reviewToEdit.id, CourseReviewEditRequest(4.5, "updatedText", "updatedUserName"))
+            editCourseReview(reviewToEdit.id, CourseReviewEditRequest(4.5, "updatedText"))
 
             val editedReview = getCourseReview(reviewToEdit.id)
             editedReview.id shouldBe reviewToEdit.id
             editedReview.courseId shouldBe reviewToEdit.courseId
             editedReview.rating shouldBe 4.5
             editedReview.text shouldBe "updatedText"
-            editedReview.userName shouldBe "updatedUserName"
 
             val expectedNewAverage = replaceValueInAverage(
                 courseReviewOverviewBefore.averageRating,
@@ -118,23 +122,23 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
 
         "fail editing course review - non-existing review" {
-            failEditingCourseReview(0, CourseReviewEditRequest(0.0, "", ""), HttpStatus.NOT_FOUND)
+            failEditingCourseReview(0, CourseReviewEditRequest(0.0, ""), HttpStatus.NOT_FOUND)
         }
 
         "fail editing course review - invalid rating" {
-            failEditingCourseReview(1, CourseReviewEditRequest(6.0, "", ""), HttpStatus.BAD_REQUEST)
+            failEditingCourseReview(1, CourseReviewEditRequest(6.0, ""), HttpStatus.BAD_REQUEST)
         }
 
         "fail editing course review - review not created by user" {
-            failEditingCourseReview(2, CourseReviewEditRequest(5.0, "", ""), HttpStatus.FORBIDDEN)
+            failEditingCourseReview(2, CourseReviewEditRequest(5.0, ""), HttpStatus.FORBIDDEN)
         }
 
         "delete course review" {
-            setUserId(UUID.randomUUID().toString())
+            createRandomUser()
 
             val courseId = 1L
 
-            val reviewToBeDeleted = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText", "testUserName"))
+            val reviewToBeDeleted = addCourseReview(CourseReviewAddRequest(courseId, 4.0, "testText"))
             val courseReviewOverviewBefore = getCourseReviewOverview(courseId)
 
             val deletedReview = deleteCourseReview(reviewToBeDeleted.id)
@@ -176,11 +180,15 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getCourseReviewOverview(courseId: Long, expectedStatus: HttpStatus = HttpStatus.OK): CourseReviewsOverviewDto {
-        return restWithUserRole().getForEntity<CourseReviewsOverviewDto>("/course-review/course/$courseId/overview").let {
-            it.statusCode shouldBe expectedStatus
-            it.body!!
-        }
+    private fun getCourseReviewOverview(
+        courseId: Long,
+        expectedStatus: HttpStatus = HttpStatus.OK
+    ): CourseReviewsOverviewDto {
+        return restWithUserRole().getForEntity<CourseReviewsOverviewDto>("/course-review/course/$courseId/overview")
+            .let {
+                it.statusCode shouldBe expectedStatus
+                it.body!!
+            }
     }
 
     private fun addCourseReview(request: CourseReviewAddRequest): CourseReviewDto {
@@ -201,8 +209,15 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun failEditingCourseReview(courseReviewId: Long, request: CourseReviewEditRequest, expectedStatus: HttpStatus) {
-        restWithUserRole().putForEntity<Unit>("/course-review/$courseReviewId", request).statusCode shouldBe expectedStatus
+    private fun failEditingCourseReview(
+        courseReviewId: Long,
+        request: CourseReviewEditRequest,
+        expectedStatus: HttpStatus
+    ) {
+        restWithUserRole().putForEntity<Unit>(
+            "/course-review/$courseReviewId",
+            request
+        ).statusCode shouldBe expectedStatus
     }
 
     private fun deleteCourseReview(courseReviewId: Long): CourseReviewDto {
@@ -217,17 +232,53 @@ class CourseReviewIntegrationTests : IntegrationTests() {
     }
 
     // formula from https://math.stackexchange.com/a/957376
-    private fun addValueToAverage(originalAverage: Double, count: Long, value: Double) = originalAverage + ((value - originalAverage) / (count + 1))
+    private fun addValueToAverage(originalAverage: Double, count: Long, value: Double) =
+        originalAverage + ((value - originalAverage) / (count + 1))
 
     // formula from https://math.stackexchange.com/a/1567345
-    private fun removeValueFromAverage(originalAverage: Double, count: Long, value: Double) = (originalAverage * count - value) / (count - 1)
+    private fun removeValueFromAverage(originalAverage: Double, count: Long, value: Double) =
+        (originalAverage * count - value) / (count - 1)
 
     // used to calculate new expected average rating - I found no other way to test it and it seems like a
     // reasonable thing to test
-    private fun replaceValueInAverage(originalAverage: Double, count: Long, oldValue: Double, newValue: Double): Double {
+    private fun replaceValueInAverage(
+        originalAverage: Double,
+        count: Long,
+        oldValue: Double,
+        newValue: Double
+    ): Double {
         // we first add the new value to the average
         val newAverageWithNewValueAdded = addValueToAverage(originalAverage, count, newValue)
         // then we subtract the original value from the new average
         return removeValueFromAverage(newAverageWithNewValueAdded, count + 1, oldValue)
+    }
+
+    private fun createRandomUser() {
+        val randomUserId = getRandomUserId()
+        setUserId(randomUserId)
+        createUser(randomUserId)
+    }
+
+    private fun createUser(userId: String): String {
+        val user = User(
+            userId,
+            "John Bool",
+            "john.bool.bool@gmail.com",
+            null,
+            false
+        )
+        val userAddRequest = UserAddRequest(user.firebaseId, user.name, user.email, user.imageUrl, false, false)
+        return restWithUserRole().postForEntity<User>("/user", userAddRequest).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.firebaseId
+        }
+    }
+
+    private fun getRandomUserId(): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..12)
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
     }
 }
