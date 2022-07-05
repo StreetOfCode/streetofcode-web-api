@@ -34,9 +34,11 @@ class UserServiceImpl(
     }
 
     override fun edit(id: String, userEditRequest: UserEditRequest): User {
-        val user = userRepository.findById(id)
+        userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
-        return userRepository.save(User(id, userEditRequest.name, userEditRequest.email, userEditRequest.imageUrl, user.receiveNewsletter))
+        // TODO if newsletter changed then what
+
+        return userRepository.save(User(id, userEditRequest.name, userEditRequest.email, userEditRequest.imageUrl, userEditRequest.receiveNewsletter))
     }
 }

@@ -48,7 +48,6 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "get course overview" {
-
             val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
 
             getCourseOverviewWithUserRoleThrowsAuthorizationException(course.id)
@@ -111,6 +110,25 @@ class CourseIntegrationTests : IntegrationTests() {
 
             getCourseNotFound(course.id)
         }
+
+        "get my courses" {
+            createRandomUser()
+
+            val myCoursesResponse = getMyCourses()
+            myCoursesResponse.statusCode shouldBe HttpStatus.OK
+
+            val courses = myCoursesResponse.body!!
+            courses.size shouldBe 0
+
+            // update progress then try again
+            updateProgress(1)
+
+            val myCoursesAgainResponse = getMyCourses()
+            myCoursesAgainResponse.statusCode shouldBe HttpStatus.OK
+
+            val coursesAgain = myCoursesAgainResponse.body!!
+            coursesAgain.size shouldBe 1
+        }
     }
 
     private fun getCourses(): ResponseEntity<List<CourseDto>> {
@@ -131,6 +149,10 @@ class CourseIntegrationTests : IntegrationTests() {
 
     private fun getCoursesOverviewWithUserRole(): ResponseEntity<List<CourseOverviewDto>> {
         return restWithUserRole().getForEntity("/course/overview")
+    }
+
+    private fun getMyCourses(): ResponseEntity<List<CourseOverviewDto>> {
+        return restWithUserRole().getForEntity("/course/my-courses")
     }
 
     private fun getCourse(courseId: Long): CourseDto {
@@ -180,5 +202,9 @@ class CourseIntegrationTests : IntegrationTests() {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
+    }
+
+    private fun updateProgress(lectureId: Long) {
+        return restWithUserRole().postForEntity<Void>("/progress/update/$lectureId").statusCode shouldBe HttpStatus.OK
     }
 }

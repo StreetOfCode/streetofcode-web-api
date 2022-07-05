@@ -13,9 +13,7 @@ import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.CourseReviewEditRequest
-import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
 import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
-import sk.streetofcode.courseplatformbackend.model.User
 
 @SpringBootTestAnnotation
 class CourseReviewIntegrationTests : IntegrationTests() {
@@ -251,34 +249,5 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         val newAverageWithNewValueAdded = addValueToAverage(originalAverage, count, newValue)
         // then we subtract the original value from the new average
         return removeValueFromAverage(newAverageWithNewValueAdded, count + 1, oldValue)
-    }
-
-    private fun createRandomUser() {
-        val randomUserId = getRandomUserId()
-        setUserId(randomUserId)
-        createUser(randomUserId)
-    }
-
-    private fun createUser(userId: String): String {
-        val user = User(
-            userId,
-            "John Bool",
-            "john.bool.bool@gmail.com",
-            null,
-            false
-        )
-        val userAddRequest = UserAddRequest(user.firebaseId, user.name, user.email, user.imageUrl, false, false)
-        return restWithUserRole().postForEntity<User>("/user", userAddRequest).let {
-            it.statusCode shouldBe HttpStatus.OK
-            it.body!!.firebaseId
-        }
-    }
-
-    private fun getRandomUserId(): String {
-        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-        return (1..12)
-            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
-            .map(charPool::get)
-            .joinToString("")
     }
 }

@@ -2,15 +2,20 @@ package sk.streetofcode.courseplatformbackend.integration
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.spring.SpringListener
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
 import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
+import sk.streetofcode.courseplatformbackend.model.User
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 open class IntegrationTests : StringSpec() {
@@ -42,6 +47,35 @@ open class IntegrationTests : StringSpec() {
     protected fun setUserId(userId: String) {
         this.userId = userId
         Mockito.`when`(authenticationService.getUserId()).thenReturn(userId)
+    }
+
+    protected fun createRandomUser() {
+        val randomUserId = getRandomUserId()
+        setUserId(randomUserId)
+        createUser(randomUserId)
+    }
+
+    private fun getRandomUserId(): String {
+        val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+        return (1..12)
+            .map { _ -> kotlin.random.Random.nextInt(0, charPool.size) }
+            .map(charPool::get)
+            .joinToString("")
+    }
+
+    private fun createUser(userId: String): String {
+        val user = User(
+            userId,
+            "John Bool",
+            "john.bool.bool@gmail.com",
+            null,
+            false
+        )
+        val userAddRequest = UserAddRequest(user.firebaseId, user.name, user.email, user.imageUrl, false, false)
+        return restWithUserRole().postForEntity<User>("/user", userAddRequest).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.firebaseId
+        }
     }
 
     // helper method to do the same thing as postForEntity but with PUT method
