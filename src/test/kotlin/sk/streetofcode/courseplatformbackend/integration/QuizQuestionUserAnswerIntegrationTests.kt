@@ -53,6 +53,36 @@ class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
             userAnswer.answer.id shouldBe 2
         }
 
+        "previously saved answers" {
+            val multipleChoiceSingleAnswer = sendAnswer(
+                QuizQuestionUserAnswerRequest(
+                    3,
+                    listOf(11)
+                )
+            )
+
+            multipleChoiceSingleAnswer.body?.isCorrect shouldBe false
+
+            val singleChoiceCorrectAnswer = sendAnswer(
+                QuizQuestionUserAnswerRequest(
+                    1,
+                    listOf(4)
+                )
+            )
+
+            singleChoiceCorrectAnswer.body?.isCorrect shouldBe true
+            getSavedUserAnswers(1).body?.filter { it.isCorrect }?.size shouldBe 1
+
+            sendAnswer(
+                QuizQuestionUserAnswerRequest(
+                    3,
+                    listOf(12, 11)
+                )
+            ).body?.isCorrect shouldBe true
+
+            getSavedUserAnswers(1).body?.filter { it.isCorrect }?.size shouldBe 3
+        }
+
         "answer question" {
             val notFoundQuestion = sendAnswer(
                 QuizQuestionUserAnswerRequest(
@@ -142,8 +172,12 @@ class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getUserAnswers(): ResponseEntity<List<QuizQuestionUserAnswerDto>> {
+    private fun getUserAnswers(): ResponseEntity<Array<QuizQuestionUserAnswerDto>> {
         return restWithAdminRole().getForEntity("/quiz/question/user-answer")
+    }
+
+    private fun getSavedUserAnswers(quizId: Long): ResponseEntity<Array<QuizQuestionUserAnswerDto>> {
+        return restWithUserRole().getForEntity("/quiz/${quizId}/question/user-answer")
     }
 
     private fun sendAnswer(body: QuizQuestionUserAnswerRequest): ResponseEntity<QuizQuestionAnswerCorrectnessDto> {
