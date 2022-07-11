@@ -177,7 +177,7 @@ class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
     }
 
     private fun getSavedUserAnswers(quizId: Long): ResponseEntity<Array<QuizQuestionUserAnswerDto>> {
-        return restWithUserRole().getForEntity("/quiz/${quizId}/question/user-answer")
+        return restWithUserRole().getForEntity("/quiz/$quizId/question/user-answer")
     }
 
     private fun sendAnswer(body: QuizQuestionUserAnswerRequest): ResponseEntity<QuizQuestionAnswerCorrectnessDto> {
