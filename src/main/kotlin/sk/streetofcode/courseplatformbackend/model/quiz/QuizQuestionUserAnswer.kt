@@ -61,6 +61,7 @@ fun QuizQuestionUserAnswer.toQuizQuestionUserAnswerDto(): QuizQuestionUserAnswer
         question = this.question.toQuizQuestionDto(),
         answer = this.answer.toQuizQuestionAnswerDto(),
         userId = this.userId,
-        tryCount = this.tryCount
+        tryCount = this.tryCount,
+        isCorrect = false
     )
 }

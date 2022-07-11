@@ -7,5 +7,6 @@ data class QuizQuestionUserAnswerDto(
     val question: QuizQuestionDto,
     val answer: QuizQuestionAnswerDto,
     val userId: String,
-    val tryCount: Int
+    val tryCount: Int,
+    var isCorrect: Boolean
 )
