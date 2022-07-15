@@ -48,6 +48,11 @@ class AuthorController(val authorService: AuthorService) {
         return ResponseEntity.ok(authorService.getOverview(id))
     }
 
+    @GetMapping("id")
+    fun getAllIds(): ResponseEntity<List<Long>> {
+        return ResponseEntity.ok(authorService.getAll().map { it.id!! }.toList())
+    }
+
     @PostMapping
     @IsAdmin
     fun add(@RequestBody authorAddRequest: AuthorAddRequest): ResponseEntity<Author> {

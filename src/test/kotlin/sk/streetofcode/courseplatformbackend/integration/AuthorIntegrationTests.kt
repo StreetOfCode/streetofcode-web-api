@@ -25,6 +25,14 @@ class AuthorIntegrationTests : IntegrationTests() {
             authors.size shouldBe 2
         }
 
+        "get author ids" {
+            val authorsResponse = getAuthorIds()
+            authorsResponse.statusCode shouldBe HttpStatus.OK
+
+            val authors = authorsResponse.body!!
+            authors shouldBe listOf(1, 2)
+        }
+
         "add author" {
             val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
 
@@ -92,6 +100,10 @@ class AuthorIntegrationTests : IntegrationTests() {
 
     private fun getAuthors(): ResponseEntity<List<Author>> {
         return restWithAdminRole().getForEntity<List<Author>>("/author")
+    }
+
+    private fun getAuthorIds(): ResponseEntity<List<Long>> {
+        return restWithAdminRole().getForEntity<List<Long>>("/author/id")
     }
 
     private fun getAuthor(authorId: Long): Author {
