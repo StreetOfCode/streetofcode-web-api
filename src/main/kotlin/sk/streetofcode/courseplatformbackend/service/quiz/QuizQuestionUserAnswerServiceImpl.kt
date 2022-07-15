@@ -62,7 +62,7 @@ class QuizQuestionUserAnswerServiceImpl(
             mostRecentAnswers.map { answer ->
                 val answer = answer.toQuizQuestionUserAnswerDto()
                 val question = mostRecentAnswers.first { it.question.id == answer.question.id }.question
-                println(mostRecentAnswers)
+
                 answer.isCorrect =
                     question.correctAnswers
                     .map { it.id }.sortedBy { it } == mostRecentAnswers.filter { it.question.id == question.id }.map { it.answer.id }.sortedBy { it }
