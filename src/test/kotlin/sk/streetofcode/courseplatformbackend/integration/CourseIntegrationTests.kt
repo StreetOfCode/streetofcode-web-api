@@ -31,6 +31,14 @@ class CourseIntegrationTests : IntegrationTests() {
             courses.size shouldBe 2
         }
 
+        "get course ids" {
+            val courseIdsResponse = getCourseIds()
+            courseIdsResponse.statusCode shouldBe HttpStatus.OK
+
+            val courseIds = courseIdsResponse.body!!
+            courseIds shouldBe listOf(1, 2)
+        }
+
         "get courses overview with admin role" {
             val coursesResponse = getCoursesOverviewWithAdminRole()
             coursesResponse.statusCode shouldBe HttpStatus.OK
@@ -133,6 +141,10 @@ class CourseIntegrationTests : IntegrationTests() {
 
     private fun getCourses(): ResponseEntity<List<CourseDto>> {
         return restWithAdminRole().getForEntity("/course")
+    }
+
+    private fun getCourseIds(): ResponseEntity<List<Long>> {
+        return restWithAdminRole().getForEntity("/course/id")
     }
 
     private fun getCoursesWithUserRoleThrowsAuthorizationException() {

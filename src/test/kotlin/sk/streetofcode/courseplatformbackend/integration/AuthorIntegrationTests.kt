@@ -29,8 +29,8 @@ class AuthorIntegrationTests : IntegrationTests() {
             val authorsResponse = getAuthorIds()
             authorsResponse.statusCode shouldBe HttpStatus.OK
 
-            val authors = authorsResponse.body!!
-            authors shouldBe listOf(1, 2)
+            val authorIds = authorsResponse.body!!
+            authorIds shouldBe listOf(1, 2)
         }
 
         "add author" {

@@ -39,6 +39,11 @@ class CourseController(val courseService: CourseService, val authenticationServi
         return ResponseEntity.ok().headers(httpHeaders).body(courses)
     }
 
+    @GetMapping("id")
+    fun getAllIds(): ResponseEntity<List<Long>> {
+        return ResponseEntity.ok(courseService.getAll().map { it.id!! }.toList())
+    }
+
     @GetMapping("{id}")
     @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<CourseDto> {
