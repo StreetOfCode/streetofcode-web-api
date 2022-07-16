@@ -5,8 +5,8 @@ import sk.streetofcode.courseplatformbackend.api.dto.progress.UserProgressMetada
 import sk.streetofcode.courseplatformbackend.api.request.ResetProgressDto
 
 interface ProgressService {
-    fun updateProgress(userId: String, lectureId: Long)
-    fun resetProgress(userId: String, resetProgressDto: ResetProgressDto)
+    fun updateProgress(userId: String, lectureId: Long): CourseProgressOverviewDto
+    fun resetProgress(userId: String, resetProgressDto: ResetProgressDto): CourseProgressOverviewDto
     fun getProgressOverview(userId: String, courseId: Long): CourseProgressOverviewDto
     fun getUserProgressMetadata(userId: String, courseId: Long): UserProgressMetadataDto
     fun getUserProgressMetadataOrNull(userId: String, courseId: Long): UserProgressMetadataDto?

@@ -20,16 +20,14 @@ class ProgressController(private val authenticationService: AuthenticationServic
 
     @PostMapping("/update/{lectureId}")
     @IsAuthenticated
-    fun updateProgress(@PathVariable("lectureId") lectureId: Long): ResponseEntity<Void> {
-        progressService.updateProgress(authenticationService.getUserId(), lectureId)
-        return ResponseEntity.ok().build()
+    fun updateProgress(@PathVariable("lectureId") lectureId: Long): ResponseEntity<CourseProgressOverviewDto> {
+        return ResponseEntity.ok(progressService.updateProgress(authenticationService.getUserId(), lectureId))
     }
 
     @PostMapping("/reset")
     @IsAuthenticated
-    fun resetProgress(@RequestBody resetProgress: ResetProgressDto): ResponseEntity<Void> {
-        progressService.resetProgress(authenticationService.getUserId(), resetProgress)
-        return ResponseEntity.ok().build()
+    fun resetProgress(@RequestBody resetProgress: ResetProgressDto): ResponseEntity<CourseProgressOverviewDto> {
+        return ResponseEntity.ok(progressService.resetProgress(authenticationService.getUserId(), resetProgress))
     }
 
     @GetMapping("/overview/{courseId}")

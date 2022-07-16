@@ -25,6 +25,7 @@ import sk.streetofcode.courseplatformbackend.model.progress.UserProgressMetadata
 import sk.streetofcode.courseplatformbackend.model.progress.toUserProgressMetadataDto
 import java.time.OffsetDateTime
 import java.util.concurrent.TimeUnit
+import javax.transaction.Transactional
 
 @Service
 class ProgressServiceImpl(
@@ -40,13 +41,17 @@ class ProgressServiceImpl(
         private val log = LoggerFactory.getLogger(ProgressServiceImpl::class.java)
     }
 
-    override fun updateProgress(userId: String, lectureId: Long) {
-        // if this lecture is already viewed then don't save it again
-        if (progressLectureRepository.findByUserIdAndLectureId(userId, lectureId).isPresent) {
-            return
-        }
+    @Transactional
+    @Synchronized
+    override fun updateProgress(userId: String, lectureId: Long): CourseProgressOverviewDto {
         val lecture = lectureService.get(lectureId)
         val courseId = lecture.course.id
+
+        // if this lecture is already viewed then don't save it again
+        if (progressLectureRepository.findByUserIdAndLectureId(userId, lectureId).isPresent) {
+            return this.getProgressOverview(userId, courseId)
+        }
+
         val courseLecturesCount = lecture.course.lecturesCount
 
         // update progress lecture
@@ -62,10 +67,14 @@ class ProgressServiceImpl(
         } else {
             progressMetadataRepository.save(UserProgressMetadata(userId, courseId, 1))
         }
+
+        return this.getProgressOverview(userId, courseId)
     }
 
-    override fun resetProgress(userId: String, resetProgressDto: ResetProgressDto) {
-        when {
+    @Transactional
+    @Synchronized
+    override fun resetProgress(userId: String, resetProgressDto: ResetProgressDto): CourseProgressOverviewDto {
+        return when {
             resetProgressDto.lectureId != null -> {
                 resetLectureProgress(userId, resetProgressDto.lectureId)
             }
@@ -142,7 +151,7 @@ class ProgressServiceImpl(
         return progressMetadataRepository.getStartedCourseIds(userId)
     }
 
-    private fun resetLectureProgress(userId: String, lectureId: Long) {
+    private fun resetLectureProgress(userId: String, lectureId: Long): CourseProgressOverviewDto {
         val lecture = lectureService.get(lectureId)
         val courseId = lecture.course.id
 
@@ -157,9 +166,11 @@ class ProgressServiceImpl(
         maybeResetFinishCourse(progressMetadata)
 
         progressMetadataRepository.save(progressMetadata)
+
+        return this.getProgressOverview(userId, courseId)
     }
 
-    private fun resetChapterProgress(userId: String, chapterId: Long) {
+    private fun resetChapterProgress(userId: String, chapterId: Long): CourseProgressOverviewDto {
         val chapter = chapterService.get(chapterId)
         val courseId = chapter.course.id
         val lectureIds = chapter.lectures.map { lectureDto -> lectureDto.id }
@@ -174,9 +185,11 @@ class ProgressServiceImpl(
         updateProgressMetadata(progressMetadata, -lectureIds.size, chapter.course.lecturesCount)
         maybeResetFinishCourse(progressMetadata)
         progressMetadataRepository.save(progressMetadata)
+
+        return this.getProgressOverview(userId, courseId)
     }
 
-    private fun resetCourseProgress(userId: String, courseId: Long) {
+    private fun resetCourseProgress(userId: String, courseId: Long): CourseProgressOverviewDto {
         val lectureIds = chapterService.getByCourseId(courseId).flatMap { chapterDto -> chapterDto.lectures }
             .map { lectureDto -> lectureDto.id }
 
@@ -191,6 +204,8 @@ class ProgressServiceImpl(
         maybeResetFinishCourse(progressMetadata)
 
         progressMetadataRepository.save(progressMetadata)
+
+        return this.getProgressOverview(userId, courseId)
     }
 
     private fun maybeResetFinishCourse(progressMetadata: UserProgressMetadata) {
