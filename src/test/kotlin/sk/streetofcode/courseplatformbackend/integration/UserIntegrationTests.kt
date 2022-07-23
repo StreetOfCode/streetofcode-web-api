@@ -53,7 +53,7 @@ class UserIntegrationTests : IntegrationTests() {
                 "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png",
                 true
             )
-            val user = putUser(UserEditRequest(updatedUser.name, updatedUser.email, updatedUser.imageUrl, true))
+            val user = putUser(UserEditRequest(updatedUser.name, updatedUser.imageUrl, true))
             user.name shouldBe updatedUser.name
 
             val receivedUser = getUser()
