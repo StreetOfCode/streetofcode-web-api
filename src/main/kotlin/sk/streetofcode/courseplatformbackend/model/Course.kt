@@ -45,6 +45,9 @@ data class Course(
     @Column(nullable = false)
     var name: String,
 
+    @Column(nullable = false, unique = true)
+    var slug: String,
+
     @Column(nullable = false)
     var shortDescription: String,
 
@@ -87,8 +90,8 @@ data class Course(
     @Column(nullable = false, columnDefinition = "integer default 0")
     var lecturesCount: Int
 ) {
-    constructor(author: Author, difficulty: Difficulty, name: String, shortDescription: String, longDescription: String, resources: String?, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
-        this(null, author, difficulty, name, shortDescription, longDescription, resources, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
+    constructor(author: Author, difficulty: Difficulty, name: String, slug: String, shortDescription: String, longDescription: String, resources: String?, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
+        this(null, author, difficulty, name, slug, shortDescription, longDescription, resources, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()
@@ -106,6 +109,7 @@ enum class CourseStatus {
 
 private data class CourseEssential(
     val name: String,
+    val slug: String,
     val shortDescription: String,
     val longDescription: String,
     val createdAt: OffsetDateTime,
@@ -114,6 +118,7 @@ private data class CourseEssential(
 ) {
     constructor(course: Course) : this(
         name = course.name,
+        slug = course.slug,
         shortDescription = course.shortDescription,
         longDescription = course.longDescription,
         createdAt = course.createdAt,
@@ -127,6 +132,7 @@ fun Course.toCourseDto(): CourseDto {
         this.author,
         this.difficulty,
         this.name,
+        this.slug,
         this.shortDescription,
         this.longDescription,
         this.resources,
@@ -167,6 +173,7 @@ fun Course.toCourseOverview(
     return CourseOverviewDto(
         this.id!!,
         this.name,
+        this.slug,
         this.shortDescription,
         this.longDescription,
         this.resources,

@@ -10,6 +10,7 @@ data class CourseDto(
     val author: Author,
     val difficulty: Difficulty,
     val name: String,
+    val slug: String,
     val shortDescription: String,
     val longDescription: String,
     val resources: String? = null,

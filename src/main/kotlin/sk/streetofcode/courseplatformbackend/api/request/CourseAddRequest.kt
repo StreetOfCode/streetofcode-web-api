@@ -6,6 +6,7 @@ data class CourseAddRequest(
     val authorId: Long,
     val difficultyId: Long,
     val name: String,
+    val slug: String,
     val shortDescription: String,
     val longDescription: String,
     val resources: String? = null,

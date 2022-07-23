@@ -39,9 +39,9 @@ class CourseController(val courseService: CourseService, val authenticationServi
         return ResponseEntity.ok().headers(httpHeaders).body(courses)
     }
 
-    @GetMapping("id")
-    fun getAllIds(): ResponseEntity<List<Long>> {
-        return ResponseEntity.ok(courseService.getAll().map { it.id!! }.toList())
+    @GetMapping("slug")
+    fun getAllSlugs(): ResponseEntity<List<String>> {
+        return ResponseEntity.ok(courseService.getAll().map { it.slug }.toList())
     }
 
     @GetMapping("{id}")
@@ -77,14 +77,14 @@ class CourseController(val courseService: CourseService, val authenticationServi
         }
     }
 
-    @GetMapping("/overview/{id}")
-    fun getOverview(@PathVariable("id") id: Long): ResponseEntity<CourseOverviewDto> {
+    @GetMapping("/overview/{slug}")
+    fun getOverview(@PathVariable("slug") slug: String): ResponseEntity<CourseOverviewDto> {
         return if (authenticationService.isAdmin()) {
-            ResponseEntity.ok(courseService.getAnyCourseOverview(authenticationService.getUserId(), id))
+            ResponseEntity.ok(courseService.getAnyCourseOverview(authenticationService.getUserId(), slug))
         } else if (authenticationService.isAuthenticated()) {
-            ResponseEntity.ok(courseService.getPublicCourseOverview(authenticationService.getUserId(), id))
+            ResponseEntity.ok(courseService.getPublicCourseOverview(authenticationService.getUserId(), slug))
         } else {
-            ResponseEntity.ok(courseService.getPublicCourseOverview(null, id))
+            ResponseEntity.ok(courseService.getPublicCourseOverview(null, slug))
         }
     }
 

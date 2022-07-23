@@ -9,6 +9,7 @@ import java.time.OffsetDateTime
 data class CourseOverviewDto(
     val id: Long,
     val name: String,
+    val slug: String,
     val shortDescription: String,
     val longDescription: String,
     val resources: String? = null,

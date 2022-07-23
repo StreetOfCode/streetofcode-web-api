@@ -31,12 +31,12 @@ class CourseIntegrationTests : IntegrationTests() {
             courses.size shouldBe 2
         }
 
-        "get course ids" {
-            val courseIdsResponse = getCourseIds()
+        "get course slugs" {
+            val courseIdsResponse = getCourseSlugs()
             courseIdsResponse.statusCode shouldBe HttpStatus.OK
 
             val courseIds = courseIdsResponse.body!!
-            courseIds shouldBe listOf(1, 2)
+            courseIds shouldBe listOf("informatika101", "kryptografia")
         }
 
         "get courses overview with admin role" {
@@ -56,13 +56,15 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "get course overview" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
+            val uniqueSlug = getRandomString()
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
 
-            getCourseOverviewWithUserRoleThrowsAuthorizationException(course.id)
+            getCourseOverviewWithUserRoleThrowsAuthorizationException(uniqueSlug)
 
-            val fetchedCourse = getCourseOverviewWithAdminRole(course.id)
+            val fetchedCourse = getCourseOverviewWithAdminRole(uniqueSlug)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
+            fetchedCourse.slug shouldBe uniqueSlug
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
             fetchedCourse.resources shouldBe "resources"
@@ -75,11 +77,13 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "add course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
+            val uniqueSlug = getRandomString()
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
             fetchedCourse.name shouldBe "testName"
+            fetchedCourse.slug shouldBe uniqueSlug
             fetchedCourse.shortDescription shouldBe "short"
             fetchedCourse.longDescription shouldBe "long"
             fetchedCourse.resources shouldBe null
@@ -90,17 +94,19 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "edit course" {
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", "editedShort", "editedLong", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            val uniqueSlug = getRandomString()
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", uniqueSlug, "editedShort", "editedLong", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
 
             val editedCourse = editCourse(
                 course.id,
-                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
+                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedSlug", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
             )
 
             val fetchedCourse = getCourse(editedCourse.id)
             fetchedCourse.name shouldBe "editedTestName"
+            fetchedCourse.slug shouldBe "editedSlug"
             fetchedCourse.shortDescription shouldBe "editedShort"
             fetchedCourse.longDescription shouldBe "editedLong"
             fetchedCourse.resources shouldBe "editedResources"
@@ -111,7 +117,8 @@ class CourseIntegrationTests : IntegrationTests() {
         }
 
         "delete course" {
-            val course = addCourse(CourseAddRequest(1, 1, "testName", "short", "long", null, "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
+            val uniqueSlug = getRandomString()
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)
@@ -143,8 +150,8 @@ class CourseIntegrationTests : IntegrationTests() {
         return restWithAdminRole().getForEntity("/course")
     }
 
-    private fun getCourseIds(): ResponseEntity<List<Long>> {
-        return restWithAdminRole().getForEntity("/course/id")
+    private fun getCourseSlugs(): ResponseEntity<List<String>> {
+        return restWithAdminRole().getForEntity("/course/slug")
     }
 
     private fun getCoursesWithUserRoleThrowsAuthorizationException() {
@@ -174,15 +181,15 @@ class CourseIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getCourseOverviewWithAdminRole(courseId: Long): CourseOverviewDto {
-        return restWithAdminRole().getForEntity<CourseOverviewDto>("/course/overview/$courseId").let {
+    private fun getCourseOverviewWithAdminRole(slug: String): CourseOverviewDto {
+        return restWithAdminRole().getForEntity<CourseOverviewDto>("/course/overview/$slug").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun getCourseOverviewWithUserRoleThrowsAuthorizationException(courseId: Long) {
-        return restWithUserRole().getForEntity<AuthorizationException>("/course/overview/$courseId").statusCode shouldBe HttpStatus.FORBIDDEN
+    private fun getCourseOverviewWithUserRoleThrowsAuthorizationException(slug: String) {
+        return restWithUserRole().getForEntity<AuthorizationException>("/course/overview/$slug").statusCode shouldBe HttpStatus.FORBIDDEN
     }
 
     private fun getCourseNotFound(courseId: Long) {

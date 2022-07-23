@@ -13,7 +13,7 @@ interface CourseService {
     fun delete(id: Long): CourseDto
     fun getPublicCoursesOverview(): List<CourseOverviewDto>
     fun getAllCoursesOverview(): List<CourseOverviewDto>
-    fun getPublicCourseOverview(userId: String?, id: Long): CourseOverviewDto
-    fun getAnyCourseOverview(userId: String?, id: Long): CourseOverviewDto
+    fun getPublicCourseOverview(userId: String?, slug: String): CourseOverviewDto
+    fun getAnyCourseOverview(userId: String?, slug: String): CourseOverviewDto
     fun getMyCourses(userId: String): List<CourseOverviewDto>
 }

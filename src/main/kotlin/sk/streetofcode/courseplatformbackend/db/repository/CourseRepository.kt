@@ -6,10 +6,13 @@ import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 import sk.streetofcode.courseplatformbackend.model.Course
 import java.time.OffsetDateTime
+import java.util.Optional
 import javax.transaction.Transactional
 
 @Repository
 interface CourseRepository : CrudRepository<Course, Long> {
+
+    fun findBySlug(slug: String): Optional<Course>
 
     @Modifying
     @Query("update Course c set updated_at = ?1, difficulty_id = null where difficulty_id = ?2")

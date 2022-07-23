@@ -69,6 +69,7 @@ class CourseServiceImpl(
                         author,
                         difficulty,
                         addRequest.name,
+                        addRequest.slug,
                         addRequest.shortDescription,
                         addRequest.longDescription,
                         addRequest.resources,
@@ -104,6 +105,7 @@ class CourseServiceImpl(
             existingCourse.author = author
             existingCourse.difficulty = difficulty
             existingCourse.name = editRequest.name
+            existingCourse.slug = editRequest.slug
             existingCourse.shortDescription = editRequest.shortDescription
             existingCourse.longDescription = editRequest.longDescription
             existingCourse.resources = editRequest.resources
@@ -158,29 +160,29 @@ class CourseServiceImpl(
         }
     }
 
-    override fun getPublicCourseOverview(userId: String?, id: Long): CourseOverviewDto {
+    override fun getPublicCourseOverview(userId: String?, slug: String): CourseOverviewDto {
         val course = courseRepository
-            .findById(id)
-            .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
+            .findBySlug(slug)
+            .orElseThrow { ResourceNotFoundException("Course with id $slug not found") }
 
         if (CourseStatus.PUBLIC != course.status) {
             throw AuthorizationException()
         } else {
-            val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, id)
+            val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
             return course.toCourseOverview(
-                courseReviewService.getCourseReviewsOverview(id),
+                courseReviewService.getCourseReviewsOverview(course.id!!),
                 progress
             )
         }
     }
 
-    override fun getAnyCourseOverview(userId: String?, id: Long): CourseOverviewDto {
+    override fun getAnyCourseOverview(userId: String?, slug: String): CourseOverviewDto {
         val course = courseRepository
-            .findById(id)
-            .orElseThrow { ResourceNotFoundException("Course with id $id not found") }
+            .findBySlug(slug)
+            .orElseThrow { ResourceNotFoundException("Course with slug $slug not found") }
 
-        val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, id)
-        return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(id), progress)
+        val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
+        return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(course.id!!), progress)
     }
 
     override fun getMyCourses(userId: String): List<CourseOverviewDto> {
