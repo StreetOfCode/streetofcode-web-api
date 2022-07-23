@@ -55,6 +55,10 @@ open class IntegrationTests : StringSpec() {
         createUser(randomUserId)
     }
 
+    protected fun getRandomString(): String {
+        return getRandomUserId()
+    }
+
     private fun getRandomUserId(): String {
         val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
         return (1..12)

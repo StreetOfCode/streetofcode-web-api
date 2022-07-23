@@ -43,14 +43,14 @@ class AuthorController(val authorService: AuthorService) {
         return ResponseEntity.ok(authorService.get(id))
     }
 
-    @GetMapping("{id}/overview")
-    fun getOverview(@PathVariable("id") id: Long): ResponseEntity<AuthorOverviewDto> {
-        return ResponseEntity.ok(authorService.getOverview(id))
+    @GetMapping("{slug}/overview")
+    fun getOverview(@PathVariable("slug") slug: String): ResponseEntity<AuthorOverviewDto> {
+        return ResponseEntity.ok(authorService.getOverview(slug))
     }
 
-    @GetMapping("id")
-    fun getAllIds(): ResponseEntity<List<Long>> {
-        return ResponseEntity.ok(authorService.getAll().map { it.id!! }.toList())
+    @GetMapping("slug")
+    fun getAllSlugs(): ResponseEntity<List<String>> {
+        return ResponseEntity.ok(authorService.getAll().map { it.slug }.toList())
     }
 
     @PostMapping

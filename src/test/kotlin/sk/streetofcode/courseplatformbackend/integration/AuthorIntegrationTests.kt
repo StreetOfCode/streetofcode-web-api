@@ -25,19 +25,21 @@ class AuthorIntegrationTests : IntegrationTests() {
             authors.size shouldBe 2
         }
 
-        "get author ids" {
-            val authorsResponse = getAuthorIds()
+        "get author slugs" {
+            val authorsResponse = getAuthorSlugs()
             authorsResponse.statusCode shouldBe HttpStatus.OK
 
             val authorIds = authorsResponse.body!!
-            authorIds shouldBe listOf(1, 2)
+            authorIds shouldBe listOf("jakub-jahic", "gabriel-kerekes")
         }
 
         "add author" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
+            val uniqueSlug = getRandomString()
+            val author = addAuthor(AuthorAddRequest("testName", uniqueSlug, "testUrl", "title", "email", "testDescription"))
 
             val fetchedAuthor = getAuthor(author.id!!)
             fetchedAuthor.name shouldBe "testName"
+            fetchedAuthor.slug shouldBe uniqueSlug
             fetchedAuthor.imageUrl shouldBe "testUrl"
             fetchedAuthor.description shouldBe "testDescription"
             fetchedAuthor.coursesTitle shouldBe "title"
@@ -45,15 +47,17 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "edit author" {
-            editAuthorNotFound(999, AuthorEditRequest(1, "", "", "", "", ""))
+            editAuthorNotFound(999, AuthorEditRequest(1, "", "", "", "", "", ""))
 
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
+            val uniqueSlug = getRandomString()
+            val author = addAuthor(AuthorAddRequest("testName", uniqueSlug, "testUrl", "title", "email", "testDescription"))
 
             val editedAuthor = editAuthor(
                 author.id!!,
                 AuthorEditRequest(
                     author.id!!,
                     "editedTestName",
+                    "editedSlug",
                     "editedTestUrl",
                     "editedTitle",
                     "editedEmail",
@@ -65,6 +69,7 @@ class AuthorIntegrationTests : IntegrationTests() {
             fetchedAuthor.id shouldBe author.id
             fetchedAuthor.courses shouldBe author.courses
             fetchedAuthor.name shouldBe "editedTestName"
+            fetchedAuthor.slug shouldBe "editedSlug"
             fetchedAuthor.imageUrl shouldBe "editedTestUrl"
             fetchedAuthor.coursesTitle shouldBe "editedTitle"
             fetchedAuthor.email shouldBe "editedEmail"
@@ -72,7 +77,8 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "delete author" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
+            val uniqueSlug = getRandomString()
+            val author = addAuthor(AuthorAddRequest("testName", uniqueSlug, "testUrl", "title", "email", "testDescription"))
 
             val removedAuthor = deleteAuthor(author.id!!)
             removedAuthor.shouldBe(author)
@@ -81,11 +87,13 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "get author overview" {
-            val author = addAuthor(AuthorAddRequest("testName", "testUrl", "title", "email", "testDescription"))
-            val authorOverview = getAuthorOverview(author.id!!)
+            val uniqueSlug = getRandomString()
+            val author = addAuthor(AuthorAddRequest("testName", uniqueSlug, "testUrl", "title", "email", "testDescription"))
+            val authorOverview = getAuthorOverview(author.slug)
 
             authorOverview.id shouldBe author.id
             authorOverview.name shouldBe "testName"
+            authorOverview.slug shouldBe uniqueSlug
             authorOverview.description shouldBe "testDescription"
             authorOverview.imageUrl shouldBe "testUrl"
             authorOverview.description shouldBe "testDescription"
@@ -94,7 +102,7 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
 
         "fail get author overview, not found" {
-            getAuthorOverviewNotFound(99)
+            getAuthorOverviewNotFound("bla-bla-bla-slug")
         }
     }
 
@@ -102,8 +110,8 @@ class AuthorIntegrationTests : IntegrationTests() {
         return restWithAdminRole().getForEntity<List<Author>>("/author")
     }
 
-    private fun getAuthorIds(): ResponseEntity<List<Long>> {
-        return restWithAdminRole().getForEntity<List<Long>>("/author/id")
+    private fun getAuthorSlugs(): ResponseEntity<List<String>> {
+        return restWithAdminRole().getForEntity("/author/slug")
     }
 
     private fun getAuthor(authorId: Long): Author {
@@ -146,15 +154,15 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getAuthorOverview(authorId: Long): AuthorOverviewDto {
-        return restWithAdminRole().getForEntity<AuthorOverviewDto>("/author/$authorId/overview").let {
+    private fun getAuthorOverview(slug: String): AuthorOverviewDto {
+        return restWithAdminRole().getForEntity<AuthorOverviewDto>("/author/$slug/overview").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun getAuthorOverviewNotFound(authorId: Long) {
-        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/author/$authorId/overview").let {
+    private fun getAuthorOverviewNotFound(slug: String) {
+        return restWithAdminRole().getForEntity<ResourceNotFoundException>("/author/$slug/overview").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }

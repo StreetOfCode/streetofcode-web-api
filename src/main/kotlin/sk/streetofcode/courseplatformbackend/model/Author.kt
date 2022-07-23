@@ -26,6 +26,9 @@ data class Author(
     @Column(nullable = false)
     val name: String,
 
+    @Column(nullable = false, unique = true)
+    val slug: String,
+
     @Column(nullable = false)
     val imageUrl: String,
 
@@ -47,11 +50,11 @@ data class Author(
     @OrderBy("id")
     val courses: MutableSet<Course> = mutableSetOf()
 ) {
-    constructor(id: Long, name: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
-        this(id, name, imageUrl, coursesTitle, email, description, mutableSetOf())
+    constructor(id: Long, name: String, slug: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
+        this(id, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
-    constructor(name: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
-        this(null, name, imageUrl, coursesTitle, email, description, mutableSetOf())
+    constructor(name: String, slug: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
+        this(null, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
     override fun equals(other: Any?) = other is Author && AuthorEssential(this) == AuthorEssential(other)
     override fun hashCode() = AuthorEssential(this).hashCode()
@@ -60,6 +63,7 @@ data class Author(
 
 private data class AuthorEssential(
     val name: String,
+    val slug: String,
     val imageUrl: String,
     val coursesTitle: String,
     val email: String,
@@ -67,6 +71,7 @@ private data class AuthorEssential(
 ) {
     constructor(author: Author) : this(
         name = author.name,
+        slug = author.slug,
         imageUrl = author.imageUrl,
         coursesTitle = author.coursesTitle,
         email = author.email,
@@ -78,6 +83,7 @@ fun Author.toAuthorOverview(courseOverviewsDto: List<CourseOverviewDto>): Author
     return AuthorOverviewDto(
         this.id!!,
         this.name,
+        this.slug,
         this.imageUrl,
         this.coursesTitle,
         this.email,

@@ -7,7 +7,7 @@ import sk.streetofcode.courseplatformbackend.model.Author
 
 interface AuthorService {
     fun get(id: Long): Author
-    fun getOverview(id: Long): AuthorOverviewDto
+    fun getOverview(slug: String): AuthorOverviewDto
     fun getAll(): List<Author>
     fun add(addRequest: AuthorAddRequest): Author
     fun edit(id: Long, editRequest: AuthorEditRequest): Author

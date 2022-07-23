@@ -1,6 +1,6 @@
-INSERT INTO author (id, name, description, image_url, courses_title, email) VALUES
-(author_id_seq.nextval, 'Jakub', 'Jahič', 'http://streetofcode.sk/wp-content/uploads/2020/03/00100lPORTRAIT_00100_BURST20190815135005128_COVER1.jpg', 'Jakubove kurzy', 'jakub@streetofcode.sk' ),
-(author_id_seq.nextval, 'Gabriel Kerekeš', 'Volám sa Gabko a mám 27 rokov. Celý život mi nešli športy ani Counter Strike a som z toho trošku smutný. Začal som robiť kurzy, ale ani to mi veľmi nejde.', 'http://streetofcode.sk/wp-content/uploads/2021/05/Frame-9.png', 'Gabove kurzy', 'gabriel@streetofcode.sk' );
+INSERT INTO author (id, name, slug, description, image_url, courses_title, email) VALUES
+(author_id_seq.nextval, 'Jakub Jahič', 'jakub-jahic', 'Volám sa Jakub a toto je moj popis.', 'http://streetofcode.sk/wp-content/uploads/2020/03/00100lPORTRAIT_00100_BURST20190815135005128_COVER1.jpg', 'Jakubove kurzy', 'jakub@streetofcode.sk' ),
+(author_id_seq.nextval, 'Gabriel Kerekeš', 'gabriel-kerekes', 'Volám sa Gabko a toto je moj popis.', 'http://streetofcode.sk/wp-content/uploads/2021/05/Frame-9.png', 'Gabove kurzy', 'gabriel@streetofcode.sk' );
 
 INSERT INTO difficulty (id, name, skill_level) VALUES
 (difficulty_id_seq.nextval, 'Začiatočník', 1),
