@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate
 class YoutubeApiConfiguration {
 
     @Bean
-    fun restTemplate(builder: RestTemplateBuilder): RestTemplate {
+    fun youtubeRestTemplate(builder: RestTemplateBuilder): RestTemplate {
         return builder.rootUri("https://www.googleapis.com/youtube/v3").build()
     }
 }

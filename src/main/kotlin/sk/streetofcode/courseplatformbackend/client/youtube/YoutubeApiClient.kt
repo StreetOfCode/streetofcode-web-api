@@ -3,6 +3,7 @@ package sk.streetofcode.courseplatformbackend.client.youtube
 import org.json.JSONException
 import org.json.JSONObject
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.client.getForEntity
@@ -11,7 +12,10 @@ import sk.streetofcode.courseplatformbackend.client.youtube.configuration.Youtub
 import java.time.Duration
 
 @Service
-class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtubeProperties: YoutubeProperties) {
+class YoutubeApiClient(
+    @Qualifier("youtubeRestTemplate") private val restTemplate: RestTemplate,
+    private val properties: YoutubeProperties
+) {
 
     companion object {
         private val log = LoggerFactory.getLogger(YoutubeApiClient::class.java)
@@ -22,7 +26,8 @@ class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtu
             return 0
         }
 
-        val response = restTemplate.getForEntity<String>("/videos?id=${getIdFromEmbedUrl(videoEmbedUrl)}&part=contentDetails&key=${youtubeProperties.apiKey}")
+        val response =
+            restTemplate.getForEntity<String>("/videos?id=${getIdFromEmbedUrl(videoEmbedUrl)}&part=contentDetails&key=${properties.apiKey}")
         return youtubeDurationToSeconds(getDurationFromResponse(videoEmbedUrl, response.body!!))
     }
 
@@ -39,7 +44,8 @@ class YoutubeApiClient(private val restTemplate: RestTemplate, private val youtu
      */
     private fun getDurationFromResponse(videoEmbedUrl: String, responseJsonString: String): String {
         return try {
-            (JSONObject(responseJsonString).getJSONArray("items")[0] as JSONObject).getJSONObject("contentDetails").getString("duration")
+            (JSONObject(responseJsonString).getJSONArray("items")[0] as JSONObject).getJSONObject("contentDetails")
+                .getString("duration")
         } catch (e: JSONException) {
             log.error("Could not parse videoUrl: $videoEmbedUrl  Response from YouTube API: $responseJsonString", e)
             throw InternalErrorException("Could not parse videoUrl: $videoEmbedUrl  Response from YouTube API: $responseJsonString")

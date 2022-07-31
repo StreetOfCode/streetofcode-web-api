@@ -8,10 +8,14 @@ import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.EmailFeedbackService
 import sk.streetofcode.courseplatformbackend.api.request.SendFeedbackEmailRequest
+import sk.streetofcode.courseplatformbackend.client.recaptcha.RecaptchaApiClient
 import java.net.SocketTimeoutException
 
 @Service
-class EmailFeedbackServiceImpl(private val mailSender: JavaMailSender) : EmailFeedbackService {
+class EmailFeedbackServiceImpl(
+    private val mailSender: JavaMailSender,
+    private val recaptchaApiClient: RecaptchaApiClient
+) : EmailFeedbackService {
 
     companion object {
         private val log = LoggerFactory.getLogger(EmailFeedbackServiceImpl::class.java)
@@ -21,10 +25,23 @@ class EmailFeedbackServiceImpl(private val mailSender: JavaMailSender) : EmailFe
 
     @Value("\${spring.mail.username}")
     private lateinit var emailFrom: String
+
     @Value("\${email-feedback.to-address}")
     private lateinit var emailTo: String
 
-    override fun sendFeedbackEmail(request: SendFeedbackEmailRequest) {
+    override fun sendFeedbackEmail(userId: String?, request: SendFeedbackEmailRequest) {
+        if (userId == null) {
+            if (request.recaptchaToken == null) {
+                log.warn("Anonymous send feedback request without recaptchaToken")
+                return
+            }
+
+            if (!recaptchaApiClient.verifyRecaptchaToken(request.recaptchaToken)) {
+                log.warn("Anonymous send feedback request with failed verification of recaptcha token")
+                return
+            }
+        }
+
         val message = SimpleMailMessage()
         message.setFrom(emailFrom)
         message.setTo(emailTo)

@@ -29,7 +29,7 @@ class VoteIntegrationTests : IntegrationTests() {
             val nextCourseOptionsResponse = getNextCourseOptionsAuthenticated()
             nextCourseOptionsResponse.statusCode shouldBe HttpStatus.OK
 
-            voteNextCourse(VoteNextCoursesRequest(listOf(1)))
+            voteNextCourse(VoteNextCoursesRequest(listOf(1), recaptchaToken = null))
 
             getNextCourseOptionsPreconditionFailed()
         }
