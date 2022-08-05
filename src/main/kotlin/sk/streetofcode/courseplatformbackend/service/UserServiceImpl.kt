@@ -1,23 +1,29 @@
 package sk.streetofcode.courseplatformbackend.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.UserService
 import sk.streetofcode.courseplatformbackend.api.exception.ConflictException
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.UserEditRequest
+import sk.streetofcode.courseplatformbackend.client.convertkit.ConvertKitApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.UserRepository
 import sk.streetofcode.courseplatformbackend.model.*
 
 @Service
 class UserServiceImpl(
     val userRepository: UserRepository,
+    val convertKitApiClient: ConvertKitApiClient
 ) : UserService {
 
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
+
+    @Value("\${env}")
+    private lateinit var env: String
 
     override fun get(id: String): User {
         return userRepository.findById(id)
@@ -29,7 +35,10 @@ class UserServiceImpl(
             throw ConflictException("User with id $id already added")
         }
         // TODO maybe send discord invitation
-        // TODO what to do with newsletter
+        if (userAddRequest.receiveNewsletter && env !== "LOCAL") {
+            convertKitApiClient.addSubscriber(userAddRequest.email, userAddRequest.name)
+        }
+
         return userRepository.save(User(userAddRequest.id, userAddRequest.name, userAddRequest.email, userAddRequest.imageUrl, userAddRequest.receiveNewsletter))
     }
 
@@ -37,7 +46,9 @@ class UserServiceImpl(
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
-        // TODO if newsletter changed then what
+        if (!user.receiveNewsletter && userEditRequest.receiveNewsletter  && env !== "LOCAL") {
+            convertKitApiClient.addSubscriber(user.email, userEditRequest.name)
+        }
 
         return userRepository.save(User(id, userEditRequest.name, user.email, userEditRequest.imageUrl, userEditRequest.receiveNewsletter))
     }
