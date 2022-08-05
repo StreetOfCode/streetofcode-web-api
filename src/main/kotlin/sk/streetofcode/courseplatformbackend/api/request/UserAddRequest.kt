@@ -6,5 +6,5 @@ data class UserAddRequest(
     val email: String,
     val imageUrl: String?,
     val receiveNewsletter: Boolean,
-    val sendDiscordInvite: Boolean
+    val sendDiscordInvitation: Boolean
 )

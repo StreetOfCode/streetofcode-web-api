@@ -11,11 +11,13 @@ import sk.streetofcode.courseplatformbackend.api.request.UserEditRequest
 import sk.streetofcode.courseplatformbackend.client.convertkit.ConvertKitApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.UserRepository
 import sk.streetofcode.courseplatformbackend.model.*
+import sk.streetofcode.courseplatformbackend.service.email.EmailServiceImpl
 
 @Service
 class UserServiceImpl(
     val userRepository: UserRepository,
-    val convertKitApiClient: ConvertKitApiClient
+    val convertKitApiClient: ConvertKitApiClient,
+    val emailServiceImpl: EmailServiceImpl
 ) : UserService {
 
     companion object {
@@ -34,7 +36,11 @@ class UserServiceImpl(
         if (userRepository.existsById(id)) {
             throw ConflictException("User with id $id already added")
         }
-        // TODO maybe send discord invitation
+
+        if (userAddRequest.sendDiscordInvitation && env !== "LOCAL") {
+            emailServiceImpl.sendDiscordInvitation(userAddRequest.email)
+        }
+
         if (userAddRequest.receiveNewsletter && env !== "LOCAL") {
             convertKitApiClient.addSubscriber(userAddRequest.email, userAddRequest.name)
         }
@@ -46,7 +52,7 @@ class UserServiceImpl(
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
-        if (!user.receiveNewsletter && userEditRequest.receiveNewsletter  && env !== "LOCAL") {
+        if (!user.receiveNewsletter && userEditRequest.receiveNewsletter && env !== "LOCAL") {
             convertKitApiClient.addSubscriber(user.email, userEditRequest.name)
         }
 
