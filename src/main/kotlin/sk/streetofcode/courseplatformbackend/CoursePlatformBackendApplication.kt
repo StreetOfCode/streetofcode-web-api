@@ -10,7 +10,7 @@ import javax.sql.DataSource
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
-class CoursePlatformBackendApplication: CommandLineRunner {
+class CoursePlatformBackendApplication : CommandLineRunner {
     @Autowired
     var dataSource: DataSource? = null
     override fun run(vararg args: String?) {
