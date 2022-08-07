@@ -2,7 +2,7 @@ package sk.streetofcode.courseplatformbackend.service
 
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.CourseReviewService
-import sk.streetofcode.courseplatformbackend.api.UserService
+import sk.streetofcode.courseplatformbackend.api.SocUserService
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewDto
 import sk.streetofcode.courseplatformbackend.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
@@ -21,7 +21,7 @@ class CourseReviewServiceImpl(
     private val courseReviewRepository: CourseReviewRepository,
     private val courseRepository: CourseRepository,
     private val authenticationService: AuthenticationService,
-    private val userService: UserService
+    private val socUserService: SocUserService
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
         courseRepository
@@ -49,7 +49,7 @@ class CourseReviewServiceImpl(
         courseRepository.findById(addRequest.courseId).orElseThrow { ResourceNotFoundException("Course with id ${addRequest.courseId} was not found") }
 
         val userId = authenticationService.getUserId()
-        val existingReview = courseReviewRepository.findByUserFirebaseIdAndCourseId(userId, addRequest.courseId)
+        val existingReview = courseReviewRepository.findBySocUserFirebaseIdAndCourseId(userId, addRequest.courseId)
         if (existingReview != null) {
             throw BadRequestException("User has already submitted a review for the given course")
         }
@@ -57,7 +57,7 @@ class CourseReviewServiceImpl(
         validateRating(addRequest.rating)
 
         return courseReviewRepository
-            .save(CourseReview(userService.get(userId), addRequest.courseId, addRequest.rating, addRequest.text))
+            .save(CourseReview(socUserService.get(userId), addRequest.courseId, addRequest.rating, addRequest.text))
             .toCourseReviewDto()
     }
 
@@ -91,7 +91,7 @@ class CourseReviewServiceImpl(
 
     private fun validateUserAuthorization(review: CourseReview) {
         val userId = authenticationService.getUserId()
-        if (review.user.firebaseId != userId && !authenticationService.isAdmin()) {
+        if (review.socUser.firebaseId != userId && !authenticationService.isAdmin()) {
             throw AuthorizationException()
         }
     }

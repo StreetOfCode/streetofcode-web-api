@@ -22,8 +22,8 @@ data class CourseReview(
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_firebase_id", nullable = false)
-    val user: User,
+    @JoinColumn(name = "soc_user_firebase_id", nullable = false)
+    val socUser: SocUser,
 
     @Column(nullable = false)
     var courseId: Long,
@@ -40,8 +40,8 @@ data class CourseReview(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(user: User, courseId: Long, rating: Double, text: String?) :
-        this(null, user, courseId, rating, text, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(socUser: SocUser, courseId: Long, rating: Double, text: String?) :
+        this(null, socUser, courseId, rating, text, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is CourseReview && CourseReviewEssential(this) == CourseReviewEssential(other)
     override fun hashCode() = CourseReviewEssential(this).hashCode()
@@ -55,9 +55,9 @@ private data class CourseReviewEssential(
     val createdAt: OffsetDateTime
 ) {
     constructor(courseReview: CourseReview) : this(
-        userId = courseReview.user.firebaseId,
+        userId = courseReview.socUser.firebaseId,
         courseId = courseReview.courseId,
-        userName = courseReview.user.name,
+        userName = courseReview.socUser.name,
         createdAt = courseReview.createdAt
     )
 }
@@ -65,11 +65,11 @@ private data class CourseReviewEssential(
 fun CourseReview.toCourseReviewDto(): CourseReviewDto {
     return CourseReviewDto(
         id = this.id!!,
-        userId = this.user.firebaseId,
+        userId = this.socUser.firebaseId,
         courseId = this.courseId,
         rating = this.rating,
         text = this.text,
-        userName = this.user.name,
-        imageUrl = this.user.imageUrl
+        userName = this.socUser.name,
+        imageUrl = this.socUser.imageUrl
     )
 }

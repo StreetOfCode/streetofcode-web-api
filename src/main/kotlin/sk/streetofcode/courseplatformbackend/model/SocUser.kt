@@ -5,7 +5,7 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity
-data class User(
+data class SocUser(
     @Id
     @Column(nullable = false)
     val firebaseId: String,

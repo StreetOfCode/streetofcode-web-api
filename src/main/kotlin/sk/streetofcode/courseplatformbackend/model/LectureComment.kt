@@ -22,8 +22,8 @@ data class LectureComment(
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_firebase_id", nullable = false)
-    val user: User,
+    @JoinColumn(name = "soc_user_firebase_id", nullable = false)
+    val socUser: SocUser,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_id", nullable = false)
@@ -38,8 +38,8 @@ data class LectureComment(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(user: User, lecture: Lecture, commentText: String) :
-        this(null, user, lecture, commentText, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(socUser: SocUser, lecture: Lecture, commentText: String) :
+        this(null, socUser, lecture, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is LectureComment && LectureCommentEssential(this) == LectureCommentEssential(other)
@@ -58,8 +58,8 @@ private data class LectureCommentEssential(
 
 ) {
     constructor(lectureComment: LectureComment) : this(
-        userId = lectureComment.user.firebaseId,
-        userName = lectureComment.user.name,
+        userId = lectureComment.socUser.firebaseId,
+        userName = lectureComment.socUser.name,
         commentText = lectureComment.commentText,
         lectureId = lectureComment.lecture.id!!,
         createdAt = lectureComment.createdAt,
@@ -70,9 +70,9 @@ private data class LectureCommentEssential(
 fun LectureComment.toLectureCommentDto(): LectureCommentDto {
     return LectureCommentDto(
         id = this.id!!,
-        userId = this.user.firebaseId,
-        userName = this.user.name,
-        imageUrl = this.user.imageUrl,
+        userId = this.socUser.firebaseId,
+        userName = this.socUser.name,
+        imageUrl = this.socUser.imageUrl,
         commentText = this.commentText,
         updatedAt = this.updatedAt
     )

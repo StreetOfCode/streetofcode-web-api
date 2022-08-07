@@ -37,17 +37,17 @@ INSERT INTO lecture (id, chapter_id, name, content, video_url, video_duration_se
 (lecture_id_seq.nextval, 4, 'Part 1', 'Mega kontent', null, 5000, 1, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'  ),
 (lecture_id_seq.nextval, 4, 'Part 2', 'Mega kontent druhy', null, 5000, 2, '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
-INSERT INTO user(firebase_id, name, email, image_url, receive_newsletter) VALUES
+INSERT INTO soc_user(firebase_id, name, email, image_url, receive_newsletter) VALUES
 ('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png', true),
 ('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg', false);
 
-INSERT INTO course_review (id, user_firebase_id, course_id, rating, text, created_at, updated_at) VALUES
+INSERT INTO course_review (id, soc_user_firebase_id, course_id, rating, text, created_at, updated_at) VALUES
 (course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 5, 'Mega kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
 (course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 0, 'Na nic kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
 (course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 2, 3, 'Priemerny kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
 (course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 2, 1, 'Nie najhorsie, ale dalo by sa aj lepsie', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
 
-INSERT INTO lecture_comment(id, user_firebase_id, lecture_id, comment_text, created_at, updated_at) VALUES
+INSERT INTO lecture_comment(id, soc_user_firebase_id, lecture_id, comment_text, created_at, updated_at) VALUES
 (lecture_comment_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (lecture_comment_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
 

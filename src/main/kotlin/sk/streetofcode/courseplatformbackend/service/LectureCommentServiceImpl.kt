@@ -3,7 +3,7 @@ package sk.streetofcode.courseplatformbackend.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.LectureCommentService
-import sk.streetofcode.courseplatformbackend.api.UserService
+import sk.streetofcode.courseplatformbackend.api.SocUserService
 import sk.streetofcode.courseplatformbackend.api.dto.LectureCommentDto
 import sk.streetofcode.courseplatformbackend.api.exception.AuthorizationException
 import sk.streetofcode.courseplatformbackend.api.exception.BadRequestException
@@ -22,7 +22,7 @@ class LectureCommentServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureCommentRepository: LectureCommentRepository,
     private val authenticationService: AuthenticationService,
-    private val userService: UserService
+    private val socUserService: SocUserService
 ) : LectureCommentService {
 
     companion object {
@@ -38,7 +38,7 @@ class LectureCommentServiceImpl(
 
         try {
             return lectureCommentRepository
-                .save(LectureComment(userService.get(authenticationService.getUserId()), lecture, addRequest.commentText))
+                .save(LectureComment(socUserService.get(authenticationService.getUserId()), lecture, addRequest.commentText))
                 .toLectureCommentDto()
         } catch (e: Exception) {
             log.error("Problem with saving lectureComment to db", e)
@@ -84,7 +84,7 @@ class LectureCommentServiceImpl(
     // Only user who written the comment and admin can manipulate with it
     private fun validateUserAuthorization(comment: LectureComment) {
         val userId = authenticationService.getUserId()
-        if (comment.user.firebaseId != userId && !authenticationService.isAdmin()) {
+        if (comment.socUser.firebaseId != userId && !authenticationService.isAdmin()) {
             throw AuthorizationException()
         }
     }

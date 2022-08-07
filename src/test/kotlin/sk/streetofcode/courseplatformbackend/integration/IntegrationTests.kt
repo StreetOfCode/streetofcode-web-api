@@ -13,9 +13,9 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
+import sk.streetofcode.courseplatformbackend.api.request.SocUserAddRequest
 import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
-import sk.streetofcode.courseplatformbackend.model.User
+import sk.streetofcode.courseplatformbackend.model.SocUser
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 open class IntegrationTests : StringSpec() {
@@ -68,15 +68,15 @@ open class IntegrationTests : StringSpec() {
     }
 
     private fun createUser(userId: String): String {
-        val user = User(
+        val socUser = SocUser(
             userId,
             "John Bool",
             "john.bool.bool@gmail.com",
             null,
             false
         )
-        val userAddRequest = UserAddRequest(user.firebaseId, user.name, user.email, user.imageUrl, false, false)
-        return restWithUserRole().postForEntity<User>("/user", userAddRequest).let {
+        val socUserAddRequest = SocUserAddRequest(socUser.firebaseId, socUser.name, socUser.email, socUser.imageUrl, false, false)
+        return restWithUserRole().postForEntity<SocUser>("/user", socUserAddRequest).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!.firebaseId
         }

@@ -13,7 +13,7 @@ interface CourseReviewsOverviewProjection {
 @Repository
 interface CourseReviewRepository : CrudRepository<CourseReview, Long> {
     fun findByCourseId(courseId: Long): List<CourseReview>
-    fun findByUserFirebaseIdAndCourseId(firebaseId: String, courseId: Long): CourseReview?
+    fun findBySocUserFirebaseIdAndCourseId(firebaseId: String, courseId: Long): CourseReview?
 
     @Query("SELECT AVG(cr.rating) as averageRating, COUNT(*) as numberOfRatings FROM CourseReview cr WHERE cr.courseId = ?1")
     fun getCourseReviewsOverview(courseId: Long): CourseReviewsOverviewProjection

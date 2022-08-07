@@ -5,10 +5,10 @@ import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
-import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
-import sk.streetofcode.courseplatformbackend.api.request.UserEditRequest
+import sk.streetofcode.courseplatformbackend.api.request.SocUserAddRequest
+import sk.streetofcode.courseplatformbackend.api.request.SocUserEditRequest
 import sk.streetofcode.courseplatformbackend.configuration.SpringBootTestAnnotation
-import sk.streetofcode.courseplatformbackend.model.User
+import sk.streetofcode.courseplatformbackend.model.SocUser
 
 @SpringBootTestAnnotation
 class UserIntegrationTests : IntegrationTests() {
@@ -34,49 +34,49 @@ class UserIntegrationTests : IntegrationTests() {
         "post user" {
             val newUserId = "QgXv1QVvoYZF6W46pwH51PzpJx73"
             setUserId(newUserId)
-            val expectedUser = User(
+            val expectedSocUser = SocUser(
                 newUserId,
                 "John Bool",
                 "john.bool.bool@gmail.com",
                 "wtf",
                 false
             )
-            val user = postUser(UserAddRequest(expectedUser.firebaseId, expectedUser.name, expectedUser.email, expectedUser.imageUrl, false, false))
-            user shouldBe expectedUser
+            val user = postUser(SocUserAddRequest(expectedSocUser.firebaseId, expectedSocUser.name, expectedSocUser.email, expectedSocUser.imageUrl, false, false))
+            user shouldBe expectedSocUser
         }
 
         "put user" {
-            val updatedUser = User(
+            val updatedSocUser = SocUser(
                 "moNoTwZcU5Nwg4qMBBVW9uJBQM12",
                 "Gabushko",
                 "gabriel@streetofcode.sk",
                 "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png",
                 true
             )
-            val user = putUser(UserEditRequest(updatedUser.name, updatedUser.imageUrl, true))
-            user.name shouldBe updatedUser.name
+            val user = putUser(SocUserEditRequest(updatedSocUser.name, updatedSocUser.imageUrl, true))
+            user.name shouldBe updatedSocUser.name
 
             val receivedUser = getUser()
-            receivedUser.name shouldBe updatedUser.name
+            receivedUser.name shouldBe updatedSocUser.name
         }
     }
 
-    private fun getUser(): User {
-        return restWithUserRole().getForEntity<User>("/user").let {
+    private fun getUser(): SocUser {
+        return restWithUserRole().getForEntity<SocUser>("/user").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun postUser(userRequest: UserAddRequest): User {
-        return restWithUserRole().postForEntity<User>("/user", userRequest).let {
+    private fun postUser(userRequest: SocUserAddRequest): SocUser {
+        return restWithUserRole().postForEntity<SocUser>("/user", userRequest).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
-    private fun putUser(userRequest: UserEditRequest): User {
-        return restWithUserRole().putForEntity<User>("/user", userRequest).let {
+    private fun putUser(userRequest: SocUserEditRequest): SocUser {
+        return restWithUserRole().putForEntity<SocUser>("/user", userRequest).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
