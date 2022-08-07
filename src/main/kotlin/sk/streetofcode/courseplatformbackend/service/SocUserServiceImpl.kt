@@ -35,7 +35,7 @@ class SocUserServiceImpl(
             throw ConflictException("User with id $id already added")
         }
 
-        if (socUserAddRequest.sendDiscordInvitation) {
+        if (socUserAddRequest.sendDiscordInvitation && env.activeProfiles.contains("prod")) {
             emailServiceImpl.sendDiscordInvitation(socUserAddRequest.email)
         }
 

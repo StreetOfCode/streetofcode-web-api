@@ -36,7 +36,7 @@ class EmailServiceImpl(
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
-        message.setFrom(emailFrom)
+        message.setFrom(emailFrom, "Street of Code")
         message.setTo(email)
 
         message.setSubject("Discord pozvánka - Street of Code")

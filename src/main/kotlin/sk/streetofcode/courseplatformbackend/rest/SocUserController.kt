@@ -11,7 +11,7 @@ import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 @RestController
 @RequestMapping("user")
-class UserController(val socUserService: SocUserService, val authenticationService: AuthenticationService) {
+class SocUserController(val socUserService: SocUserService, val authenticationService: AuthenticationService) {
     @GetMapping
     @IsAuthenticated
     fun get(): ResponseEntity<SocUser> {
