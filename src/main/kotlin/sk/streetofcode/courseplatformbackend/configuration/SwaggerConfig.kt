@@ -2,6 +2,7 @@ package sk.streetofcode.courseplatformbackend.configuration
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import sk.streetofcode.courseplatformbackend.configuration.properties.SwaggerProperties
 import springfox.documentation.RequestHandler
 import springfox.documentation.builders.AuthorizationCodeGrantBuilder
@@ -23,6 +24,7 @@ import java.util.function.Consumer
 
 @Configuration
 @EnableSwagger2
+@Profile("!prod]")
 class SwaggerConfig(val swaggerProperties: SwaggerProperties) {
     companion object {
         const val AUTHORIZATION_NAME = "Cognito"

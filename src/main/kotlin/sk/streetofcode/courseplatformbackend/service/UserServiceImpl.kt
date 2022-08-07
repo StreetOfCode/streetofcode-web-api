@@ -1,7 +1,7 @@
 package sk.streetofcode.courseplatformbackend.service
 
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.UserService
 import sk.streetofcode.courseplatformbackend.api.exception.ConflictException
@@ -10,22 +10,20 @@ import sk.streetofcode.courseplatformbackend.api.request.UserAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.UserEditRequest
 import sk.streetofcode.courseplatformbackend.client.convertkit.ConvertKitApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.UserRepository
-import sk.streetofcode.courseplatformbackend.model.*
+import sk.streetofcode.courseplatformbackend.model.User
 import sk.streetofcode.courseplatformbackend.service.email.EmailServiceImpl
 
 @Service
 class UserServiceImpl(
     val userRepository: UserRepository,
     val convertKitApiClient: ConvertKitApiClient,
-    val emailServiceImpl: EmailServiceImpl
+    val emailServiceImpl: EmailServiceImpl,
+    val env: Environment
 ) : UserService {
 
     companion object {
         private val log = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
-
-    @Value("\${env}")
-    private lateinit var env: String
 
     override fun get(id: String): User {
         return userRepository.findById(id)
@@ -37,11 +35,11 @@ class UserServiceImpl(
             throw ConflictException("User with id $id already added")
         }
 
-        if (userAddRequest.sendDiscordInvitation && env !== "LOCAL") {
+        if (userAddRequest.sendDiscordInvitation) {
             emailServiceImpl.sendDiscordInvitation(userAddRequest.email)
         }
 
-        if (userAddRequest.receiveNewsletter && env !== "LOCAL") {
+        if (userAddRequest.receiveNewsletter && env.activeProfiles.contains("prod")) {
             convertKitApiClient.addSubscriber(userAddRequest.email, userAddRequest.name)
         }
 
@@ -52,7 +50,7 @@ class UserServiceImpl(
         val user = userRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
-        if (!user.receiveNewsletter && userEditRequest.receiveNewsletter && env !== "LOCAL") {
+        if (!user.receiveNewsletter && userEditRequest.receiveNewsletter && env.activeProfiles.contains("prod")) {
             convertKitApiClient.addSubscriber(user.email, userEditRequest.name)
         }
 
