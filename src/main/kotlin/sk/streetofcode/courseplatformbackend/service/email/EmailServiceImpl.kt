@@ -30,7 +30,7 @@ class EmailServiceImpl(
     private lateinit var emailFrom: String
 
     @Value("\${email-feedback.to-address}")
-    private lateinit var emailTo: String
+    private lateinit var feedbackEmailTo: String
 
     override fun sendDiscordInvitation(email: String) {
         val mimeMessage = mailSender.createMimeMessage()
@@ -40,7 +40,7 @@ class EmailServiceImpl(
         message.setTo(email)
 
         message.setSubject("Discord pozvánka - Street of Code")
-        message.setReplyTo(emailTo)
+        message.setReplyTo(emailFrom)
         message.setText(DISCORD_INVITATION_HTML, true)
 
         try {
@@ -66,7 +66,7 @@ class EmailServiceImpl(
 
         val message = SimpleMailMessage()
         message.setFrom(emailFrom)
-        message.setTo(emailTo)
+        message.setTo(feedbackEmailTo)
 
         message.setSubject(getSubject(request.subject))
         message.setReplyTo(request.email)

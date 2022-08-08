@@ -17,7 +17,10 @@ data class NextCourseVoteOption(
     val id: Long? = null,
 
     @Column(nullable = false)
-    var name: String
+    var name: String,
+
+    @Column(nullable = true)
+    val disabled: Boolean? = false
 ) {
     constructor(name: String) : this(null, name)
 
@@ -26,7 +29,8 @@ data class NextCourseVoteOption(
 
     override fun hashCode() = NextCourseVoteOptionEssential(this).hashCode()
     override fun toString() =
-        NextCourseVoteOptionEssential(this).toString().replaceFirst("NextCourseVoteOptionEssential", "NextCourseVoteOption")
+        NextCourseVoteOptionEssential(this).toString()
+            .replaceFirst("NextCourseVoteOptionEssential", "NextCourseVoteOption")
 }
 
 private data class NextCourseVoteOptionEssential(

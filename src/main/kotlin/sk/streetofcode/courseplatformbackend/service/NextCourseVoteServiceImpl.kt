@@ -28,7 +28,7 @@ class NextCourseVoteServiceImpl(
             throw PreconditionFailedException("User has already voted")
         }
 
-        return nextCourseOptionRepository.findAll().toList()
+        return nextCourseOptionRepository.findAll().toList().filter { it.disabled == null || !it.disabled }
     }
 
     override fun addVote(userId: String?, voteRequest: VoteNextCoursesRequest) {
