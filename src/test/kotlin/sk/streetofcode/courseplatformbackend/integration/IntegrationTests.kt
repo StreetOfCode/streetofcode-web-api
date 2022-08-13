@@ -14,7 +14,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.courseplatformbackend.api.request.SocUserAddRequest
-import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
+import sk.streetofcode.courseplatformbackend.client.vimeo.VimeoApiClient
 import sk.streetofcode.courseplatformbackend.model.SocUser
 import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
@@ -29,7 +29,7 @@ open class IntegrationTests : StringSpec() {
     protected lateinit var restTemplate: TestRestTemplate
 
     @MockBean
-    protected lateinit var youtubeApiClient: YoutubeApiClient
+    protected lateinit var vimeoApiClient: VimeoApiClient
 
     @MockBean
     protected lateinit var authenticationService: AuthenticationService

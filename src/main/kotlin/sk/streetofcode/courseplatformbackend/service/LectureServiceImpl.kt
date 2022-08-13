@@ -10,7 +10,7 @@ import sk.streetofcode.courseplatformbackend.api.exception.InternalErrorExceptio
 import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
 import sk.streetofcode.courseplatformbackend.api.request.LectureAddRequest
 import sk.streetofcode.courseplatformbackend.api.request.LectureEditRequest
-import sk.streetofcode.courseplatformbackend.client.youtube.YoutubeApiClient
+import sk.streetofcode.courseplatformbackend.client.vimeo.VimeoApiClient
 import sk.streetofcode.courseplatformbackend.db.repository.ChapterRepository
 import sk.streetofcode.courseplatformbackend.db.repository.CourseRepository
 import sk.streetofcode.courseplatformbackend.db.repository.LectureRepository
@@ -23,7 +23,7 @@ class LectureServiceImpl(
     val lectureRepository: LectureRepository,
     val chapterRepository: ChapterRepository,
     val courseRepository: CourseRepository,
-    val youtubeApiClient: YoutubeApiClient
+    val vimeoApiClient: VimeoApiClient
 ) : LectureService {
 
     companion object {
@@ -69,7 +69,7 @@ class LectureServiceImpl(
                     addRequest.lectureOrder,
                     addRequest.content,
                     addRequest.videoUrl,
-                    youtubeApiClient.getVideoDurationInSeconds(addRequest.videoUrl)
+                    vimeoApiClient.getVideoDurationInSeconds(addRequest.videoUrl)
                 )
             ).toLectureDto()
         } catch (e: Exception) {
@@ -93,7 +93,7 @@ class LectureServiceImpl(
             existingLecture.name = editRequest.name
             existingLecture.content = editRequest.content
             existingLecture.videoUrl = editRequest.videoUrl
-            existingLecture.videoDurationSeconds = youtubeApiClient.getVideoDurationInSeconds(editRequest.videoUrl)
+            existingLecture.videoDurationSeconds = vimeoApiClient.getVideoDurationInSeconds(editRequest.videoUrl)
             existingLecture.lectureOrder = editRequest.lectureOrder
             existingLecture.updatedAt = OffsetDateTime.now()
             return lectureRepository.save(existingLecture).toLectureDto()

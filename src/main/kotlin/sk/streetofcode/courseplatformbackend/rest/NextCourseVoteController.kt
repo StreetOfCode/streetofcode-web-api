@@ -17,11 +17,6 @@ class NextCourseVoteController(val voteService: NextCourseVoteService, val authe
 
     @GetMapping
     fun getOptions(): ResponseEntity<List<NextCourseVoteOption>> {
-        // try {
-        //     throw Exception("This is a test.")
-        // } catch (e: Exception) {
-        //     Sentry.captureException(e)
-        // }
         return if (authenticationService.isAuthenticated()) {
             ResponseEntity.ok(voteService.getOptions(authenticationService.getUserId()))
         } else {

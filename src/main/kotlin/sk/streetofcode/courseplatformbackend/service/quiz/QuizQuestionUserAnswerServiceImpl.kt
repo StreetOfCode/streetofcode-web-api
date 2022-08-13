@@ -1,7 +1,5 @@
 package sk.streetofcode.courseplatformbackend.service.quiz
 
-import org.hibernate.annotations.common.util.impl.LoggerFactory
-import org.jboss.logging.Logger
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.QuizQuestionUserAnswerService
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionAnswerCorrectnessDto
@@ -23,7 +21,7 @@ class QuizQuestionUserAnswerServiceImpl(
     val authenticationService: AuthenticationService
 ) : QuizQuestionUserAnswerService {
     companion object {
-        val logger: Logger? = LoggerFactory.logger(QuizQuestionUserAnswerServiceImpl::class.java)
+        private val log = org.slf4j.LoggerFactory.getLogger(QuizQuestionUserAnswerServiceImpl::class.java)
     }
     override fun get(id: Long): QuizQuestionUserAnswerDto {
         return quizQuestionUserAnswerRepository
@@ -83,7 +81,7 @@ class QuizQuestionUserAnswerServiceImpl(
             .findByQuestionIdAndUserId(answerRequest.questionId, userId)
 
         if (previousUserAnswers.size > 1) {
-            logger?.warn("There are multiple answer entries for one question and one user!!! (Something is wrong)")
+            log.warn("There are multiple answer entries for one question and one user!!! (Something is wrong)")
         }
 
         quizQuestionUserAnswerRepository.deleteByQuestionIdAndUserId(answerRequest.questionId, userId)

@@ -29,7 +29,7 @@ class LectureIntegrationTests : IntegrationTests() {
         "add lecture" {
             val videoUrl = "https://www.youtube.com/embed/z1At9Jk4sqE"
             val videoDuration = 100
-            Mockito.`when`(youtubeApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
+            Mockito.`when`(vimeoApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
 
             val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent", videoUrl))
 
@@ -45,7 +45,7 @@ class LectureIntegrationTests : IntegrationTests() {
 
         "add lecture invalid videoUrl" {
             val videoUrl = "invalidUrl"
-            Mockito.`when`(youtubeApiClient.getVideoDurationInSeconds(videoUrl)).thenThrow(InternalErrorException(""))
+            Mockito.`when`(vimeoApiClient.getVideoDurationInSeconds(videoUrl)).thenThrow(InternalErrorException(""))
 
             addLectureInvalidVideoUrl(LectureAddRequest(1, "testName", 1, "testContent", videoUrl))
         }
@@ -59,7 +59,7 @@ class LectureIntegrationTests : IntegrationTests() {
 
             val videoUrl = "https://www.youtube.com/embed/z1At9Jk4sqE"
             val videoDuration = 100
-            Mockito.`when`(youtubeApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
+            Mockito.`when`(vimeoApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
 
             val editedLecture = editLecture(
                 lecture.id, LectureEditRequest(lecture.id, "testNameEdited", 1, "testContentEdited", videoUrl)
