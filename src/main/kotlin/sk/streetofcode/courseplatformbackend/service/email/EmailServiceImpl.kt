@@ -2,20 +2,28 @@ package sk.streetofcode.courseplatformbackend.service.email
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.mail.MailException
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import sk.streetofcode.courseplatformbackend.api.EmailService
+import sk.streetofcode.courseplatformbackend.api.exception.ResourceNotFoundException
+import sk.streetofcode.courseplatformbackend.api.request.AddEmailToNewsletterRequest
 import sk.streetofcode.courseplatformbackend.api.request.SendFeedbackEmailRequest
+import sk.streetofcode.courseplatformbackend.client.convertkit.ConvertKitApiClient
 import sk.streetofcode.courseplatformbackend.client.recaptcha.RecaptchaApiClient
+import sk.streetofcode.courseplatformbackend.db.repository.SocUserRepository
+import sk.streetofcode.courseplatformbackend.model.SocUser
 import java.net.SocketTimeoutException
 
 @Service
 class EmailServiceImpl(
     private val mailSender: JavaMailSender,
-    private val recaptchaApiClient: RecaptchaApiClient
+    private val recaptchaApiClient: RecaptchaApiClient,
+    private val convertKitApiClient: ConvertKitApiClient,
+    private val socUserRepository: SocUserRepository
 ) : EmailService {
 
     companion object {
@@ -51,15 +59,43 @@ class EmailServiceImpl(
             log.error("Timeout when reading from socket", e)
         }
     }
-    override fun sendFeedbackEmail(userId: String?, request: SendFeedbackEmailRequest) {
+
+    override fun addToNewsletter(userId: String?, request: AddEmailToNewsletterRequest) {
         if (userId == null) {
             if (request.recaptchaToken == null) {
-                log.warn("Anonymous send feedback request without recaptchaToken")
+                log.warn("Anonymous sends add newsletter request without recaptchaToken")
                 return
             }
 
             if (!recaptchaApiClient.verifyRecaptchaToken(request.recaptchaToken)) {
-                log.warn("Anonymous send feedback request with failed verification of recaptcha token")
+                log.warn("Anonymous sends add newsletter request with failed verification of recaptcha token")
+                return
+            }
+
+            convertKitApiClient.addSubscriber(request.email, null)
+        } else {
+            val user = socUserRepository.findById(userId)
+                .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
+
+            if (user.receiveNewsletter) {
+                log.warn("User sends add newsletter request but already receives newsletter")
+                return
+            }
+
+            socUserRepository.save(SocUser(userId, user.name, user.email, user.imageUrl, true))
+            convertKitApiClient.addSubscriber(request.email, user.email)
+        }
+    }
+
+    override fun sendFeedbackEmail(userId: String?, request: SendFeedbackEmailRequest) {
+        if (userId == null) {
+            if (request.recaptchaToken == null) {
+                log.warn("Anonymous sends feedback request without recaptchaToken")
+                return
+            }
+
+            if (!recaptchaApiClient.verifyRecaptchaToken(request.recaptchaToken)) {
+                log.warn("Anonymous sends feedback request with failed verification of recaptcha token")
                 return
             }
         }

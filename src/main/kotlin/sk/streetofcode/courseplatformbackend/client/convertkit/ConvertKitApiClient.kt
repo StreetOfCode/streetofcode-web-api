@@ -16,7 +16,7 @@ class ConvertKitApiClient(
         private val log = LoggerFactory.getLogger(ConvertKitApiClient::class.java)
     }
 
-    fun addSubscriber(email: String, name: String) {
+    fun addSubscriber(email: String, name: String?) {
         val addRequest = AddEmailRequest(
             api_key = convertKitProperties.apiKey,
             email,
@@ -32,5 +32,5 @@ class ConvertKitApiClient(
 data class AddEmailRequest(
     val api_key: String,
     val email: String,
-    val first_name: String
+    val first_name: String?
 )
