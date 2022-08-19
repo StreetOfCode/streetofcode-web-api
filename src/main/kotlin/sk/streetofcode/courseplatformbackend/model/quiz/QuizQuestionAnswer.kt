@@ -1,7 +1,6 @@
 package sk.streetofcode.courseplatformbackend.model.quiz
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionAnswerCorrectnessDto
 import sk.streetofcode.courseplatformbackend.api.dto.quiz.QuizQuestionAnswerDto
 import javax.persistence.*
 
@@ -43,16 +42,15 @@ private data class QuizQuestionAnswerEssential(
     )
 }
 
-fun QuizQuestionAnswer.toQuizQuestionAnswerDto(): QuizQuestionAnswerDto {
+fun QuizQuestionAnswer.toQuizQuestionAnswerDto(isAdmin: Boolean? = false): QuizQuestionAnswerDto {
     return QuizQuestionAnswerDto(
         id = this.id!!,
         questionId = this.question.id!!,
-        text = this.text
-    )
-}
-
-fun QuizQuestionAnswer.toCorrectnessDto(): QuizQuestionAnswerCorrectnessDto {
-    return QuizQuestionAnswerCorrectnessDto(
-        isCorrect = this.isCorrect
+        text = this.text,
+        isCorrect = if (isAdmin == true) {
+            this.isCorrect
+        } else {
+            null
+        }
     )
 }

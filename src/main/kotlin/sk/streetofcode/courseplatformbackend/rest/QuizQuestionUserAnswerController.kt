@@ -28,7 +28,6 @@ class QuizQuestionUserAnswerController(val quizQuestionUserAnswerService: QuizQu
                 val questionId = JSONObject(filter.get()).getLong("quizQuestionId")
                 quizQuestionUserAnswerService.getAllAnswersForQuestion(questionId)
             } catch (e: JSONException) {
-                log.error("Problem with parsing filter parameter, check react-admin", e)
                 quizQuestionUserAnswerService.getAll()
             }
 

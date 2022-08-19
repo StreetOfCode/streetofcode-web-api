@@ -13,22 +13,24 @@ import sk.streetofcode.courseplatformbackend.db.repository.quiz.QuizQuestionRepo
 import sk.streetofcode.courseplatformbackend.model.quiz.QuizQuestionAnswer
 import sk.streetofcode.courseplatformbackend.model.quiz.QuizQuestionType
 import sk.streetofcode.courseplatformbackend.model.quiz.toQuizQuestionAnswerDto
+import sk.streetofcode.courseplatformbackend.service.AuthenticationService
 
 @Service
 class QuizQuestionAnswerServiceImpl(
     val quizQuestionAnswerRepository: QuizQuestionAnswerRepository,
-    val quizQuestionRepository: QuizQuestionRepository
+    val quizQuestionRepository: QuizQuestionRepository,
+    val authenticationService: AuthenticationService
 ) : QuizQuestionAnswerService {
     override fun get(id: Long): QuizQuestionAnswerDto {
         return quizQuestionAnswerRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("QuizQuestionAnswer with id $id was not found") }
-            .toQuizQuestionAnswerDto()
+            .toQuizQuestionAnswerDto(authenticationService.isAdmin())
     }
 
     override fun getAll(): List<QuizQuestionAnswerDto> {
         return quizQuestionAnswerRepository
             .findAll()
-            .map { it.toQuizQuestionAnswerDto() }
+            .map { it.toQuizQuestionAnswerDto(authenticationService.isAdmin()) }
     }
 
     override fun getAllForQuestion(questionId: Long): List<QuizQuestionAnswerDto> {
@@ -55,7 +57,7 @@ class QuizQuestionAnswerServiceImpl(
                 text = addRequest.text,
                 isCorrect = addRequest.isCorrect
             )
-        ).toQuizQuestionAnswerDto()
+        ).toQuizQuestionAnswerDto(authenticationService.isAdmin())
     }
 
     override fun edit(id: Long, editRequest: QuizQuestionAnswerEditRequest): QuizQuestionAnswerDto {
@@ -82,7 +84,7 @@ class QuizQuestionAnswerServiceImpl(
         questionAnswer.text = editRequest.text
         questionAnswer.isCorrect = editRequest.isCorrect
 
-        return quizQuestionAnswerRepository.save(questionAnswer).toQuizQuestionAnswerDto()
+        return quizQuestionAnswerRepository.save(questionAnswer).toQuizQuestionAnswerDto(authenticationService.isAdmin())
     }
 
     override fun delete(id: Long): QuizQuestionAnswerDto {
@@ -92,6 +94,6 @@ class QuizQuestionAnswerServiceImpl(
 
         quizQuestionAnswerRepository.deleteById(id)
 
-        return answer.toQuizQuestionAnswerDto()
+        return answer.toQuizQuestionAnswerDto(authenticationService.isAdmin())
     }
 }

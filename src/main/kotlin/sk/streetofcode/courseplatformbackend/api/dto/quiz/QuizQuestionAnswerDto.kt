@@ -5,7 +5,8 @@ import kotlin.Long
 data class QuizQuestionAnswerDto(
     val id: Long,
     val questionId: Long,
-    val text: String
+    val text: String,
+    val isCorrect: Boolean?
 )
 
 data class QuizQuestionAnswerCorrectnessDto(

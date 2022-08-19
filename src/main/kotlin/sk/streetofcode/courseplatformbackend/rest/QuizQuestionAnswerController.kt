@@ -39,7 +39,6 @@ class QuizQuestionAnswerController(val quizQuestionAnswerService: QuizQuestionAn
                 val questionId = JSONObject(filter.get()).getLong("quizQuestionId")
                 quizQuestionAnswerService.getAllForQuestion(questionId)
             } catch (e: JSONException) {
-                log.error("Problem with parsing filter parameter, check react-admin", e)
                 quizQuestionAnswerService.getAll()
             }
 
@@ -77,7 +76,6 @@ class QuizQuestionAnswerController(val quizQuestionAnswerService: QuizQuestionAn
     @IsAdmin
     fun add(@RequestBody answerAddRequest: QuizQuestionAnswerAddRequest): ResponseEntity<QuizQuestionAnswerDto> {
         val response = quizQuestionAnswerService.add(answerAddRequest)
-        println(response)
         return ResponseEntity.status(HttpStatus.CREATED).body(response)
     }
 
