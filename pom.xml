@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>sk.streetofcode</groupId>
-	<artifactId>course-platform-backend</artifactId>
+	<artifactId>streetofcode-web-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>course-platform-backend</name>
-	<description>StreetOfCode application for Course Platform</description>
+	<name>streetofcode-web-api</name>
+	<description>StreetOfCode backed application for www.streetofcode.sk</description>
 
 	<properties>
 		<java.version>11</java.version>
