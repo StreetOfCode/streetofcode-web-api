@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: sk.streetofcode.courseplatformbackend.integration.LectureIntegrationTests
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.216 s - in sk.streetofcode.courseplatformbackend.integration.LectureIntegrationTests

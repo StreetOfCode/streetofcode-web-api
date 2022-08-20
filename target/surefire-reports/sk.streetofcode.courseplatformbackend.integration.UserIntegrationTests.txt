@@ -1,0 +1,7 @@
+-------------------------------------------------------------------------------
+Test set: sk.streetofcode.courseplatformbackend.integration.UserIntegrationTests
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 2.155 s <<< FAILURE! - in sk.streetofcode.courseplatformbackend.integration.UserIntegrationTests
+get user  Time elapsed: 0.174 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected:<"Gabriel Kerekeš"> but was:<"Gabriel KerekeÅ¡">
+
