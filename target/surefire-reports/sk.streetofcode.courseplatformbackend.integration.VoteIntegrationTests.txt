@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: sk.streetofcode.courseplatformbackend.integration.VoteIntegrationTests
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 2.141 s <<< FAILURE! - in sk.streetofcode.courseplatformbackend.integration.VoteIntegrationTests
+get next course options - not authenticated - OK  Time elapsed: 0.023 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected:<7> but was:<14>
+
+get next course options - authenticated - OK  Time elapsed: 0.147 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: expected:<7> but was:<14>
+
