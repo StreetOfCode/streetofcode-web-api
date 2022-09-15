@@ -1,14 +1,3 @@
--- THIS FILE IS APPLIED ONLY IN DEVELOPMENT ON H2 DB. AFTER THIS FILE MIGRATIONS FROM FLYWAY ARE APPLIED
-
---################################################## CREATE AUTHORS ##################################################
-INSERT INTO public.author (id, courses_title, description, email, image_url, name, slug) VALUES (1, 'Jakubove kurzy', 'V roku 2018 som vyštudoval FEI STU. Odvtedy som pracoval full-time na backende (Java, Spring Boot) ako aj na Frontende (React). Baví ma robiť kurziť a pomáhať ľudom učiť sa programovať.', 'jakub@streetofcode.sk', 'http://streetofcode.sk/wp-content/uploads/2022/09/ja2edited-scaled.jpg', 'Jakub Jahič', 'jakub-jahic');
-
---################################################## CREATE DIFFICULTIES ##################################################
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (1, 'Začiatočník', 1);
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (2, 'Mierne pokročilý', 2);
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (3, 'Pokročilý', 3);
-
---################################################## INFORMATIKA 101 ##################################################
 INSERT INTO public.course (id, created_at, icon_url, lectures_count, long_description, name, resources, short_description, slug, status, thumbnail_url, trailer_url, updated_at, author_id, difficulty_id) VALUES (1, '2022-09-15 06:31:02.917482', 'http://streetofcode.sk/wp-content/uploads/2022/04/python-logo.png', 49, 'TODO', 'Informatika 101', '[Úlohy](https://www.youtube.com/redirect?event=comments&redir_token=QUFFLUhqbTdwMjRUanFDbG5HR1RwT0NVUVhXeEVrNXRFQXxBQ3Jtc0trZHpyTDBtbGtsNURuRHB6QjJEOF85OXJKM2ZEc21TRzB1NUJNV3BmeFVVQXhZanZZWE5MX2sxTnVsQjZmTWp1X3hqV1BSVDU1VVk4TERqeUxoTGE2b0ZPVnI3akVsa0syejhhS2Y3YXJqVHk1MzB2Zw&q=http%3A%2F%2Fstreetofcode.sk%2Fwp-content%2Fuploads%2F2020%2F12%2FInformatika_101___Python_Programovanie.zip&stzid=UgwbA6juKylpuC8_YF54AaABAg.9HXBpDlFHIi9HXCdaPhQzv)', 'Úvod do informatiky a programovania v Pythone', 'informatika-101', 'DRAFT', '', '741434827', '2022-09-15 08:20:54.893829', 1, 1);
 
 INSERT INTO public.chapter (id, chapter_order, created_at, name, updated_at, course_id) VALUES (2, 3, '2022-09-15 06:33:00.682759', 'Ako robí počítač rozhodnutia?', '2022-09-15 07:41:28.896916', 1);
@@ -101,51 +90,3 @@ Podobným spôsobom akým sa v BONUSE 2 robí počet produktov, skús upraviť c
 INSERT INTO public.lecture (id, content, created_at, lecture_order, name, updated_at, video_duration_seconds, video_url, chapter_id) VALUES (48, null, '2022-09-15 08:16:20.649536', 1, 'Čo môžeš robiť ďalej?', '2022-09-15 08:16:20.649536', 529, '743912415', 14);
 INSERT INTO public.lecture (id, content, created_at, lecture_order, name, updated_at, video_duration_seconds, video_url, chapter_id) VALUES (49, null, '2022-09-15 08:16:43.527186', 2, 'Záverečný odkaz', '2022-09-15 08:16:43.527186', 87, '743915035', 14);
 INSERT INTO public.lecture (id, content, created_at, lecture_order, name, updated_at, video_duration_seconds, video_url, chapter_id) VALUES (50, '[Video na YouTube s lepšou kvalitou](https://www.youtube.com/watch?v=hfbjBnnb_4Y&list=PL5Od02qMtU8j4Evu2H-eHSXuNSVlfrhcx&index=50)', '2022-09-15 08:17:40.264209', 1, 'Gabo rieši úlohy', '2022-09-15 08:17:40.264209', 8058, '749862993', 15);
-
-
---################################################## LOCAL RANDOM STUFF ##################################################
-INSERT INTO soc_user(firebase_id, name, email, image_url, receive_newsletter) VALUES
-('moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'Gabriel Kerekeš', 'gabriel@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png', true),
-('Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'Jakub Jahič', 'jakub@streetofcode.sk', 'https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg', false);
-
-INSERT INTO course_review (id, soc_user_firebase_id, course_id, rating, text, created_at, updated_at) VALUES
-(course_review_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 5, 'Mega kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00'),
-(course_review_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 0, 'Na nic kurz', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00');
-
-INSERT INTO lecture_comment(id, soc_user_firebase_id, lecture_id, comment_text, created_at, updated_at) VALUES
-(lecture_comment_id_seq.nextval, 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 1, 'toto je super lekcia', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(lecture_comment_id_seq.nextval, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 1, 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
-
-INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) VALUES
-(quiz_id_seq.nextval, 1, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
-
-INSERT INTO quiz_question(id, quiz_id, question_order, text, type) VALUES
-(quiz_question_id_seq.nextval, 1, 1, '2+2?', 'SINGLE_CHOICE'),
-(quiz_question_id_seq.nextval, 1, 2, '2*2', 'SINGLE_CHOICE'),
-(quiz_question_id_seq.nextval, 1, 3, '8-4', 'MULTIPLE_CHOICE');
-
-INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
-(quiz_question_answer_id_seq.nextval, 1, '1', false),
-(quiz_question_answer_id_seq.nextval, 1, '2', false),
-(quiz_question_answer_id_seq.nextval, 1, '3', false),
-(quiz_question_answer_id_seq.nextval, 1, '4', true),
-(quiz_question_answer_id_seq.nextval, 2, '1', false),
-(quiz_question_answer_id_seq.nextval, 2, '2', false),
-(quiz_question_answer_id_seq.nextval, 2, '3', false),
-(quiz_question_answer_id_seq.nextval, 2, '4', true),
-(quiz_question_answer_id_seq.nextval, 3, '1', false),
-(quiz_question_answer_id_seq.nextval, 3, '2', false),
-(quiz_question_answer_id_seq.nextval, 3, '+4', true),
-(quiz_question_answer_id_seq.nextval, 3, '4', true);
-
-INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
-(quiz_question_user_answer_id_seq.nextval, 1, 2, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', '2007-12-03T10:15:30+01:00', 3);
-
-INSERT INTO next_course_vote_option(id, name) VALUES
-(next_course_vote_option_id_seq.nextval, 'Python'),
-(next_course_vote_option_id_seq.nextval, 'Java'),
-(next_course_vote_option_id_seq.nextval, 'Kotlin'),
-(next_course_vote_option_id_seq.nextval, 'OOP'),
-(next_course_vote_option_id_seq.nextval, 'Git'),
-(next_course_vote_option_id_seq.nextval, 'C#'),
-(next_course_vote_option_id_seq.nextval, 'SQL');
