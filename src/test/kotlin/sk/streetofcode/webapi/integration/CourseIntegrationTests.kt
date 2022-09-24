@@ -38,7 +38,7 @@ class CourseIntegrationTests : IntegrationTests() {
             coursesResponse.statusCode shouldBe HttpStatus.OK
 
             val courses = coursesResponse.body!!
-            courses.size shouldBeGreaterThan 0
+            courses.size shouldBe 0
         }
 
         "get course overview" {

@@ -1,7 +1,9 @@
 package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.LectureOrderSort
 import sk.streetofcode.webapi.api.LectureService
 import sk.streetofcode.webapi.api.dto.LectureDto
 import sk.streetofcode.webapi.api.dto.LectureType
@@ -47,12 +49,12 @@ class LectureServiceImpl(
             .toLectureDto()
     }
 
-    override fun getAll(): List<LectureDto> {
-        return lectureRepository.findAll().map { it.toLectureDto() }.toList()
+    override fun getAll(order: LectureOrderSort): List<LectureDto> {
+        return lectureRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder")).map { it.toLectureDto() }.toList()
     }
 
-    override fun getByChapterId(chapterId: Long): List<LectureDto> {
-        return lectureRepository.findByChapterId(chapterId).map { it.toLectureDto() }.toList()
+    override fun getByChapterId(chapterId: Long, order: LectureOrderSort): List<LectureDto> {
+        return lectureRepository.findByChapterId(chapterId, Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder")).map { it.toLectureDto() }.toList()
     }
 
     override fun add(addRequest: LectureAddRequest): LectureDto {

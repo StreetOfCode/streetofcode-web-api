@@ -1,7 +1,9 @@
 package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.ChapterOrderSort
 import sk.streetofcode.webapi.api.ChapterService
 import sk.streetofcode.webapi.api.dto.ChapterDto
 import sk.streetofcode.webapi.api.exception.BadRequestException
@@ -30,12 +32,12 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
             .toChapterDto()
     }
 
-    override fun getAll(): List<ChapterDto> {
-        return chapterRepository.findAll().map { it.toChapterDto() }.toList()
+    override fun getAll(order: ChapterOrderSort): List<ChapterDto> {
+        return chapterRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder")).map { it.toChapterDto() }.toList()
     }
 
-    override fun getByCourseId(courseId: Long): List<ChapterDto> {
-        return chapterRepository.findByCourseId(courseId).map { it.toChapterDto() }.toList()
+    override fun getByCourseId(courseId: Long, order: ChapterOrderSort): List<ChapterDto> {
+        return chapterRepository.findByCourseId(courseId, Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder")).map { it.toChapterDto() }.toList()
     }
 
     override fun add(addRequest: ChapterAddRequest): ChapterDto {
