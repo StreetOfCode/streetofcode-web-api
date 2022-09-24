@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import sk.streetofcode.webapi.api.LectureOrderSort
 import sk.streetofcode.webapi.api.LectureService
 import sk.streetofcode.webapi.api.dto.LectureDto
 import sk.streetofcode.webapi.api.request.LectureAddRequest
@@ -33,18 +34,25 @@ class LectureController(val lectureService: LectureService) {
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<LectureDto>> {
+    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>, @RequestParam("sort", required = false) sort: Optional<String>): ResponseEntity<List<LectureDto>> {
+        var lectureOrderSort: LectureOrderSort = LectureOrderSort.ASC
+        if (sort.isPresent && sort.get().contains("lectureOrder")) {
+            if (sort.get().contains("DESC")) {
+                lectureOrderSort = LectureOrderSort.DESC
+            }
+        }
+
         return if (filter.isPresent) {
             val lectures = try {
                 val chapterId = JSONObject(filter.get()).getLong("chapterId")
-                lectureService.getByChapterId(chapterId)
+                lectureService.getByChapterId(chapterId, lectureOrderSort)
             } catch (e: JSONException) {
-                lectureService.getAll()
+                lectureService.getAll(lectureOrderSort)
             }
 
             buildGetAll(lectures)
         } else {
-            val lectures = lectureService.getAll()
+            val lectures = lectureService.getAll(lectureOrderSort)
             buildGetAll(lectures)
         }
     }

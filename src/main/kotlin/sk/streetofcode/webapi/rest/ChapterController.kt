@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import sk.streetofcode.webapi.api.ChapterOrderSort
 import sk.streetofcode.webapi.api.ChapterService
 import sk.streetofcode.webapi.api.dto.ChapterDto
 import sk.streetofcode.webapi.api.request.ChapterAddRequest
@@ -32,18 +33,25 @@ class ChapterController(val chapterService: ChapterService) {
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<ChapterDto>> {
+    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>, @RequestParam("sort", required = false) sort: Optional<String>): ResponseEntity<List<ChapterDto>> {
+        var chapterOrderSort: ChapterOrderSort = ChapterOrderSort.ASC
+        if (sort.isPresent && sort.get().contains("chapterOrder")) {
+            if (sort.get().contains("DESC")) {
+                chapterOrderSort = ChapterOrderSort.DESC
+            }
+        }
+
         return if (filter.isPresent) {
             val chapters = try {
                 val courseId = JSONObject(filter.get()).getLong("courseId")
-                chapterService.getByCourseId(courseId)
+                chapterService.getByCourseId(courseId, chapterOrderSort)
             } catch (e: JSONException) {
-                chapterService.getAll()
+                chapterService.getAll(chapterOrderSort)
             }
 
             buildGetAll(chapters)
         } else {
-            val chapters = chapterService.getAll()
+            val chapters = chapterService.getAll(chapterOrderSort)
             buildGetAll(chapters)
         }
     }
