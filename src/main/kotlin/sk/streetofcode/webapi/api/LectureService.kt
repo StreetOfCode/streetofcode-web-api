@@ -6,9 +6,13 @@ import sk.streetofcode.webapi.api.request.LectureEditRequest
 
 interface LectureService {
     fun get(id: Long): LectureDto
-    fun getAll(): List<LectureDto>
-    fun getByChapterId(chapterId: Long): List<LectureDto>
+    fun getAll(order: LectureOrderSort): List<LectureDto>
+    fun getByChapterId(chapterId: Long, order: LectureOrderSort): List<LectureDto>
     fun add(addRequest: LectureAddRequest): LectureDto
     fun edit(id: Long, editRequest: LectureEditRequest): LectureDto
     fun delete(id: Long): LectureDto
+}
+
+enum class LectureOrderSort {
+    ASC, DESC
 }

@@ -2,6 +2,7 @@ package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.ChapterOrderSort
 import sk.streetofcode.webapi.api.ChapterService
 import sk.streetofcode.webapi.api.CourseService
 import sk.streetofcode.webapi.api.LectureService
@@ -190,7 +191,7 @@ class ProgressServiceImpl(
     }
 
     private fun resetCourseProgress(userId: String, courseId: Long): CourseProgressOverviewDto {
-        val lectureIds = chapterService.getByCourseId(courseId).flatMap { chapterDto -> chapterDto.lectures }
+        val lectureIds = chapterService.getByCourseId(courseId, ChapterOrderSort.ASC).flatMap { chapterDto -> chapterDto.lectures }
             .map { lectureDto -> lectureDto.id }
 
         val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
