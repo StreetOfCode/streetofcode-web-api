@@ -1,8 +1,11 @@
 package sk.streetofcode.webapi.integration
 
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.AuthorOverviewDto
@@ -15,24 +18,6 @@ import sk.streetofcode.webapi.model.Author
 @SpringBootTestAnnotation
 class AuthorIntegrationTests : IntegrationTests() {
     init {
-        "get authors" {
-            val authorsResponse = getAuthors()
-            authorsResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = authorsResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("author 0-2/2")
-
-            val authors = authorsResponse.body!!
-            authors.size shouldBe 2
-        }
-
-        "get author slugs" {
-            val authorsResponse = getAuthorSlugs()
-            authorsResponse.statusCode shouldBe HttpStatus.OK
-
-            val authorIds = authorsResponse.body!!
-            authorIds shouldBe listOf("jakub-jahic", "gabriel-kerekes")
-        }
-
         "add author" {
             val uniqueSlug = getRandomString()
             val author = addAuthor(AuthorAddRequest("testName", uniqueSlug, "testUrl", "title", "email", "testDescription"))
@@ -44,6 +29,18 @@ class AuthorIntegrationTests : IntegrationTests() {
             fetchedAuthor.description shouldBe "testDescription"
             fetchedAuthor.coursesTitle shouldBe "title"
             fetchedAuthor.email shouldBe "email"
+
+            // get authors
+            val authorsResponse = getAuthors()
+            authorsResponse.size shouldBeGreaterThan 0
+            authorsResponse.find { it.id == author.id } shouldBe author
+
+            // get author slugs
+            val authorsSlugsResponse = getAuthorSlugs()
+            authorsSlugsResponse.statusCode shouldBe HttpStatus.OK
+
+            val authorSlugs = authorsSlugsResponse.body!!
+            authorSlugs.find { it == uniqueSlug } shouldBe uniqueSlug
         }
 
         "edit author" {
@@ -106,8 +103,12 @@ class AuthorIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getAuthors(): ResponseEntity<List<Author>> {
-        return restWithAdminRole().getForEntity<List<Author>>("/author")
+    private fun getAuthors(): List<Author> {
+        class ListOfAuthors : ParameterizedTypeReference<List<Author>>()
+        return restWithAdminRole().exchange("/author", HttpMethod.GET, null, ListOfAuthors()).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
     }
 
     private fun getAuthorSlugs(): ResponseEntity<List<String>> {

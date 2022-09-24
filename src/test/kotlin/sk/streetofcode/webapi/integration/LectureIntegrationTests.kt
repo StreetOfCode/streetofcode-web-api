@@ -4,8 +4,9 @@ import io.kotest.matchers.shouldBe
 import org.mockito.Mockito
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.LectureDto
 import sk.streetofcode.webapi.api.exception.InternalErrorException
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
@@ -16,31 +17,24 @@ import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 @SpringBootTestAnnotation
 class LectureIntegrationTests : IntegrationTests() {
     init {
-        "get lectures" {
-            val lecturesResponse = getLectures()
-            lecturesResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = lecturesResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("lecture 0-10/10")
-
-            val lectures = lecturesResponse.body!!
-            lectures.size shouldBe 10
-        }
-
         "add lecture" {
             val videoUrl = "https://www.youtube.com/embed/z1At9Jk4sqE"
             val videoDuration = 100
             Mockito.`when`(vimeoApiClient.getVideoDurationInSeconds(videoUrl)).thenReturn(videoDuration)
 
-            val lecture = addLecture(LectureAddRequest(1, "testName", 1, "testContent", videoUrl))
+            val lecture = addLecture(LectureAddRequest(1, "testName", 1500, "testContent", videoUrl))
 
             val fetchedLecture = getLecture(lecture.id)
             fetchedLecture.name shouldBe "testName"
             fetchedLecture.chapter.id shouldBe 1
-            fetchedLecture.lectureOrder shouldBe 1
+            fetchedLecture.lectureOrder shouldBe 1500
             fetchedLecture.content shouldBe "testContent"
             fetchedLecture.videoUrl shouldBe videoUrl
             fetchedLecture.videoDurationSeconds shouldBe videoDuration
-            fetchedLecture.course.lecturesCount shouldBe 6
+
+            // get lectures
+            val lecturesResponse = getLectures()
+            lecturesResponse.find { it.id == lecture.id } shouldBe lecture
         }
 
         "add lecture invalid videoUrl" {
@@ -84,8 +78,12 @@ class LectureIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getLectures(): ResponseEntity<List<LectureDto>> {
-        return restWithAdminRole().getForEntity("/lecture")
+    private fun getLectures(): List<LectureDto> {
+        class ListOfLectures : ParameterizedTypeReference<List<LectureDto>>()
+        return restWithAdminRole().exchange("/lecture", HttpMethod.GET, null, ListOfLectures()).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
     }
 
     private fun getLecture(lectureId: Long): LectureDto {
