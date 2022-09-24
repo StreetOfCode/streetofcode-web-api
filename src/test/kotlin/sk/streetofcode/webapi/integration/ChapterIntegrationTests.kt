@@ -3,8 +3,9 @@ package sk.streetofcode.webapi.integration
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.ChapterDto
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.ChapterAddRequest
@@ -14,16 +15,6 @@ import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 @SpringBootTestAnnotation
 class ChapterIntegrationTests : IntegrationTests() {
     init {
-        "get chapters" {
-            val chaptersResponse = getChapters()
-            chaptersResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = chaptersResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("chapter 0-4/4")
-
-            val chapters = chaptersResponse.body!!
-            chapters.size shouldBe 4
-        }
-
         "add chapter" {
             val chapter = addChapter(ChapterAddRequest(1, "testName", 1))
 
@@ -31,6 +22,10 @@ class ChapterIntegrationTests : IntegrationTests() {
             fetchedChapter.name shouldBe "testName"
             fetchedChapter.course.id shouldBe 1
             fetchedChapter.chapterOrder shouldBe 1
+
+            // get chapters
+            val chaptersResponse = getChapters()
+            chaptersResponse.find { it.id == chapter.id } shouldBe chapter
         }
 
         "edit chapter" {
@@ -58,8 +53,12 @@ class ChapterIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getChapters(): ResponseEntity<List<ChapterDto>> {
-        return restWithAdminRole().getForEntity("/chapter")
+    private fun getChapters(): List<ChapterDto> {
+        class ListOfChapters : ParameterizedTypeReference<List<ChapterDto>>()
+        return restWithAdminRole().exchange("/chapter", HttpMethod.GET, null, ListOfChapters()).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
     }
 
     private fun getChapter(chapterId: Long): ChapterDto {

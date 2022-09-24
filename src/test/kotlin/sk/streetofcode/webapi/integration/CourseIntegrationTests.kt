@@ -1,8 +1,11 @@
 package sk.streetofcode.webapi.integration
 
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.CourseDto
@@ -17,26 +20,9 @@ import sk.streetofcode.webapi.model.CourseStatus
 @SpringBootTestAnnotation
 class CourseIntegrationTests : IntegrationTests() {
     init {
-        "get courses" {
-
+        "failed get courses" {
             getCoursesNotAuthenticatedReturns401()
             getCoursesWithUserRoleThrowsAuthorizationException()
-
-            val coursesResponse = getCourses()
-            coursesResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = coursesResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("course 0-2/2")
-
-            val courses = coursesResponse.body!!
-            courses.size shouldBe 2
-        }
-
-        "get course slugs" {
-            val courseIdsResponse = getCourseSlugs()
-            courseIdsResponse.statusCode shouldBe HttpStatus.OK
-
-            val courseIds = courseIdsResponse.body!!
-            courseIds shouldBe listOf("informatika101", "kryptografia")
         }
 
         "get courses overview with admin role" {
@@ -44,7 +30,7 @@ class CourseIntegrationTests : IntegrationTests() {
             coursesResponse.statusCode shouldBe HttpStatus.OK
 
             val courses = coursesResponse.body!!
-            courses.size shouldBe 2
+            courses.size shouldBeGreaterThan 0
         }
 
         "get courses overview with user role" {
@@ -52,7 +38,7 @@ class CourseIntegrationTests : IntegrationTests() {
             coursesResponse.statusCode shouldBe HttpStatus.OK
 
             val courses = coursesResponse.body!!
-            courses.size shouldBe 1
+            courses.size shouldBeGreaterThan 0
         }
 
         "get course overview" {
@@ -91,6 +77,17 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
             fetchedCourse.iconUrl shouldBe "iconUrl"
             fetchedCourse.status shouldBe CourseStatus.PRIVATE
+
+            // get courses
+            val coursesResponse = getCourses()
+            coursesResponse.find { it.id == course.id } shouldBe course
+
+            // get slugs
+            val courseIdsResponse = getCourseSlugs()
+            courseIdsResponse.statusCode shouldBe HttpStatus.OK
+
+            val courseIds = courseIdsResponse.body!!
+            courseIds.find { it == uniqueSlug } shouldBe uniqueSlug
         }
 
         "edit course" {
@@ -146,8 +143,12 @@ class CourseIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getCourses(): ResponseEntity<List<CourseDto>> {
-        return restWithAdminRole().getForEntity("/course")
+    private fun getCourses(): List<CourseDto> {
+        class ListOfCourses : ParameterizedTypeReference<List<CourseDto>>()
+        return restWithAdminRole().exchange("/course", HttpMethod.GET, null, ListOfCourses()).let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!
+        }
     }
 
     private fun getCourseSlugs(): ResponseEntity<List<String>> {

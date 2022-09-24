@@ -26,7 +26,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // check progressOverview - everything is not seen yet
             val progressOverview = getProgressOverview(courseId)
             progressOverview.lecturesViewed shouldBe 0
-            progressOverview.courseLecturesCount shouldBe 5
             progressOverview.chapters.forEach { it ->
                 it.viewed shouldBe false
                 it.lectures.forEach { it.viewed shouldBe false }
@@ -38,7 +37,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify seen lecture
             val progressOverviewLectureSeen = getProgressOverview(courseId)
             progressOverviewLectureSeen.lecturesViewed shouldBe 1
-            progressOverviewLectureSeen.courseLecturesCount shouldBe 5
             progressOverviewLectureSeen.chapters[0].viewed shouldBe false
             progressOverviewLectureSeen.chapters[0].lectures[0].viewed shouldBe true
             progressOverviewLectureSeen.chapters[0].lectures[1].viewed shouldBe false
@@ -46,7 +44,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress metadata - lecture seen
             val progressMetadataLectureSeen = getProgressMetadata(courseId)
             progressMetadataLectureSeen.lecturesViewed shouldBe 1
-            progressMetadataLectureSeen.courseLecturesCount shouldBe 5
             progressMetadataLectureSeen.status shouldBe ProgressStatus.IN_PROGRESS
             progressMetadataLectureSeen.finishedAt shouldBe null
             progressMetadataLectureSeen.nextChapterId shouldBe 1
@@ -59,7 +56,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify seen chapter
             val progressOverviewChapterSeen = getProgressOverview(courseId)
             progressOverviewChapterSeen.lecturesViewed shouldBe 3
-            progressOverviewChapterSeen.courseLecturesCount shouldBe 5
             progressOverviewChapterSeen.chapters[0].viewed shouldBe true
             progressOverviewChapterSeen.chapters[0].lectures[0].viewed shouldBe true
             progressOverviewChapterSeen.chapters[0].lectures[1].viewed shouldBe true
@@ -69,7 +65,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress metadata - chapter seen
             val progressMetadataChapterSeen = getProgressMetadata(courseId)
             progressMetadataChapterSeen.lecturesViewed shouldBe 3
-            progressMetadataChapterSeen.courseLecturesCount shouldBe 5
             progressMetadataChapterSeen.status shouldBe ProgressStatus.IN_PROGRESS
             progressMetadataChapterSeen.finishedAt shouldBe null
             progressMetadataChapterSeen.nextChapterId shouldBe 2
@@ -81,7 +76,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify changed progress overview - chapter is not seen, lecture 1,2 are seen
             val progressOverviewLectureReset = getProgressOverview(courseId)
             progressOverviewLectureReset.lecturesViewed shouldBe 2
-            progressOverviewLectureReset.courseLecturesCount shouldBe 5
             progressOverviewLectureReset.chapters[0].viewed shouldBe false
             progressOverviewLectureReset.chapters[0].lectures[0].viewed shouldBe true
             progressOverviewLectureReset.chapters[0].lectures[1].viewed shouldBe true
@@ -93,7 +87,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify changed progress overview - chapter is seen again
             val progressOverviewChapterSeenAgain = getProgressOverview(courseId)
             progressOverviewChapterSeenAgain.lecturesViewed shouldBe 3
-            progressOverviewChapterSeenAgain.courseLecturesCount shouldBe 5
             progressOverviewChapterSeenAgain.chapters[0].viewed shouldBe true
             progressOverviewChapterSeenAgain.chapters[0].lectures[0].viewed shouldBe true
             progressOverviewChapterSeenAgain.chapters[0].lectures[1].viewed shouldBe true
@@ -105,7 +98,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify that everything is unseen again
             val progressOverviewChapterReset = getProgressOverview(courseId)
             progressOverviewChapterReset.lecturesViewed shouldBe 0
-            progressOverviewChapterReset.courseLecturesCount shouldBe 5
             progressOverviewChapterReset.chapters.forEach { it ->
                 it.viewed shouldBe false
                 it.lectures.forEach { it.viewed shouldBe false }
@@ -114,7 +106,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress metadata - nothing seen
             val progressMetadataReset = getProgressMetadata(courseId)
             progressMetadataReset.lecturesViewed shouldBe 0
-            progressMetadataReset.courseLecturesCount shouldBe 5
             progressMetadataReset.status shouldBe ProgressStatus.IN_PROGRESS
             progressMetadataReset.finishedAt shouldBe null
             progressMetadataReset.nextChapterId shouldBe 1
@@ -128,7 +119,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify changed progress overview - whole course seen
             val progressOverviewCourseSeen = getProgressOverview(courseId)
             progressOverviewCourseSeen.lecturesViewed shouldBe 5
-            progressOverviewCourseSeen.courseLecturesCount shouldBe 5
             progressOverviewCourseSeen.chapters.forEach { it ->
                 it.viewed shouldBe true
                 it.lectures.forEach { it.viewed shouldBe true }
@@ -137,7 +127,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress metadata - course seen
             val progressMetadataCourseSeen = getProgressMetadata(courseId)
             progressMetadataCourseSeen.lecturesViewed shouldBe 5
-            progressMetadataCourseSeen.courseLecturesCount shouldBe 5
             progressMetadataCourseSeen.status shouldBe ProgressStatus.FINISHED
             progressMetadataCourseSeen.finishedAt shouldNotBe null
 
@@ -147,7 +136,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress overview - reset course
             val progressOverviewCourseReset = getProgressOverview(courseId)
             progressOverviewCourseReset.lecturesViewed shouldBe 0
-            progressOverviewCourseReset.courseLecturesCount shouldBe 5
             progressOverviewCourseReset.chapters.forEach { it ->
                 it.viewed shouldBe false
                 it.lectures.forEach { it.viewed shouldBe false }
@@ -156,7 +144,6 @@ class ProgressIntegrationTests : IntegrationTests() {
             // verify progress metadata - nothing seen
             val progressMetadataResetAgain = getProgressMetadata(courseId)
             progressMetadataResetAgain.lecturesViewed shouldBe 0
-            progressMetadataResetAgain.courseLecturesCount shouldBe 5
             progressMetadataResetAgain.status shouldBe ProgressStatus.IN_PROGRESS
             progressMetadataResetAgain.finishedAt shouldBe null
             progressMetadataResetAgain.nextChapterId shouldBe 1
