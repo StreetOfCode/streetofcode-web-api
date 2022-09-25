@@ -1,3 +1,3 @@
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (difficulty_id_seq.nextval, 'Začiatočník', 1);
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (difficulty_id_seq.nextval, 'Mierne pokročilý', 2);
-INSERT INTO public.difficulty (id, name, skill_level) VALUES (difficulty_id_seq.nextval, 'Pokročilý', 3);
+INSERT INTO public.difficulty (id, name, skill_level) VALUES (nextval('difficulty_id_seq'), 'Začiatočník', 1);
+INSERT INTO public.difficulty (id, name, skill_level) VALUES (nextval('difficulty_id_seq'), 'Mierne pokročilý', 2);
+INSERT INTO public.difficulty (id, name, skill_level) VALUES (nextval('difficulty_id_seq'), 'Pokročilý', 3);
