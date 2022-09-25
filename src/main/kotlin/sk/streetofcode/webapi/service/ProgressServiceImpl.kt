@@ -242,7 +242,7 @@ class ProgressServiceImpl(
         val courseLectureIds = course.chapters
             .flatMap { chapter -> chapter.lectures.map { lecture -> lecture.id!! } }
         val seenLectureIds = progressLectureRepository.findAllByUserId(userId)
-            .map { lecture -> lecture.id }
+            .map { lecture -> lecture.lectureId }
             .toSet()
 
         return courseLectureIds
