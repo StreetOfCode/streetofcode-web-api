@@ -19,7 +19,7 @@ import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 class CourseReviewIntegrationTests : IntegrationTests() {
     init {
         "get reviews" {
-            forAll(row(1L), row(2L)) { courseId ->
+            forAll(row(1L)) { courseId ->
                 val courseReviews = getCourseReviews(courseId)
                 courseReviews.size shouldBe 2
                 courseReviews.forEach { it.courseId shouldBe courseId }
@@ -33,7 +33,6 @@ class CourseReviewIntegrationTests : IntegrationTests() {
         "get review overview" {
             forAll(
                 row(1L, 2.5, 2),
-                row(2L, 2, 2)
             ) { courseId, expectedAverageRating, expectedNumberOfReviews ->
                 val courseReviewOverview = getCourseReviewOverview(courseId)
                 courseReviewOverview.averageRating shouldBe expectedAverageRating
