@@ -1,7 +1,9 @@
 package sk.streetofcode.webapi.service
 
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.CourseReviewService
+import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.SocUserService
 import sk.streetofcode.webapi.api.dto.CourseReviewDto
 import sk.streetofcode.webapi.api.dto.CourseReviewsOverviewDto
@@ -21,7 +23,9 @@ class CourseReviewServiceImpl(
     private val courseReviewRepository: CourseReviewRepository,
     private val courseRepository: CourseRepository,
     private val authenticationService: AuthenticationService,
-    private val socUserService: SocUserService
+    private val socUserService: SocUserService,
+    private val emailService: EmailService,
+    val env: Environment
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
         courseRepository
@@ -32,10 +36,14 @@ class CourseReviewServiceImpl(
     }
 
     override fun getCourseReviewsOverview(courseId: Long): CourseReviewsOverviewDto {
-        courseRepository.findById(courseId).orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
+        courseRepository.findById(courseId)
+            .orElseThrow { ResourceNotFoundException("Course with id $courseId was not found") }
 
         val courseReviewsOverview = courseReviewRepository.getCourseReviewsOverview(courseId)
-        return CourseReviewsOverviewDto(courseReviewsOverview.averageRating ?: 0.0, courseReviewsOverview.numberOfRatings ?: 0)
+        return CourseReviewsOverviewDto(
+            courseReviewsOverview.averageRating ?: 0.0,
+            courseReviewsOverview.numberOfRatings ?: 0
+        )
     }
 
     override fun get(id: Long): CourseReviewDto {
@@ -46,7 +54,8 @@ class CourseReviewServiceImpl(
     }
 
     override fun add(addRequest: CourseReviewAddRequest): CourseReviewDto {
-        courseRepository.findById(addRequest.courseId).orElseThrow { ResourceNotFoundException("Course with id ${addRequest.courseId} was not found") }
+        val course = courseRepository.findById(addRequest.courseId)
+            .orElseThrow { ResourceNotFoundException("Course with id ${addRequest.courseId} was not found") }
 
         val userId = authenticationService.getUserId()
         val existingReview = courseReviewRepository.findBySocUserFirebaseIdAndCourseId(userId, addRequest.courseId)
@@ -56,13 +65,19 @@ class CourseReviewServiceImpl(
 
         validateRating(addRequest.rating)
 
-        return courseReviewRepository
+        val courseReview = courseReviewRepository
             .save(CourseReview(socUserService.get(userId), addRequest.courseId, addRequest.rating, addRequest.text))
-            .toCourseReviewDto()
+
+        if (env.activeProfiles.contains("prod")) {
+            emailService.sendNewCourseReviewNotification(course.name, courseReview)
+        }
+
+        return courseReview.toCourseReviewDto()
     }
 
     override fun edit(id: Long, editRequest: CourseReviewEditRequest): CourseReviewDto {
-        val review = courseReviewRepository.findById(id).orElseThrow { ResourceNotFoundException("Course review with id $id was not found") }
+        val review = courseReviewRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("Course review with id $id was not found") }
 
         validateUserAuthorization(review)
         validateRating(editRequest.rating)
@@ -75,7 +90,8 @@ class CourseReviewServiceImpl(
     }
 
     override fun delete(id: Long): CourseReviewDto {
-        val review = courseReviewRepository.findById(id).orElseThrow { ResourceNotFoundException("Course review with id $id was not found") }
+        val review = courseReviewRepository.findById(id)
+            .orElseThrow { ResourceNotFoundException("Course review with id $id was not found") }
 
         validateUserAuthorization(review)
 

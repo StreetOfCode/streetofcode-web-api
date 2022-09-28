@@ -1,7 +1,9 @@
 package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.LectureCommentService
 import sk.streetofcode.webapi.api.SocUserService
 import sk.streetofcode.webapi.api.dto.LectureCommentDto
@@ -22,7 +24,9 @@ class LectureCommentServiceImpl(
     private val lectureRepository: LectureRepository,
     private val lectureCommentRepository: LectureCommentRepository,
     private val authenticationService: AuthenticationService,
-    private val socUserService: SocUserService
+    private val socUserService: SocUserService,
+    private val emailService: EmailService,
+    val env: Environment
 ) : LectureCommentService {
 
     companion object {
@@ -34,12 +38,24 @@ class LectureCommentServiceImpl(
     }
 
     override fun add(userId: String, lectureId: Long, addRequest: LectureCommentAddRequest): LectureCommentDto {
-        val lecture = lectureRepository.findById(lectureId).orElseThrow { ResourceNotFoundException("Lecture with id $lectureId was not found") }
+        val lecture = lectureRepository.findById(lectureId)
+            .orElseThrow { ResourceNotFoundException("Lecture with id $lectureId was not found") }
 
         try {
-            return lectureCommentRepository
-                .save(LectureComment(socUserService.get(authenticationService.getUserId()), lecture, addRequest.commentText))
-                .toLectureCommentDto()
+            val lectureComment = lectureCommentRepository
+                .save(
+                    LectureComment(
+                        socUserService.get(authenticationService.getUserId()),
+                        lecture,
+                        addRequest.commentText
+                    )
+                )
+
+            if (env.activeProfiles.contains("prod")) {
+                emailService.sendNewLectureCommentNotification(lectureComment)
+            }
+
+            return lectureComment.toLectureCommentDto()
         } catch (e: Exception) {
             log.error("Problem with saving lectureComment to db", e)
             throw InternalErrorException("Could not save lecture comment")
@@ -52,7 +68,8 @@ class LectureCommentServiceImpl(
         commentId: Long,
         editRequest: LectureCommentEditRequest
     ): LectureCommentDto {
-        val comment = lectureCommentRepository.findById(commentId).orElseThrow { ResourceNotFoundException("Lecture comment with id $commentId was not found") }
+        val comment = lectureCommentRepository.findById(commentId)
+            .orElseThrow { ResourceNotFoundException("Lecture comment with id $commentId was not found") }
         if (lectureId != comment.lecture.id) {
             throw BadRequestException("Comment has different lectureId")
         }
@@ -71,7 +88,8 @@ class LectureCommentServiceImpl(
     }
 
     override fun delete(userId: String, lectureId: Long, commentId: Long) {
-        val comment = lectureCommentRepository.findById(commentId).orElseThrow { ResourceNotFoundException("Lecture comment with id $commentId was not found") }
+        val comment = lectureCommentRepository.findById(commentId)
+            .orElseThrow { ResourceNotFoundException("Lecture comment with id $commentId was not found") }
         if (lectureId != comment.lecture.id) {
             throw BadRequestException("Comment has different lectureId")
         }
