@@ -110,13 +110,8 @@ class ProgressIntegrationTests : IntegrationTests() {
                 it.lectures.forEach { it.viewed shouldBe false }
             }
 
-            // verify progress metadata - nothing seen
-            val progressMetadataReset = getProgressMetadata(courseId)
-            progressMetadataReset.lecturesViewed shouldBe 0
-            progressMetadataReset.status shouldBe ProgressStatus.IN_PROGRESS
-            progressMetadataReset.finishedAt shouldBe null
-            progressMetadataReset.nextChapterId shouldBe initialProgressOverview.chapters[0].id
-            progressMetadataReset.nextLectureId shouldBe initialProgressOverview.chapters[0].lectures[0].id
+            // verify progress metadata - empty data should not exist
+            getProgressMetadataNotFound(courseId)
 
             // update progress - see whole course
             for (i in initialProgressOverview.chapters[0].lectures[0].id..initialProgressOverview.chapters[1].lectures[1].id) {
@@ -148,13 +143,8 @@ class ProgressIntegrationTests : IntegrationTests() {
                 it.lectures.forEach { it.viewed shouldBe false }
             }
 
-            // verify progress metadata - nothing seen
-            val progressMetadataResetAgain = getProgressMetadata(courseId)
-            progressMetadataResetAgain.lecturesViewed shouldBe 0
-            progressMetadataResetAgain.status shouldBe ProgressStatus.IN_PROGRESS
-            progressMetadataResetAgain.finishedAt shouldBe null
-            progressMetadataResetAgain.nextChapterId shouldBe initialProgressOverview.chapters[0].id
-            progressMetadataResetAgain.nextLectureId shouldBe initialProgressOverview.chapters[0].lectures[0].id
+            // verify progress metadata - empty data should not exist
+            getProgressMetadataNotFound(courseId)
         }
 
         "fail reset progress, bad request" {
