@@ -34,12 +34,3 @@ INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 
 INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
 (nextval('quiz_question_user_answer_id_seq'), 1, 2, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', '2007-12-03T10:15:30+01:00', 3);
-
-INSERT INTO next_course_vote_option(id, name) VALUES
-(nextval('next_course_vote_option_id_seq'), 'Python'),
-(nextval('next_course_vote_option_id_seq'), 'Java'),
-(nextval('next_course_vote_option_id_seq'), 'Kotlin'),
-(nextval('next_course_vote_option_id_seq'), 'OOP'),
-(nextval('next_course_vote_option_id_seq'), 'Git'),
-(nextval('next_course_vote_option_id_seq'), 'C#'),
-(nextval('next_course_vote_option_id_seq'), 'SQL');
