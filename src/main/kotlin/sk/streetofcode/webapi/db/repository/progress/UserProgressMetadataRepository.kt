@@ -13,7 +13,6 @@ interface UserProgressMetadataRepository : CrudRepository<UserProgressMetadata, 
         """
         SELECT progress.courseId from UserProgressMetadata as progress 
         WHERE progress.userId = :userId
-        GROUP BY progress.courseId
         ORDER BY progress.lastUpdatedAt 
         """
     )
