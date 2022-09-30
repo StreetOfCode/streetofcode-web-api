@@ -63,8 +63,6 @@ class ProgressServiceImpl(
         if (maybeProgressMetadata.isPresent) {
             val progressMetadata = maybeProgressMetadata.get()
             updateProgressMetadata(progressMetadata, 1, courseLecturesCount)
-            maybeFinishCourse(progressMetadata, courseLecturesCount)
-            progressMetadataRepository.save(progressMetadata)
         } else {
             progressMetadataRepository.save(UserProgressMetadata(userId, courseId, 1))
         }
@@ -164,9 +162,6 @@ class ProgressServiceImpl(
 
         // update progress metadata
         updateProgressMetadata(progressMetadata, -1, lecture.course.lecturesCount)
-        maybeResetFinishCourse(progressMetadata)
-
-        progressMetadataRepository.save(progressMetadata)
 
         return this.getProgressOverview(userId, courseId)
     }
@@ -184,8 +179,6 @@ class ProgressServiceImpl(
 
         // update progress metadata
         updateProgressMetadata(progressMetadata, -lectureIds.size, chapter.course.lecturesCount)
-        maybeResetFinishCourse(progressMetadata)
-        progressMetadataRepository.save(progressMetadata)
 
         return this.getProgressOverview(userId, courseId)
     }
@@ -202,22 +195,19 @@ class ProgressServiceImpl(
 
         // update progress metadata
         updateProgressMetadata(progressMetadata, -progressMetadata.lecturesViewed, lectureIds.size) // reset to 0
-        maybeResetFinishCourse(progressMetadata)
-
-        progressMetadataRepository.save(progressMetadata)
 
         return this.getProgressOverview(userId, courseId)
     }
 
-    private fun maybeResetFinishCourse(progressMetadata: UserProgressMetadata) {
-        if (progressMetadata.status == ProgressStatus.FINISHED) {
+    private fun updateIsCourseFinished(progressMetadata: UserProgressMetadata, courseLecturesCount: Int) {
+        val shouldUnfinish = progressMetadata.status == ProgressStatus.FINISHED && progressMetadata.lecturesViewed < courseLecturesCount
+        if (shouldUnfinish) {
             progressMetadata.status = ProgressStatus.IN_PROGRESS
             progressMetadata.finishedAt = null
         }
-    }
 
-    private fun maybeFinishCourse(progressMetadata: UserProgressMetadata, courseLecturesCount: Int) {
-        if (progressMetadata.lecturesViewed == courseLecturesCount) {
+        val shouldFinish = progressMetadata.lecturesViewed == courseLecturesCount
+        if (shouldFinish) {
             progressMetadata.status = ProgressStatus.FINISHED
             progressMetadata.finishedAt = OffsetDateTime.now()
         }
@@ -225,9 +215,13 @@ class ProgressServiceImpl(
 
     private fun updateProgressMetadata(progressMetadata: UserProgressMetadata, lecturesViewedDelta: Int, courseLecturesCount: Int) {
         val updatedLecturesViewed = progressMetadata.lecturesViewed + lecturesViewedDelta
-        if (updatedLecturesViewed in 0..courseLecturesCount) {
+        if (updatedLecturesViewed == 0) {
+            progressMetadataRepository.delete(progressMetadata)
+        } else if (updatedLecturesViewed in 1..courseLecturesCount) {
             progressMetadata.lastUpdatedAt = OffsetDateTime.now()
             progressMetadata.lecturesViewed = updatedLecturesViewed
+            updateIsCourseFinished(progressMetadata, courseLecturesCount)
+            progressMetadataRepository.save(progressMetadata)
         } else {
             log.error(
                 "Something is terribly wrong in updating progress metadata, because apparently " +
