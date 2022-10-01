@@ -1,5 +1,6 @@
 package sk.streetofcode.webapi.integration
 
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
@@ -16,13 +17,13 @@ class VoteIntegrationTests : IntegrationTests() {
         "get next course options - not authenticated - OK" {
             val nextCourseOptionsResponse = getNextCourseOptionsNotAuthenticated()
             nextCourseOptionsResponse.statusCode shouldBe HttpStatus.OK
-            nextCourseOptionsResponse.body!!.size shouldBe 7
+            nextCourseOptionsResponse.body!!.size shouldBeGreaterThan 0
         }
 
         "get next course options - authenticated - OK" {
             val nextCourseOptionsResponse = getNextCourseOptionsAuthenticated()
             nextCourseOptionsResponse.statusCode shouldBe HttpStatus.OK
-            nextCourseOptionsResponse.body!!.size shouldBe 7
+            nextCourseOptionsResponse.body!!.size shouldBeGreaterThan 0
         }
 
         "vote next course scenario" {
