@@ -18,14 +18,14 @@ class UserIntegrationTests : IntegrationTests() {
             fetchedUser.firebaseId shouldBe "moNoTwZcU5Nwg4qMBBVW9uJBQM12"
             fetchedUser.name shouldBe "Gabriel Kerekeš"
             fetchedUser.email shouldBe "gabriel@streetofcode.sk"
-            fetchedUser.imageUrl shouldBe "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png"
+            fetchedUser.imageUrl shouldBe "https://wp.streetofcode.sk/wp-content/uploads/2020/04/7520735.png"
 
             setUserId("Dk71hPkR9Fc6SJma3S1NvGcrkHe2")
             val anotherFetchedUser = getUser()
             anotherFetchedUser.firebaseId shouldBe "Dk71hPkR9Fc6SJma3S1NvGcrkHe2"
             anotherFetchedUser.name shouldBe "Jakub Jahič"
             anotherFetchedUser.email shouldBe "jakub@streetofcode.sk"
-            anotherFetchedUser.imageUrl shouldBe "https://streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg"
+            anotherFetchedUser.imageUrl shouldBe "https://wp.streetofcode.sk/wp-content/uploads/2019/04/JFinal-768x576.jpg"
 
             setUserId("non-existing-user-id")
             failGettingUser()
