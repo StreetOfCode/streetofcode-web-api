@@ -110,4 +110,8 @@ class QuizQuestionUserAnswerServiceImpl(
             question.correctAnswers.map { it.id }.sortedBy { it } == answerRequest.answerIds.sorted()
         )
     }
+
+    override fun removeAllUserAnswersByLectureId(lectureId: Long) {
+        quizQuestionUserAnswerRepository.deleteByQuestionQuizLectureIdAndUserId(lectureId, authenticationService.getUserId())
+    }
 }

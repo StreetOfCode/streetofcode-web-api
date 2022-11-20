@@ -10,4 +10,5 @@ interface QuizQuestionUserAnswerService {
     fun getAllAnswersForQuestion(questionId: Long): List<QuizQuestionUserAnswerDto>
     fun getAllUserAnswersForQuiz(quizId: Long): List<QuizQuestionUserAnswerDto>
     fun answer(answerRequest: QuizQuestionUserAnswerRequest): QuizQuestionAnswerCorrectnessDto
+    fun removeAllUserAnswersByLectureId(lectureId: Long)
 }

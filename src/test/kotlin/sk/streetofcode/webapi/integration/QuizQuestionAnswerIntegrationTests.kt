@@ -4,7 +4,6 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionAnswerDto
 import sk.streetofcode.webapi.api.request.QuizQuestionAnswerAddRequest
 import sk.streetofcode.webapi.api.request.QuizQuestionAnswerEditRequest
@@ -13,16 +12,6 @@ import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 @SpringBootTestAnnotation
 class QuizQuestionAnswerIntegrationTests : IntegrationTests() {
     init {
-        "get answers" {
-            val answersResponse = getAnswers()
-            answersResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = answersResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("answer 0-12/12")
-
-            val answers = answersResponse.body!!
-            answers.size shouldBe 12
-        }
-
         "add answer" {
             val newAnswer = QuizQuestionAnswerAddRequest(
                 1, "answer", false
@@ -31,6 +20,9 @@ class QuizQuestionAnswerIntegrationTests : IntegrationTests() {
             val answer = addAnswer(newAnswer)
             answer.questionId shouldBe newAnswer.questionId
             answer.text shouldBe newAnswer.text
+
+            val answersResponse = getAnswers()
+            answersResponse.find { it.id == answer.id } shouldBe answer
         }
 
         "add answer invalid" {
@@ -93,8 +85,11 @@ class QuizQuestionAnswerIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getAnswers(): ResponseEntity<List<QuizQuestionAnswerDto>> {
-        return restWithAdminRole().getForEntity("/quiz/question/answer")
+    private fun getAnswers(): List<QuizQuestionAnswerDto> {
+        return restWithAdminRole().getForEntity<Array<QuizQuestionAnswerDto>>("/quiz/question/answer").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.toList()
+        }
     }
 
     private fun addAnswer(body: QuizQuestionAnswerAddRequest): QuizQuestionAnswerDto {

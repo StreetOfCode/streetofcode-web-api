@@ -5,7 +5,6 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionDto
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.QuizQuestionAddRequest
@@ -16,16 +15,6 @@ import sk.streetofcode.webapi.model.quiz.QuizQuestionType
 @SpringBootTestAnnotation
 class QuizQuestionIntegrationTests : IntegrationTests() {
     init {
-        "get questions" {
-            val questionsResponse = getQuestions()
-            questionsResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = questionsResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("quizQuestion 0-3/3")
-
-            val questions = questionsResponse.body!!
-            questions.size shouldBe 3
-        }
-
         "add question" {
             val newQuestion = QuizQuestionAddRequest(
                 1,
@@ -39,6 +28,9 @@ class QuizQuestionIntegrationTests : IntegrationTests() {
             question.questionOrder shouldBe -1
             question.text shouldBe "text"
             question.type shouldBe QuizQuestionType.SINGLE_CHOICE
+
+            val questionsResponse = getQuestions()
+            questionsResponse.find { it.id == question.id } shouldBe question
         }
 
         "add question invalid quizId" {
@@ -110,8 +102,11 @@ class QuizQuestionIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getQuestions(): ResponseEntity<List<QuizQuestionDto>> {
-        return restWithAdminRole().getForEntity("/quiz/question")
+    private fun getQuestions(): List<QuizQuestionDto> {
+        return restWithAdminRole().getForEntity<Array<QuizQuestionDto>>("/quiz/question").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.toList()
+        }
     }
 
     private fun addQuestion(body: QuizQuestionAddRequest): QuizQuestionDto {

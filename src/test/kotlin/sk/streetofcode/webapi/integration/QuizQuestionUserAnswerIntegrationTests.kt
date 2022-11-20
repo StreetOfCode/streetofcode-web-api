@@ -3,26 +3,19 @@ package sk.streetofcode.webapi.integration
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionAnswerCorrectnessDto
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionUserAnswerDto
 import sk.streetofcode.webapi.api.request.QuizQuestionUserAnswerRequest
+import sk.streetofcode.webapi.api.request.QuizRemoveAnswersRequest
 import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 
 @SpringBootTestAnnotation
 class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
     init {
-        "get user answers" {
-            val answersResponse = getUserAnswers()
-            answersResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = answersResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("userAnswer 0-1/1")
-
-            val userAnswers = answersResponse.body!!
-            userAnswers.size shouldBe 1
-        }
-
         "get answers for quiz" {
             val answer = sendAnswer(
                 QuizQuestionUserAnswerRequest(
@@ -80,7 +73,12 @@ class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
                 )
             ).body?.isCorrect shouldBe true
 
-            getSavedUserAnswers(1).body?.filter { it.isCorrect }?.size shouldBe 3
+            val userAnswers = getSavedUserAnswers(1).body
+            userAnswers?.filter { it.isCorrect }?.size shouldBe 3
+
+            userAnswers?.get(0)?.question?.quiz?.let { removeUserAnswers(QuizRemoveAnswersRequest(it.lectureId)) }
+
+            getSavedUserAnswers(1).body?.size shouldBe 0
         }
 
         "answer question" {
@@ -178,6 +176,10 @@ class QuizQuestionUserAnswerIntegrationTests : IntegrationTests() {
 
     private fun getSavedUserAnswers(quizId: Long): ResponseEntity<Array<QuizQuestionUserAnswerDto>> {
         return restWithUserRole().getForEntity("/quiz/$quizId/question/user-answer")
+    }
+
+    private fun removeUserAnswers(body: QuizRemoveAnswersRequest): ResponseEntity<Void> {
+        return restWithUserRole().exchange("/quiz/question/user-answer", HttpMethod.DELETE, HttpEntity(body), Void.TYPE)
     }
 
     private fun sendAnswer(body: QuizQuestionUserAnswerRequest): ResponseEntity<QuizQuestionAnswerCorrectnessDto> {
