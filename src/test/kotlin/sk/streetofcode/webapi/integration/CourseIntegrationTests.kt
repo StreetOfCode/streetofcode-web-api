@@ -4,8 +4,6 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.CourseDto
@@ -144,10 +142,9 @@ class CourseIntegrationTests : IntegrationTests() {
     }
 
     private fun getCourses(): List<CourseDto> {
-        class ListOfCourses : ParameterizedTypeReference<List<CourseDto>>()
-        return restWithAdminRole().exchange("/course", HttpMethod.GET, null, ListOfCourses()).let {
+        return restWithAdminRole().getForEntity<Array<CourseDto>>("/course").let {
             it.statusCode shouldBe HttpStatus.OK
-            it.body!!
+            it.body!!.toList()
         }
     }
 

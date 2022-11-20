@@ -32,5 +32,27 @@ INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 (nextval('quiz_question_answer_id_seq'), 3, '+4', true),
 (nextval('quiz_question_answer_id_seq'), 3, '4', true);
 
+INSERT INTO quiz(id, lecture_id, title, subtitle, created_at, finished_message) VALUES
+(nextval('quiz_id_seq'), 2, 'Kvizik', 'Tu sa naucis matiku', '2007-12-03T10:15:30+01:00', 'Spravne!!!');
+
+INSERT INTO quiz_question(id, quiz_id, question_order, text, type) VALUES
+(nextval('quiz_question_id_seq'), 2, 1, '2+2?', 'SINGLE_CHOICE'),
+(nextval('quiz_question_id_seq'), 2, 2, '2*2', 'SINGLE_CHOICE'),
+(nextval('quiz_question_id_seq'), 2, 3, '8-4', 'MULTIPLE_CHOICE');
+
+INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
+(nextval('quiz_question_answer_id_seq'), 4, '1', false),
+(nextval('quiz_question_answer_id_seq'), 4, '2', false),
+(nextval('quiz_question_answer_id_seq'), 4, '3', false),
+(nextval('quiz_question_answer_id_seq'), 4, '4', true),
+(nextval('quiz_question_answer_id_seq'), 5, '1', false),
+(nextval('quiz_question_answer_id_seq'), 5, '2', false),
+(nextval('quiz_question_answer_id_seq'), 5, '3', false),
+(nextval('quiz_question_answer_id_seq'), 5, '4', true),
+(nextval('quiz_question_answer_id_seq'), 6, '1', false),
+(nextval('quiz_question_answer_id_seq'), 6, '2', false),
+(nextval('quiz_question_answer_id_seq'), 6, '+4', true),
+(nextval('quiz_question_answer_id_seq'), 6, '4', true);
+
 INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
 (nextval('quiz_question_user_answer_id_seq'), 1, 2, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', '2007-12-03T10:15:30+01:00', 3);

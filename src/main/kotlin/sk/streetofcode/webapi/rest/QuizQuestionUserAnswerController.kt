@@ -10,6 +10,7 @@ import sk.streetofcode.webapi.api.QuizQuestionUserAnswerService
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionAnswerCorrectnessDto
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionUserAnswerDto
 import sk.streetofcode.webapi.api.request.QuizQuestionUserAnswerRequest
+import sk.streetofcode.webapi.api.request.QuizRemoveAnswersRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
 import java.util.*
@@ -56,7 +57,15 @@ class QuizQuestionUserAnswerController(val quizQuestionUserAnswerService: QuizQu
     }
 
     @PostMapping("/quiz/question/user-answer")
+    @IsAuthenticated
     fun postQuizQuestionUserAnswer(@RequestBody answerRequest: QuizQuestionUserAnswerRequest): ResponseEntity<QuizQuestionAnswerCorrectnessDto> {
         return ResponseEntity.ok(quizQuestionUserAnswerService.answer(answerRequest))
+    }
+
+    @DeleteMapping("/quiz/question/user-answer")
+    @IsAuthenticated
+    fun removeAllQuestionsByLectureQuizzes(@RequestBody removeRequest: QuizRemoveAnswersRequest): ResponseEntity<Void> {
+        quizQuestionUserAnswerService.removeAllUserAnswersByLectureId(removeRequest.lectureId)
+        return ResponseEntity.ok().build()
     }
 }

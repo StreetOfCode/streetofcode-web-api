@@ -11,4 +11,7 @@ interface QuizQuestionUserAnswerRepository : CrudRepository<QuizQuestionUserAnsw
 
     @Transactional
     fun deleteByQuestionIdAndUserId(answerId: Long, userId: String): Int
+
+    @Transactional
+    fun deleteByQuestionQuizLectureIdAndUserId(lectureId: Long, userId: String): Int
 }

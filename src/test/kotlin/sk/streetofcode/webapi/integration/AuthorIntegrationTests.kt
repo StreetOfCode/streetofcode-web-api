@@ -4,8 +4,6 @@ import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.AuthorOverviewDto
@@ -104,10 +102,9 @@ class AuthorIntegrationTests : IntegrationTests() {
     }
 
     private fun getAuthors(): List<Author> {
-        class ListOfAuthors : ParameterizedTypeReference<List<Author>>()
-        return restWithAdminRole().exchange("/author", HttpMethod.GET, null, ListOfAuthors()).let {
+        return restWithAdminRole().getForEntity<Array<Author>>("/author").let {
             it.statusCode shouldBe HttpStatus.OK
-            it.body!!
+            it.body!!.toList()
         }
     }
 

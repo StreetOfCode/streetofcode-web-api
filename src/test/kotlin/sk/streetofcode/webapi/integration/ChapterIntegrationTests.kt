@@ -3,8 +3,6 @@ package sk.streetofcode.webapi.integration
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import sk.streetofcode.webapi.api.dto.ChapterDto
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
@@ -54,10 +52,9 @@ class ChapterIntegrationTests : IntegrationTests() {
     }
 
     private fun getChapters(): List<ChapterDto> {
-        class ListOfChapters : ParameterizedTypeReference<List<ChapterDto>>()
-        return restWithAdminRole().exchange("/chapter", HttpMethod.GET, null, ListOfChapters()).let {
+        return restWithAdminRole().getForEntity<Array<ChapterDto>>("/chapter").let {
             it.statusCode shouldBe HttpStatus.OK
-            it.body!!
+            it.body!!.toList()
         }
     }
 

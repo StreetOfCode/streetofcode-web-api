@@ -4,8 +4,6 @@ import io.kotest.matchers.shouldBe
 import org.mockito.Mockito
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
-import org.springframework.core.ParameterizedTypeReference
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import sk.streetofcode.webapi.api.dto.LectureDto
 import sk.streetofcode.webapi.api.exception.InternalErrorException
@@ -79,10 +77,9 @@ class LectureIntegrationTests : IntegrationTests() {
     }
 
     private fun getLectures(): List<LectureDto> {
-        class ListOfLectures : ParameterizedTypeReference<List<LectureDto>>()
-        return restWithAdminRole().exchange("/lecture", HttpMethod.GET, null, ListOfLectures()).let {
+        return restWithAdminRole().getForEntity<Array<LectureDto>>("/lecture").let {
             it.statusCode shouldBe HttpStatus.OK
-            it.body!!
+            it.body!!.toList()
         }
     }
 

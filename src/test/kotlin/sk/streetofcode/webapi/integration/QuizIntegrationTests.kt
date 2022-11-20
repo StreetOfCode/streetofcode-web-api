@@ -4,7 +4,6 @@ import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.quiz.QuizDto
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.QuizAddRequest
@@ -14,16 +13,6 @@ import sk.streetofcode.webapi.configuration.SpringBootTestAnnotation
 @SpringBootTestAnnotation
 class QuizIntegrationTests : IntegrationTests() {
     init {
-        "get quizzes" {
-            val quizzesResponse = getQuizzes()
-            quizzesResponse.statusCode shouldBe HttpStatus.OK
-            val contentRange = quizzesResponse.headers["Content-Range"]
-            contentRange shouldBe listOf("quiz 0-1/1")
-
-            val quizzes = quizzesResponse.body!!
-            quizzes.size shouldBe 1
-        }
-
         "add quiz" {
             val newQuiz = QuizAddRequest(
                 2,
@@ -39,6 +28,9 @@ class QuizIntegrationTests : IntegrationTests() {
             fetchedQuiz.title shouldBe "testTitle"
             fetchedQuiz.subtitle shouldBe "testSubtitle"
             fetchedQuiz.finishedMessage shouldBe "testFinishedMessage"
+
+            val quizzesResponse = getQuizzes()
+            quizzesResponse.find { it.id == quiz.id } shouldBe quiz
         }
 
         "add quiz invalid lectureId" {
@@ -95,8 +87,11 @@ class QuizIntegrationTests : IntegrationTests() {
         }
     }
 
-    private fun getQuizzes(): ResponseEntity<List<QuizDto>> {
-        return restWithAdminRole().getForEntity("/quiz")
+    private fun getQuizzes(): List<QuizDto> {
+        return restWithAdminRole().getForEntity<Array<QuizDto>>("/quiz").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.toList()
+        }
     }
 
     private fun addQuiz(body: QuizAddRequest): QuizDto {
