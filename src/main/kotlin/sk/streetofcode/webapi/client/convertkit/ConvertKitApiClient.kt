@@ -14,13 +14,21 @@ class ConvertKitApiClient(
 
     companion object {
         private val log = LoggerFactory.getLogger(ConvertKitApiClient::class.java)
+
+        fun getFirstName(name: String?): String? {
+            if (name !== null) {
+                return name.split(" ")[0]
+            }
+
+            return null
+        }
     }
 
     fun addSubscriber(email: String, name: String?) {
         val addRequest = AddEmailRequest(
             api_key = convertKitProperties.apiKey,
             email,
-            first_name = name
+            first_name = getFirstName(name)
         )
         val response = restTemplate.postForEntity("/forms/${convertKitProperties.formId}/subscribe", addRequest, String::class.java)
         if (!response.statusCode.is2xxSuccessful) {
