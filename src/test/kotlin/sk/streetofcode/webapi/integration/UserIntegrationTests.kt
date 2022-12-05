@@ -33,16 +33,36 @@ class UserIntegrationTests : IntegrationTests() {
 
         "post user" {
             val newUserId = "QgXv1QVvoYZF6W46pwH51PzpJx73"
+            val subscribedFrom = "abcd"
             setUserId(newUserId)
             val expectedSocUser = SocUser(
                 newUserId,
                 "John Bool",
                 "john.bool.bool@gmail.com",
                 "wtf",
-                false
+                true
             )
-            val user = postUser(SocUserAddRequest(expectedSocUser.firebaseId, expectedSocUser.name, expectedSocUser.email, expectedSocUser.imageUrl, false, false))
-            user shouldBe expectedSocUser
+            val user = postUser(
+                SocUserAddRequest(
+                    expectedSocUser.firebaseId,
+                    expectedSocUser.name,
+                    expectedSocUser.email,
+                    expectedSocUser.imageUrl,
+                    true,
+                    false,
+                    subscribedFrom
+                )
+            )
+
+            user.name shouldBe expectedSocUser.name
+            user.email shouldBe expectedSocUser.email
+            user.firebaseId shouldBe expectedSocUser.firebaseId
+            user.imageUrl shouldBe expectedSocUser.imageUrl
+            user.receiveNewsletter shouldBe expectedSocUser.receiveNewsletter
+
+            val newsletterRegistration = newsletterRegistrationRepository.findAll().toList().first()
+            newsletterRegistration.socUserFirebaseId shouldBe expectedSocUser.firebaseId
+            newsletterRegistration.subscribedFrom shouldBe subscribedFrom
         }
 
         "put user" {
@@ -53,7 +73,7 @@ class UserIntegrationTests : IntegrationTests() {
                 "https://streetofcode.sk/wp-content/uploads/2020/04/7520735.png",
                 true
             )
-            val user = putUser(SocUserEditRequest(updatedSocUser.name, updatedSocUser.imageUrl, true))
+            val user = putUser(SocUserEditRequest(updatedSocUser.name, updatedSocUser.imageUrl, true, ""))
             user.name shouldBe updatedSocUser.name
 
             val receivedUser = getUser()

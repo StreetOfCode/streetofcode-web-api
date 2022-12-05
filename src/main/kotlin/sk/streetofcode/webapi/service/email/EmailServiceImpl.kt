@@ -2,6 +2,7 @@ package sk.streetofcode.webapi.service.email
 
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.env.Environment
 import org.springframework.data.jpa.domain.AbstractPersistable_.id
 import org.springframework.mail.MailException
 import org.springframework.mail.SimpleMailMessage
@@ -14,9 +15,11 @@ import sk.streetofcode.webapi.api.request.AddEmailToNewsletterRequest
 import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.client.convertkit.ConvertKitApiClient
 import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
+import sk.streetofcode.webapi.db.repository.NewsletterRegistrationRepository
 import sk.streetofcode.webapi.db.repository.SocUserRepository
 import sk.streetofcode.webapi.model.CourseReview
 import sk.streetofcode.webapi.model.LectureComment
+import sk.streetofcode.webapi.model.NewsletterRegistration
 import sk.streetofcode.webapi.model.SocUser
 import java.net.SocketTimeoutException
 
@@ -25,7 +28,9 @@ class EmailServiceImpl(
     private val mailSender: JavaMailSender,
     private val recaptchaApiClient: RecaptchaApiClient,
     private val convertKitApiClient: ConvertKitApiClient,
-    private val socUserRepository: SocUserRepository
+    private val socUserRepository: SocUserRepository,
+    private val newsletterRegistrationRepository: NewsletterRegistrationRepository,
+    val env: Environment
 ) : EmailService {
 
     companion object {
@@ -33,7 +38,8 @@ class EmailServiceImpl(
         const val FEEDBACK_SUBJECT_PREFIX = "SoC feedback form - "
         const val SUBJECT_EMPTY = "no subject provided"
 
-        const val DISCORD_INVITATION_HTML = "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://discord.com/invite/7K4dG6Nru4\">Pridaj sa</a>"
+        const val DISCORD_INVITATION_HTML =
+            "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://discord.com/invite/7K4dG6Nru4\">Pridaj sa</a>"
     }
 
     @Value("\${spring.mail.username}")
@@ -74,6 +80,7 @@ class EmailServiceImpl(
                 return
             }
 
+            newsletterRegistrationRepository.save(NewsletterRegistration(request.subscribedFrom))
             convertKitApiClient.addSubscriber(request.email, null)
         } else {
             val user = socUserRepository.findById(userId)
@@ -84,6 +91,7 @@ class EmailServiceImpl(
                 return
             }
 
+            newsletterRegistrationRepository.save(NewsletterRegistration(user.firebaseId, request.subscribedFrom))
             socUserRepository.save(SocUser(userId, user.name, user.email, user.imageUrl, true))
             convertKitApiClient.addSubscriber(request.email, user.email)
         }

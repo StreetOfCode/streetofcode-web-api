@@ -9,7 +9,9 @@ import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.SocUserAddRequest
 import sk.streetofcode.webapi.api.request.SocUserEditRequest
 import sk.streetofcode.webapi.client.convertkit.ConvertKitApiClient
+import sk.streetofcode.webapi.db.repository.NewsletterRegistrationRepository
 import sk.streetofcode.webapi.db.repository.SocUserRepository
+import sk.streetofcode.webapi.model.NewsletterRegistration
 import sk.streetofcode.webapi.model.SocUser
 import sk.streetofcode.webapi.service.email.EmailServiceImpl
 
@@ -18,6 +20,7 @@ class SocUserServiceImpl(
     val socUserRepository: SocUserRepository,
     val convertKitApiClient: ConvertKitApiClient,
     val emailServiceImpl: EmailServiceImpl,
+    val newsletterRegistrationRepository: NewsletterRegistrationRepository,
     val env: Environment
 ) : SocUserService {
 
@@ -39,21 +42,39 @@ class SocUserServiceImpl(
             emailServiceImpl.sendDiscordInvitation(socUserAddRequest.email)
         }
 
-        if (socUserAddRequest.receiveNewsletter && env.activeProfiles.contains("prod")) {
+        if (socUserAddRequest.receiveNewsletter) {
             convertKitApiClient.addSubscriber(socUserAddRequest.email, socUserAddRequest.name)
+            newsletterRegistrationRepository.save(NewsletterRegistration(id, socUserAddRequest.subscribedFrom))
         }
 
-        return socUserRepository.save(SocUser(socUserAddRequest.id, socUserAddRequest.name, socUserAddRequest.email, socUserAddRequest.imageUrl, socUserAddRequest.receiveNewsletter))
+        return socUserRepository.save(
+            SocUser(
+                socUserAddRequest.id,
+                socUserAddRequest.name,
+                socUserAddRequest.email,
+                socUserAddRequest.imageUrl,
+                socUserAddRequest.receiveNewsletter,
+            )
+        )
     }
 
     override fun edit(id: String, socUserEditRequest: SocUserEditRequest): SocUser {
         val user = socUserRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
-        if (!user.receiveNewsletter && socUserEditRequest.receiveNewsletter && env.activeProfiles.contains("prod")) {
+        if (!user.receiveNewsletter && socUserEditRequest.receiveNewsletter) {
+            newsletterRegistrationRepository.save(NewsletterRegistration(id, socUserEditRequest.subscribedFrom))
             convertKitApiClient.addSubscriber(user.email, socUserEditRequest.name)
         }
 
-        return socUserRepository.save(SocUser(id, socUserEditRequest.name, user.email, socUserEditRequest.imageUrl, socUserEditRequest.receiveNewsletter))
+        return socUserRepository.save(
+            SocUser(
+                id,
+                socUserEditRequest.name,
+                user.email,
+                socUserEditRequest.imageUrl,
+                socUserEditRequest.receiveNewsletter,
+            )
+        )
     }
 }

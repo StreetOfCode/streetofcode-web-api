@@ -25,6 +25,8 @@ class ConvertKitApiClient(
     }
 
     fun addSubscriber(email: String, name: String?) {
+        if (!convertKitProperties.enabled) return
+
         val addRequest = AddEmailRequest(
             api_key = convertKitProperties.apiKey,
             email,
