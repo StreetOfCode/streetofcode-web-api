@@ -6,5 +6,6 @@ data class SocUserAddRequest(
     val email: String,
     val imageUrl: String?,
     val receiveNewsletter: Boolean,
-    val sendDiscordInvitation: Boolean
+    val sendDiscordInvitation: Boolean,
+    val subscribedFrom: String
 )

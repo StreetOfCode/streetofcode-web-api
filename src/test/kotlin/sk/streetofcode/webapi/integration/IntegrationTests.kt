@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.request.SocUserAddRequest
 import sk.streetofcode.webapi.client.vimeo.VimeoApiClient
+import sk.streetofcode.webapi.db.repository.NewsletterRegistrationRepository
 import sk.streetofcode.webapi.model.SocUser
 import sk.streetofcode.webapi.service.AuthenticationService
 
@@ -27,6 +28,9 @@ open class IntegrationTests : StringSpec() {
 
     @Autowired
     protected lateinit var restTemplate: TestRestTemplate
+
+    @Autowired
+    protected lateinit var newsletterRegistrationRepository: NewsletterRegistrationRepository
 
     @MockBean
     protected lateinit var vimeoApiClient: VimeoApiClient
@@ -75,7 +79,7 @@ open class IntegrationTests : StringSpec() {
             null,
             false
         )
-        val socUserAddRequest = SocUserAddRequest(socUser.firebaseId, socUser.name, socUser.email, socUser.imageUrl, false, false)
+        val socUserAddRequest = SocUserAddRequest(socUser.firebaseId, socUser.name, socUser.email, socUser.imageUrl, false, false, "")
         return restWithUserRole().postForEntity<SocUser>("/user", socUserAddRequest).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!.firebaseId
