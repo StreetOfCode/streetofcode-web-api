@@ -44,7 +44,12 @@ class SocUserServiceImpl(
 
         if (socUserAddRequest.receiveNewsletter) {
             convertKitApiClient.addSubscriber(socUserAddRequest.email, socUserAddRequest.name)
-            newsletterRegistrationRepository.save(NewsletterRegistration(id, socUserAddRequest.subscribedFrom))
+            newsletterRegistrationRepository.save(
+                NewsletterRegistration(
+                    firebaseId = id,
+                    subscribedFrom = socUserAddRequest.subscribedFrom,
+                )
+            )
         }
 
         return socUserRepository.save(
@@ -63,7 +68,12 @@ class SocUserServiceImpl(
             .orElseThrow { ResourceNotFoundException("User with id $id was not found") }
 
         if (!user.receiveNewsletter && socUserEditRequest.receiveNewsletter) {
-            newsletterRegistrationRepository.save(NewsletterRegistration(id, socUserEditRequest.subscribedFrom))
+            newsletterRegistrationRepository.save(
+                NewsletterRegistration(
+                    firebaseId = id,
+                    subscribedFrom = socUserEditRequest.subscribedFrom,
+                )
+            )
             convertKitApiClient.addSubscriber(user.email, socUserEditRequest.name)
         }
 

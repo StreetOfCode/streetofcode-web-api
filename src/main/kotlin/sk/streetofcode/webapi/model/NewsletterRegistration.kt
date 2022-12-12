@@ -23,13 +23,13 @@ data class NewsletterRegistration(
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val createdAt: OffsetDateTime,
+
+    @Column(nullable = true)
+    val fromPath: String? = null
 ) {
     constructor(
         firebaseId: String?,
-        subscribedFrom: String
-    ) : this(null, firebaseId, subscribedFrom, OffsetDateTime.now())
-
-    constructor(
-        subscribedFrom: String
-    ) : this(null, null, subscribedFrom, OffsetDateTime.now())
+        subscribedFrom: String,
+        fromPath: String? = null
+    ) : this(null, firebaseId, subscribedFrom, OffsetDateTime.now(), fromPath)
 }
