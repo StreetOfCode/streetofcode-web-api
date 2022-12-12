@@ -80,7 +80,13 @@ class EmailServiceImpl(
                 return
             }
 
-            newsletterRegistrationRepository.save(NewsletterRegistration(request.subscribedFrom))
+            newsletterRegistrationRepository.save(
+                NewsletterRegistration(
+                    firebaseId = null,
+                    subscribedFrom = request.subscribedFrom,
+                    fromPath = request.fromPath
+                )
+            )
             convertKitApiClient.addSubscriber(request.email, null)
         } else {
             val user = socUserRepository.findById(userId)
@@ -91,7 +97,13 @@ class EmailServiceImpl(
                 return
             }
 
-            newsletterRegistrationRepository.save(NewsletterRegistration(user.firebaseId, request.subscribedFrom))
+            newsletterRegistrationRepository.save(
+                NewsletterRegistration(
+                    firebaseId = user.firebaseId,
+                    subscribedFrom = request.subscribedFrom,
+                    fromPath = request.fromPath
+                )
+            )
             socUserRepository.save(SocUser(userId, user.name, user.email, user.imageUrl, true))
             convertKitApiClient.addSubscriber(request.email, user.email)
         }
