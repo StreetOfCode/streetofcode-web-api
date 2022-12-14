@@ -16,7 +16,7 @@ data class QuizQuestionAnswer(
     @JoinColumn(name = "quiz_question_id", nullable = false)
     var question: QuizQuestion,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     var text: String,
 
     @Column(nullable = false)

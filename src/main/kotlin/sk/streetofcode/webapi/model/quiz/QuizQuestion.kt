@@ -20,7 +20,7 @@ data class QuizQuestion(
     @Column(nullable = false)
     var questionOrder: Int,
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     var text: String,
 
     @Column(nullable = false)
