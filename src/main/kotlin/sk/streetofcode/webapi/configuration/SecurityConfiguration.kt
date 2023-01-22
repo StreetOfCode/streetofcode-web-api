@@ -1,5 +1,6 @@
 package sk.streetofcode.webapi.configuration
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.convert.converter.Converter
@@ -15,16 +16,24 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Profile("!test")
 class SecurityConfiguration : WebSecurityConfigurerAdapter() {
+    @Value("\${streetofcode.enable-mock-auth:false}")
+    private var enableMockAuth: String = "false"
+
     companion object {
         const val AUTHORITY_PREFIX = "ROLE_"
         const val AUTHORITIES_CLAIM_NAME = "roles"
     }
 
     override fun configure(http: HttpSecurity) {
-        http.csrf().disable()
-            .oauth2ResourceServer { oauth2 ->
-                oauth2.jwt().jwtAuthenticationConverter(FirebaseAuthenticationConverter())
-            }
+        if (enableMockAuth == "true") {
+            http.csrf().disable().authorizeRequests().antMatchers("/**").permitAll()
+        } else {
+            http.csrf().disable()
+                .oauth2ResourceServer { oauth2 ->
+                    oauth2.jwt().jwtAuthenticationConverter(FirebaseAuthenticationConverter())
+                }
+        }
+
         // To enable H2
         http.headers().frameOptions().disable()
     }
