@@ -1,5 +1,6 @@
 package sk.streetofcode.webapi.service
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -16,7 +17,12 @@ class AuthenticationService {
         private const val SUB_CLAIM_NAME = "sub"
     }
 
+    @Value("\${streetofcode.enable-mock-auth:false}")
+    private var enableMockAuth: String = "false"
+
     fun isAdmin(): Boolean {
+        if (enableMockAuth == "true") return true
+
         val authentication = SecurityContextHolder.getContext().authentication
         val authorities = authentication.authorities
 
@@ -24,19 +30,27 @@ class AuthenticationService {
     }
 
     fun isUser(): Boolean {
+        if (enableMockAuth == "true") return true
+
         val authentication = SecurityContextHolder.getContext().authentication
         val authorities = authentication.authorities
 
         return authorities.contains(USER_GROUP_NAME.toAuthority())
     }
 
-    fun isAuthenticated() = SecurityContextHolder.getContext().authentication !is AnonymousAuthenticationToken
+    fun isAuthenticated(): Boolean {
+        if (enableMockAuth == "true") return true
+
+        return SecurityContextHolder.getContext().authentication !is AnonymousAuthenticationToken
+    }
 
     private fun String.toAuthority() = SimpleGrantedAuthority(toRole())
 
     private fun String.toRole() = "${AUTHORITY_PREFIX}$this"
 
     fun getUserId(): String {
+        if (enableMockAuth == "true") return "00000000-0000-0000-0000-000000000000"
+
         val authentication = SecurityContextHolder.getContext().authentication
         assert(authentication is AnonymousAuthenticationToken)
 
