@@ -1,6 +1,6 @@
 _Poznámka: README-čka v repozitároch sa väčšinou píšu po anglicky, ale keďže chceme, aby toto repo slúžilo aj na edukačné účely, píšeme README v slovenčine. Ak ti to vadí, prepáč, skús nas pochopiť. 🙈 Ak ťa to teší, nemáš začo. 😉_
 
-V tomto repozitári nájdeš backend k našej fantastickej stránke [streetofcode.sk] (https://streetofcode.sk). Frontend nájdeš [tu](https://github.com/StreetOfCode/streetofcode-web).
+V tomto repozitári nájdeš backend k našej fantastickej stránke [streetofcode.sk](https://streetofcode.sk). Frontend nájdeš [tu](https://github.com/StreetOfCode/streetofcode-web).
 
 ## Technológie
 
