@@ -20,14 +20,24 @@ data class QuizQuestionAnswer(
     var text: String,
 
     @Column(nullable = false)
-    var isCorrect: Boolean
+    var isCorrect: Boolean,
+
+    @OneToMany(
+        mappedBy = "answer",
+        cascade = [CascadeType.ALL],
+        fetch = FetchType.LAZY
+    )
+    val userAnswers: MutableSet<QuizQuestionUserAnswer>,
 ) {
     constructor(question: QuizQuestion, text: String, isCorrect: Boolean) :
-        this(null, question, text, isCorrect)
+        this(null, question, text, isCorrect, mutableSetOf())
 
-    override fun equals(other: Any?) = other is QuizQuestionAnswer && QuizQuestionAnswerEssential(this) == QuizQuestionAnswerEssential(other)
+    override fun equals(other: Any?) =
+        other is QuizQuestionAnswer && QuizQuestionAnswerEssential(this) == QuizQuestionAnswerEssential(other)
+
     override fun hashCode() = QuizQuestionAnswerEssential(this).hashCode()
-    override fun toString() = QuizQuestionAnswerEssential(this).toString().replaceFirst("QuizQuestionAnswerEssential", "QuizQuestionAnswer")
+    override fun toString() =
+        QuizQuestionAnswerEssential(this).toString().replaceFirst("QuizQuestionAnswerEssential", "QuizQuestionAnswer")
 }
 
 private data class QuizQuestionAnswerEssential(
