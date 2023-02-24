@@ -88,10 +88,44 @@ data class Course(
     var updatedAt: OffsetDateTime,
 
     @Column(nullable = false, columnDefinition = "integer default 0")
-    var lecturesCount: Int
+    var lecturesCount: Int,
+
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    var courseOrder: Int
 ) {
-    constructor(author: Author, difficulty: Difficulty, name: String, slug: String, shortDescription: String, longDescription: String, resources: String?, trailerUrl: String?, thumbnailUrl: String?, iconUrl: String, status: CourseStatus) :
-        this(null, author, difficulty, name, slug, shortDescription, longDescription, resources, trailerUrl, thumbnailUrl, iconUrl, status, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now(), 0)
+    constructor(
+        author: Author,
+        difficulty: Difficulty,
+        name: String,
+        slug: String,
+        shortDescription: String,
+        longDescription: String,
+        resources: String?,
+        trailerUrl: String?,
+        thumbnailUrl: String?,
+        iconUrl: String,
+        status: CourseStatus,
+        courseOrder: Int
+    ) :
+        this(
+            null,
+            author,
+            difficulty,
+            name,
+            slug,
+            shortDescription,
+            longDescription,
+            resources,
+            trailerUrl,
+            thumbnailUrl,
+            iconUrl,
+            status,
+            mutableSetOf(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
+            0,
+            courseOrder
+        )
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()
@@ -143,7 +177,8 @@ fun Course.toCourseDto(): CourseDto {
         this.chapters.map { it.toCourseChapterDto() }.toSet(),
         this.createdAt.truncatedTo(ChronoUnit.SECONDS),
         this.updatedAt.truncatedTo(ChronoUnit.SECONDS),
-        this.lecturesCount
+        this.lecturesCount,
+        this.courseOrder
     )
 }
 
@@ -174,6 +209,7 @@ fun Course.toCourseOverview(
         this.id!!,
         this.name,
         this.slug,
+        this.courseOrder,
         this.shortDescription,
         this.longDescription,
         this.resources,

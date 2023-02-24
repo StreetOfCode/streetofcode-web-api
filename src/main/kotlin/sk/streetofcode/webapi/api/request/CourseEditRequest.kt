@@ -14,5 +14,6 @@ data class CourseEditRequest(
     val trailerUrl: String? = null,
     val thumbnailUrl: String? = null,
     val iconUrl: String,
-    val status: CourseStatus
+    val status: CourseStatus,
+    val courseOrder: Int,
 )

@@ -155,7 +155,7 @@ class ProgressIntegrationTests : IntegrationTests() {
     // Creates course with 2 chapters and 5 lectures (3 lectures in chapter 1 and 2 lectures in chapter 2)
     // Returns course id
     private fun createCourseForComplexProgressTest(): Long {
-        val courseAddRequest = CourseAddRequest(1, 1, "test", "test", "test", "short", null, "url", null, "url", CourseStatus.PUBLIC)
+        val courseAddRequest = CourseAddRequest(1, 1, "test", "test", "test", "short", null, "url", null, "url", CourseStatus.PUBLIC, 1)
         val courseId = restWithAdminRole().postForEntity<CourseDto>("/course", courseAddRequest).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!.id

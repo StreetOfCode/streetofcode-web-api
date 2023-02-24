@@ -41,7 +41,7 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get course overview" {
             val uniqueSlug = getRandomString()
-            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.DRAFT, 1))
 
             getCourseOverviewWithUserRoleThrowsAuthorizationException(uniqueSlug)
 
@@ -58,11 +58,12 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.status shouldBe CourseStatus.DRAFT
             fetchedCourse.author.id shouldBe 1
             fetchedCourse.difficulty.id shouldBe 1
+            fetchedCourse.courseOrder shouldBe 1
         }
 
         "add course" {
             val uniqueSlug = getRandomString()
-            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PRIVATE, 1))
 
             val fetchedCourse = getCourse(course.id)
             fetchedCourse.id shouldBe course.id
@@ -75,6 +76,7 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.thumbnailUrl shouldBe "thumbnailUrl"
             fetchedCourse.iconUrl shouldBe "iconUrl"
             fetchedCourse.status shouldBe CourseStatus.PRIVATE
+            fetchedCourse.courseOrder shouldBe 1
 
             // get courses
             val coursesResponse = getCourses()
@@ -90,13 +92,13 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "edit course" {
             val uniqueSlug = getRandomString()
-            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", uniqueSlug, "editedShort", "editedLong", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            editCourseNotFound(999, CourseEditRequest(999, 1, 1, "editedTestName", uniqueSlug, "editedShort", "editedLong", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC, 1))
 
-            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", "resources", "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC, 1))
 
             val editedCourse = editCourse(
                 course.id,
-                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedSlug", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE)
+                CourseEditRequest(course.id, 1, 1, "editedTestName", "editedSlug", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE, 2)
             )
 
             val fetchedCourse = getCourse(editedCourse.id)
@@ -109,11 +111,12 @@ class CourseIntegrationTests : IntegrationTests() {
             fetchedCourse.thumbnailUrl shouldBe "editedThumbnailUrl"
             fetchedCourse.iconUrl shouldBe "editedIconUrl"
             fetchedCourse.status shouldBe CourseStatus.PRIVATE
+            fetchedCourse.courseOrder shouldBe 2
         }
 
         "delete course" {
             val uniqueSlug = getRandomString()
-            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE))
+            val course = addCourse(CourseAddRequest(1, 1, "testName", uniqueSlug, "short", "long", null, "trailerUrl", "trailerUrl", "thumbnailUrl", CourseStatus.PRIVATE, 1))
 
             val removedCourse = deleteCourse(course.id)
             removedCourse.shouldBe(course)

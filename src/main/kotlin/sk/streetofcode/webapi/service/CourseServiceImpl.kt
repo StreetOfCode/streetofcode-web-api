@@ -76,7 +76,8 @@ class CourseServiceImpl(
                         addRequest.trailerUrl,
                         addRequest.thumbnailUrl,
                         addRequest.iconUrl,
-                        addRequest.status
+                        addRequest.status,
+                        addRequest.courseOrder,
                     )
                 )
                 .toCourseDto()
@@ -114,6 +115,7 @@ class CourseServiceImpl(
             existingCourse.iconUrl = editRequest.iconUrl
             existingCourse.status = editRequest.status
             existingCourse.updatedAt = OffsetDateTime.now()
+            existingCourse.courseOrder = editRequest.courseOrder
             return courseRepository.save(existingCourse).toCourseDto()
         }
     }
@@ -137,6 +139,7 @@ class CourseServiceImpl(
                     getProgressMetadata(it.id)
                 )
             }
+            .sortedBy { it.courseOrder }
             .toList()
     }
 
@@ -149,6 +152,7 @@ class CourseServiceImpl(
                     getProgressMetadata(it.id)
                 )
             }
+            .sortedBy { it.courseOrder }
             .toList()
     }
 
