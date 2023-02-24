@@ -12,6 +12,7 @@ import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
 import sk.streetofcode.webapi.model.CourseReview
 import sk.streetofcode.webapi.model.LectureComment
+import sk.streetofcode.webapi.model.PostComment
 import java.net.SocketTimeoutException
 
 @Service
@@ -62,14 +63,34 @@ class EmailServiceImpl(
         message.setFrom(emailFrom, "Street of Code")
         message.setTo(emailFrom)
 
-        message.setSubject("Nový komentár - ${lectureComment.lecture.name}")
+        message.setSubject("Nový komentár k lekcii - ${lectureComment.lecture.name}")
         message.setReplyTo(emailFrom)
-        message.setText(createNewCommentMessage(lectureComment), true)
+        message.setText(createNewLectureCommentMessage(lectureComment), true)
 
         try {
             mailSender.send(mimeMessage)
         } catch (e: MailException) {
-            log.error("Problem with sending feedback email", e)
+            log.error("Problem with sending lecture comment notification", e)
+        } catch (e: SocketTimeoutException) {
+            log.error("Timeout when reading from socket", e)
+        }
+    }
+
+    override fun sendNewPostCommentNotification(postComment: PostComment) {
+        val mimeMessage = mailSender.createMimeMessage()
+        val message = MimeMessageHelper(mimeMessage, "utf-8")
+
+        message.setFrom(emailFrom, "Street of Code")
+        message.setTo(emailFrom)
+
+        message.setSubject("Nový komentár k postu - ${postComment.postTitle}")
+        message.setReplyTo(emailFrom)
+        message.setText(createNewPostCommentMessage(postComment), true)
+
+        try {
+            mailSender.send(mimeMessage)
+        } catch (e: MailException) {
+            log.error("Problem with sending post comment notification", e)
         } catch (e: SocketTimeoutException) {
             log.error("Timeout when reading from socket", e)
         }
@@ -133,9 +154,15 @@ class EmailServiceImpl(
         }
     }
 
-    private fun createNewCommentMessage(comment: LectureComment): String {
+    private fun createNewLectureCommentMessage(comment: LectureComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser.name}, Email - ${comment.socUser.email}, Id - ${comment.socUser.firebaseId}</p>" +
             "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
+            "<h3>Komentár</h3><p>${comment.commentText}</p>"
+    }
+
+    private fun createNewPostCommentMessage(comment: PostComment): String {
+        return "<h3>Používateľ</h3><p>Meno - ${comment.socUser?.name}, Email - ${comment.socUser?.email}, Id - ${comment.socUser?.firebaseId}</p>" +
+            "<h3>Lekcia</h3><p>Názov - ${comment.postTitle}, Id - ${comment.postId}</p>" +
             "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
