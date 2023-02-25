@@ -1,7 +1,6 @@
 package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
-import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.PostCommentService
@@ -23,8 +22,7 @@ class PostCommentServiceImpl(
     private val postCommentRepository: PostCommentRepository,
     private val authenticationService: AuthenticationService,
     private val socUserService: SocUserService,
-    private val emailService: EmailService,
-    val env: Environment
+    private val emailService: EmailService
 ) : PostCommentService {
 
     companion object {
@@ -32,7 +30,7 @@ class PostCommentServiceImpl(
     }
 
     override fun getAll(postId: String): List<PostCommentDto> {
-        return postCommentRepository.findAllByPostId(postId).map { it.toPostCommentDto() }
+        return postCommentRepository.findAllByPostId(postId).map { it.toPostCommentDto() }.sortedBy { it.createdAt }
     }
 
     override fun add(userId: String?, postId: String, addRequest: PostCommentAddRequest): PostCommentDto {
@@ -47,9 +45,7 @@ class PostCommentServiceImpl(
                     )
                 )
 
-            if (env.activeProfiles.contains("prod")) {
-                emailService.sendNewPostCommentNotification(postComment)
-            }
+            emailService.sendNewPostCommentNotification(postComment)
 
             return postComment.toPostCommentDto()
         } catch (e: Exception) {
@@ -78,8 +74,8 @@ class PostCommentServiceImpl(
 
             return postCommentRepository.save(comment).toPostCommentDto()
         } catch (e: Exception) {
-            log.error("Problem with editing lectureComment", e)
-            throw InternalErrorException("Could not edit lecture comment")
+            log.error("Problem with editing postComment", e)
+            throw InternalErrorException("Could not edit post comment")
         }
     }
 

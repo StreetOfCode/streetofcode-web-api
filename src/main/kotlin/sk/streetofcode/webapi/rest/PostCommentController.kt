@@ -7,6 +7,7 @@ import sk.streetofcode.webapi.api.PostCommentService
 import sk.streetofcode.webapi.api.dto.PostCommentDto
 import sk.streetofcode.webapi.api.request.PostCommentAddRequest
 import sk.streetofcode.webapi.api.request.PostCommentEditRequest
+import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
 import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
@@ -29,7 +30,7 @@ class PostCommentController(
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(
                 postCommentService.add(
-                    if (authenticationService.isAuthenticated()) authenticationService.getUserId() else null,
+                    authenticationService.getNullableUserId(),
                     postId,
                     postCommentAddRequest
                 )
@@ -37,6 +38,7 @@ class PostCommentController(
     }
 
     @PutMapping("{commentId}")
+    @IsAuthenticated
     fun edit(
         @PathVariable("postId") postId: String,
         @PathVariable("commentId") commentId: Long,
@@ -44,7 +46,7 @@ class PostCommentController(
     ): ResponseEntity<PostCommentDto> {
         return ResponseEntity.status(HttpStatus.OK).body(
             postCommentService.edit(
-                if (authenticationService.isAuthenticated()) authenticationService.getUserId() else null,
+                authenticationService.getNullableUserId(),
                 postId,
                 commentId,
                 postCommentEditRequest
@@ -53,12 +55,13 @@ class PostCommentController(
     }
 
     @DeleteMapping("{commentId}")
+    @IsAuthenticated
     fun delete(
         @PathVariable("postId") postId: String,
         @PathVariable("commentId") commentId: Long
     ): ResponseEntity<Void> {
         postCommentService.delete(
-            if (authenticationService.isAuthenticated()) authenticationService.getUserId() else null,
+            authenticationService.getNullableUserId(),
             postId,
             commentId
         )

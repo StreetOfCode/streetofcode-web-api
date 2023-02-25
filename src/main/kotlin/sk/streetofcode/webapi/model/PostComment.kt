@@ -78,6 +78,7 @@ fun PostComment.toPostCommentDto(): PostCommentDto {
         userName = this.socUser?.name,
         imageUrl = this.socUser?.imageUrl,
         commentText = this.commentText,
+        createdAt = this.createdAt,
         updatedAt = this.updatedAt
     )
 }

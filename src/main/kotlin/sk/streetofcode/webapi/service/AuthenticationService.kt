@@ -48,11 +48,23 @@ class AuthenticationService {
 
     private fun String.toRole() = "${AUTHORITY_PREFIX}$this"
 
+    fun getNullableUserId(): String? {
+        if (isAuthenticated()) {
+            return getUserId()
+        }
+
+        return null
+    }
+
     fun getUserId(): String {
         if (enableMockAuth == "true") return "00000000-0000-0000-0000-000000000000"
 
         val authentication = SecurityContextHolder.getContext().authentication
         assert(authentication is AnonymousAuthenticationToken)
+
+        if (authentication.credentials !is Jwt) {
+            throw InvalidAuthenticationException("")
+        }
 
         val principal = authentication.credentials as Jwt
         val claims = principal.claims

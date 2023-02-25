@@ -88,56 +88,56 @@ class LectureCommentIntegrationTests : IntegrationTests() {
     }
 
     private fun getLectureComments(lectureId: Long): List<LectureCommentDto> {
-        return restWithAdminRole().getForEntity<Array<LectureCommentDto>>("/lecture/$lectureId/comment").let {
+        return restWithUserRole().getForEntity<Array<LectureCommentDto>>("/lecture/$lectureId/comment").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!.toList()
         }
     }
 
     private fun addLectureComment(lectureId: Long, body: LectureCommentAddRequest): LectureCommentDto {
-        return restWithAdminRole().postForEntity<LectureCommentDto>("/lecture/$lectureId/comment", body).let {
+        return restWithUserRole().postForEntity<LectureCommentDto>("/lecture/$lectureId/comment", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
     }
 
     private fun editLectureComment(lectureId: Long, commentId: Long, body: LectureCommentEditRequest): LectureCommentDto {
-        return restWithAdminRole().putForEntity<LectureCommentDto>("/lecture/$lectureId/comment/$commentId", body).let {
+        return restWithUserRole().putForEntity<LectureCommentDto>("/lecture/$lectureId/comment/$commentId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun addLectureCommentNotFoundLecture(lectureId: Long, body: LectureCommentAddRequest) {
-        return restWithAdminRole().postForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment", body).let {
+        return restWithUserRole().postForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editLectureCommentNotFound(lectureId: Long, commentId: Long, body: LectureCommentEditRequest) {
-        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId", body).let {
+        return restWithUserRole().putForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId", body).let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun editLectureCommentBadRequest(lectureId: Long, commentId: Long, body: LectureCommentEditRequest) {
-        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId", body).let {
+        return restWithUserRole().putForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId", body).let {
             it.statusCode shouldBe HttpStatus.BAD_REQUEST
         }
     }
 
     private fun deleteLectureComment(lectureId: Long, commentId: Long) {
-        return restWithAdminRole().delete("/lecture/$lectureId/comment/$commentId")
+        return restWithUserRole().delete("/lecture/$lectureId/comment/$commentId")
     }
 
     private fun deleteLectureCommentNotFound(lectureId: Long, commentId: Long) {
-        return restWithAdminRole().deleteForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId").let {
+        return restWithUserRole().deleteForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun deleteLectureCommentBadRequest(lectureId: Long, commentId: Long) {
-        return restWithAdminRole().deleteForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId").let {
+        return restWithUserRole().deleteForEntity<ResourceNotFoundException>("/lecture/$lectureId/comment/$commentId").let {
             it.statusCode shouldBe HttpStatus.BAD_REQUEST
         }
     }

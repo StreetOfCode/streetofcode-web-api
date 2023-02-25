@@ -10,5 +10,6 @@ data class PostCommentDto(
     val userName: String?,
     val imageUrl: String?,
     val commentText: String,
+    val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
 )

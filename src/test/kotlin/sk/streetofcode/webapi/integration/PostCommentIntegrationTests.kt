@@ -100,14 +100,14 @@ class PostCommentIntegrationTests : IntegrationTests() {
     }
 
     private fun getPostComments(postId: String): List<PostCommentDto> {
-        return restWithAdminRole().getForEntity<Array<PostCommentDto>>("/post/$postId/comment").let {
+        return restWithUserRole().getForEntity<Array<PostCommentDto>>("/post/$postId/comment").let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!.toList()
         }
     }
 
     private fun addPostComment(postId: String, body: PostCommentAddRequest): PostCommentDto {
-        return restWithAdminRole().postForEntity<PostCommentDto>("/post/$postId/comment", body).let {
+        return restWithUserRole().postForEntity<PostCommentDto>("/post/$postId/comment", body).let {
             it.statusCode shouldBe HttpStatus.CREATED
             it.body!!
         }
@@ -121,38 +121,38 @@ class PostCommentIntegrationTests : IntegrationTests() {
     }
 
     private fun editPostComment(postId: String, commentId: Long, body: PostCommentEditRequest): PostCommentDto {
-        return restWithAdminRole().putForEntity<PostCommentDto>("/post/$postId/comment/$commentId", body).let {
+        return restWithUserRole().putForEntity<PostCommentDto>("/post/$postId/comment/$commentId", body).let {
             it.statusCode shouldBe HttpStatus.OK
             it.body!!
         }
     }
 
     private fun editPostCommentNotFound(postId: String, commentId: Long, body: PostCommentEditRequest) {
-        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId", body)
+        return restWithUserRole().putForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId", body)
             .let {
                 it.statusCode shouldBe HttpStatus.NOT_FOUND
             }
     }
 
     private fun editPostCommentBadRequest(postId: String, commentId: Long, body: PostCommentEditRequest) {
-        return restWithAdminRole().putForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId", body)
+        return restWithUserRole().putForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId", body)
             .let {
                 it.statusCode shouldBe HttpStatus.BAD_REQUEST
             }
     }
 
     private fun deletePostComment(postId: String, commentId: Long) {
-        return restWithAdminRole().delete("/post/$postId/comment/$commentId")
+        return restWithUserRole().delete("/post/$postId/comment/$commentId")
     }
 
     private fun deletePostCommentNotFound(postId: String, commentId: Long) {
-        return restWithAdminRole().deleteForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId").let {
+        return restWithUserRole().deleteForEntity<ResourceNotFoundException>("/post/$postId/comment/$commentId").let {
             it.statusCode shouldBe HttpStatus.NOT_FOUND
         }
     }
 
     private fun deletePostCommentBadRequest(postId: String, commentId: Long) {
-        return restWithAdminRole().deleteForEntity<ResourceNotFoundException>("/lecture/$postId/comment/$commentId")
+        return restWithUserRole().deleteForEntity<ResourceNotFoundException>("/lecture/$postId/comment/$commentId")
             .let {
                 it.statusCode shouldBe HttpStatus.BAD_REQUEST
             }

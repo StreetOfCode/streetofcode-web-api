@@ -29,6 +29,8 @@ class EmailServiceImpl(
         const val DISCORD_INVITATION_HTML =
             "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://discord.com/invite/7K4dG6Nru4\">Pridaj sa</a>"
     }
+    @Value("\${emailservice.enabled:false}")
+    private var enableEmailService: String = "false"
 
     @Value("\${spring.mail.username}")
     private lateinit var emailFrom: String
@@ -37,6 +39,8 @@ class EmailServiceImpl(
     private lateinit var feedbackEmailTo: String
 
     override fun sendDiscordInvitation(email: String) {
+        if (enableEmailService != "true") return
+
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
@@ -57,6 +61,8 @@ class EmailServiceImpl(
     }
 
     override fun sendNewLectureCommentNotification(lectureComment: LectureComment) {
+        if (enableEmailService != "true") return
+
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
@@ -77,6 +83,8 @@ class EmailServiceImpl(
     }
 
     override fun sendNewPostCommentNotification(postComment: PostComment) {
+        if (enableEmailService != "true") return
+
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
@@ -97,6 +105,8 @@ class EmailServiceImpl(
     }
 
     override fun sendNewCourseReviewNotification(courseName: String, courseReview: CourseReview) {
+        if (enableEmailService != "true") return
+
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
@@ -117,6 +127,8 @@ class EmailServiceImpl(
     }
 
     override fun sendFeedbackEmail(userId: String?, request: SendFeedbackEmailRequest) {
+        if (enableEmailService != "true") return
+
         if (userId == null) {
             if (request.recaptchaToken == null) {
                 log.warn("Anonymous sends feedback request without recaptchaToken")
@@ -162,7 +174,7 @@ class EmailServiceImpl(
 
     private fun createNewPostCommentMessage(comment: PostComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser?.name}, Email - ${comment.socUser?.email}, Id - ${comment.socUser?.firebaseId}</p>" +
-            "<h3>Lekcia</h3><p>Názov - ${comment.postTitle}, Id - ${comment.postId}</p>" +
+            "<h3>Post</h3><p>Názov - ${comment.postTitle}, Id - ${comment.postId}</p>" +
             "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
