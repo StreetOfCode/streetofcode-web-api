@@ -130,17 +130,7 @@ class CourseServiceImpl(
     }
 
     override fun getPublicCoursesOverview(): List<CourseOverviewDto> {
-        return courseRepository
-            .findAll()
-            .filter { CourseStatus.PUBLIC == it.status }
-            .map {
-                it.toCourseOverview(
-                    courseReviewService.getCourseReviewsOverview(it.id!!),
-                    getProgressMetadata(it.id)
-                )
-            }
-            .sortedBy { it.courseOrder }
-            .toList()
+        return getAllCoursesOverview().filter { CourseStatus.PUBLIC == it.status }
     }
 
     override fun getAllCoursesOverview(): List<CourseOverviewDto> {

@@ -25,10 +25,7 @@ class CourseIntegrationTests : IntegrationTests() {
 
         "get courses overview with admin role" {
             val coursesResponse = getCoursesOverviewWithAdminRole()
-            coursesResponse.statusCode shouldBe HttpStatus.OK
-
-            val courses = coursesResponse.body!!
-            courses.size shouldBeGreaterThan 0
+            coursesResponse.size shouldBeGreaterThan 0
         }
 
         "get courses overview with user role" {
@@ -142,6 +139,36 @@ class CourseIntegrationTests : IntegrationTests() {
             val coursesAgain = myCoursesAgainResponse.body!!
             coursesAgain.size shouldBe 1
         }
+
+        "course order" {
+            getCoursesOverviewWithAdminRole().forEach { deleteCourse(it.id) }
+
+            val emptyCoursesResponse = getCoursesOverviewWithAdminRole()
+            emptyCoursesResponse.size shouldBe 0
+
+            val courseOrder1 = 1
+            val course1 = addCourse(CourseAddRequest(1, 1, "testName", "test1", "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC, courseOrder1))
+
+            val courseOrder2 = 2
+            addCourse(CourseAddRequest(1, 1, "testName", "test2", "short", "long", null, "trailerUrl", "thumbnailUrl", "iconUrl", CourseStatus.PUBLIC, courseOrder2))
+
+            val courses = getCoursesOverviewWithAdminRole()
+            courses.size shouldBe 2
+            courses[0].courseOrder shouldBe 1
+            courses[1].courseOrder shouldBe 2
+
+            val courseOrder3 = 3
+            editCourse(
+                course1.id,
+                CourseEditRequest(course1.id, 1, 1, "editedTestName", "editedSlug", "editedShort", "editedLong", "editedResources", "editedTrailerUrl", "editedThumbnailUrl", "editedIconUrl", CourseStatus.PRIVATE, courseOrder3)
+            )
+
+            val coursesUpdated = getCoursesOverviewWithAdminRole()
+            coursesUpdated.size shouldBe 2
+            coursesUpdated[0].courseOrder shouldBe 2
+            coursesUpdated[1].courseOrder shouldBe 3
+            coursesUpdated[1].id shouldBe course1.id
+        }
     }
 
     private fun getCourses(): List<CourseDto> {
@@ -163,8 +190,11 @@ class CourseIntegrationTests : IntegrationTests() {
         return restTemplate.getForEntity<Unit>("/course").statusCode shouldBe HttpStatus.UNAUTHORIZED
     }
 
-    private fun getCoursesOverviewWithAdminRole(): ResponseEntity<List<CourseOverviewDto>> {
-        return restWithAdminRole().getForEntity("/course/overview")
+    private fun getCoursesOverviewWithAdminRole(): List<CourseOverviewDto> {
+        return restWithAdminRole().getForEntity<Array<CourseOverviewDto>>("/course/overview").let {
+            it.statusCode shouldBe HttpStatus.OK
+            it.body!!.toList()
+        }
     }
 
     private fun getCoursesOverviewWithUserRole(): ResponseEntity<List<CourseOverviewDto>> {
