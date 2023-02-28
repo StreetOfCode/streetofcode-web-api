@@ -1,7 +1,6 @@
 package sk.streetofcode.webapi.service
 
 import org.slf4j.LoggerFactory
-import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.LectureCommentService
@@ -25,8 +24,7 @@ class LectureCommentServiceImpl(
     private val lectureCommentRepository: LectureCommentRepository,
     private val authenticationService: AuthenticationService,
     private val socUserService: SocUserService,
-    private val emailService: EmailService,
-    val env: Environment
+    private val emailService: EmailService
 ) : LectureCommentService {
 
     companion object {
@@ -35,6 +33,7 @@ class LectureCommentServiceImpl(
 
     override fun getAll(lectureId: Long): List<LectureCommentDto> {
         return lectureCommentRepository.findAllByLectureId(lectureId).map { it.toLectureCommentDto() }
+            .sortedBy { it.createdAt }
     }
 
     override fun add(userId: String, lectureId: Long, addRequest: LectureCommentAddRequest): LectureCommentDto {
@@ -51,9 +50,7 @@ class LectureCommentServiceImpl(
                     )
                 )
 
-            if (env.activeProfiles.contains("prod")) {
-                emailService.sendNewLectureCommentNotification(lectureComment)
-            }
+            emailService.sendNewLectureCommentNotification(lectureComment)
 
             return lectureComment.toLectureCommentDto()
         } catch (e: Exception) {

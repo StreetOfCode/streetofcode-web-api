@@ -1,6 +1,5 @@
 package sk.streetofcode.webapi.service
 
-import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.CourseReviewService
 import sk.streetofcode.webapi.api.EmailService
@@ -24,8 +23,7 @@ class CourseReviewServiceImpl(
     private val courseRepository: CourseRepository,
     private val authenticationService: AuthenticationService,
     private val socUserService: SocUserService,
-    private val emailService: EmailService,
-    val env: Environment
+    private val emailService: EmailService
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
         courseRepository
@@ -68,9 +66,7 @@ class CourseReviewServiceImpl(
         val courseReview = courseReviewRepository
             .save(CourseReview(socUserService.get(userId), addRequest.courseId, addRequest.rating, addRequest.text))
 
-        if (env.activeProfiles.contains("prod")) {
-            emailService.sendNewCourseReviewNotification(course.name, courseReview)
-        }
+        emailService.sendNewCourseReviewNotification(course.name, courseReview)
 
         return courseReview.toCourseReviewDto()
     }
