@@ -57,6 +57,6 @@ INSERT INTO quiz_question_answer(id, quiz_question_id, text, is_correct) VALUES
 INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, created_at, try_count) VALUES
 (nextval('quiz_question_user_answer_id_seq'), 1, 2, 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', '2007-12-03T10:15:30+01:00', 3);
 
-INSERT INTO post_comment(id, soc_user_firebase_id, post_id, post_title, comment_text, created_at, updated_at) VALUES
-(nextval('post_comment_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', '1', 'post title', 'toto je super post', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
-(nextval('post_comment_id_seq'), null, '1', 'post title', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
+INSERT INTO post_comment(id, soc_user_firebase_id, post_id, post_slug, comment_text, created_at, updated_at) VALUES
+(nextval('post_comment_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', '1', 'post-slug', 'toto je super post', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
+(nextval('post_comment_id_seq'), null, '1', 'post-slug', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );

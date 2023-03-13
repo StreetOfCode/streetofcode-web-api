@@ -91,7 +91,7 @@ class EmailServiceImpl(
         message.setFrom(emailFrom, "Street of Code")
         message.setTo(emailFrom)
 
-        message.setSubject("Nový komentár k postu - ${postComment.postTitle}")
+        message.setSubject("Nový komentár k postu - ${postComment.postSlug}")
         message.setReplyTo(emailFrom)
         message.setText(createNewPostCommentMessage(postComment), true)
 
@@ -174,7 +174,7 @@ class EmailServiceImpl(
 
     private fun createNewPostCommentMessage(comment: PostComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser?.name}, Email - ${comment.socUser?.email}, Id - ${comment.socUser?.firebaseId}</p>" +
-            "<h3>Post</h3><p>Názov - ${comment.postTitle}, Id - ${comment.postId}</p>" +
+            "<h3>Post</h3><p>Názov - ${comment.postSlug}, Id - ${comment.postId}</p>" +
             "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 

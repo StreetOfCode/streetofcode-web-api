@@ -15,7 +15,7 @@ class PostCommentIntegrationTests : IntegrationTests() {
 
     companion object {
         const val dummyCommentText = "commentText"
-        const val dummyPostTitle = "postTitle"
+        const val dummyPostSlug = "post-slug"
     }
 
     init {
@@ -26,14 +26,14 @@ class PostCommentIntegrationTests : IntegrationTests() {
 
         "add post comment" {
             val postId = "2"
-            val comment = addPostComment(postId, PostCommentAddRequest(dummyPostTitle, dummyCommentText))
+            val comment = addPostComment(postId, PostCommentAddRequest(dummyPostSlug, dummyCommentText))
 
             val fetchedComments = getPostComments(postId)
             fetchedComments.size shouldBe 1
 
             val fetchedComment = fetchedComments[0]
             fetchedComment.commentText shouldBe dummyCommentText
-            fetchedComment.postTitle shouldBe dummyPostTitle
+            fetchedComment.postSlug shouldBe dummyPostSlug
 
             fetchedComment.id shouldBe comment.id
             fetchedComment.updatedAt.toEpochSecond() shouldBe comment.updatedAt.toEpochSecond()
@@ -42,14 +42,14 @@ class PostCommentIntegrationTests : IntegrationTests() {
 
         "add anonymous post comment" {
             val postId = "3"
-            val comment = addPostCommentAnonymous(postId, PostCommentAddRequest(dummyPostTitle, dummyCommentText))
+            val comment = addPostCommentAnonymous(postId, PostCommentAddRequest(dummyPostSlug, dummyCommentText))
 
             val fetchedComments = getPostComments(postId)
             fetchedComments.size shouldBe 1
 
             val fetchedComment = fetchedComments[0]
             fetchedComment.commentText shouldBe dummyCommentText
-            fetchedComment.postTitle shouldBe dummyPostTitle
+            fetchedComment.postSlug shouldBe dummyPostSlug
 
             fetchedComment.id shouldBe comment.id
             fetchedComment.updatedAt.toEpochSecond() shouldBe comment.updatedAt.toEpochSecond()
@@ -58,13 +58,13 @@ class PostCommentIntegrationTests : IntegrationTests() {
 
         "edit post comment" {
             val postId = "2"
-            val addedComment = addPostComment(postId, PostCommentAddRequest(dummyPostTitle, dummyCommentText))
+            val addedComment = addPostComment(postId, PostCommentAddRequest(dummyPostSlug, dummyCommentText))
 
             val editedCommentText = "editedCommentText"
             val editedComment = editPostComment(postId, addedComment.id, PostCommentEditRequest(editedCommentText))
 
             editedComment.commentText shouldBe editedCommentText
-            editedComment.postTitle shouldBe dummyPostTitle
+            editedComment.postSlug shouldBe dummyPostSlug
             editedComment.id shouldBe addedComment.id
             editedComment.updatedAt.toEpochSecond() shouldBe addedComment.updatedAt.toEpochSecond()
             editedComment.userId shouldBe addedComment.userId
@@ -82,7 +82,7 @@ class PostCommentIntegrationTests : IntegrationTests() {
             val postId = "2"
 
             getPostComments(postId).size shouldBe 2
-            val addedComment = addPostComment(postId, PostCommentAddRequest(dummyPostTitle, dummyCommentText))
+            val addedComment = addPostComment(postId, PostCommentAddRequest(dummyPostSlug, dummyCommentText))
             getPostComments(postId).size shouldBe 3
             deletePostComment(postId, addedComment.id)
             getPostComments(postId).size shouldBe 2

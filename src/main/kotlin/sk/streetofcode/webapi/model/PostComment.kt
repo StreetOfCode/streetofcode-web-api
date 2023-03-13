@@ -29,7 +29,7 @@ data class PostComment(
     val postId: String,
 
     @Column(nullable = false)
-    val postTitle: String,
+    val postSlug: String,
 
     @Column(nullable = false, columnDefinition = "TEXT")
     var commentText: String,
@@ -40,8 +40,8 @@ data class PostComment(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     var updatedAt: OffsetDateTime
 ) {
-    constructor(socUser: SocUser? = null, postId: String, postTitle: String, commentText: String) :
-        this(null, socUser, postId, postTitle, commentText, OffsetDateTime.now(), OffsetDateTime.now())
+    constructor(socUser: SocUser? = null, postId: String, postSlug: String, commentText: String) :
+        this(null, socUser, postId, postSlug, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is PostComment && PostCommentEssential(this) == PostCommentEssential(other)
@@ -54,7 +54,7 @@ private data class PostCommentEssential(
     val userId: String? = null,
     val commentText: String,
     val postId: String,
-    val postTitle: String,
+    val postSlug: String,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
 
@@ -63,7 +63,7 @@ private data class PostCommentEssential(
         userId = postComment.socUser?.firebaseId,
         commentText = postComment.commentText,
         postId = postComment.postId,
-        postTitle = postComment.postTitle,
+        postSlug = postComment.postSlug,
         createdAt = postComment.createdAt,
         updatedAt = postComment.updatedAt
     )
@@ -73,7 +73,7 @@ fun PostComment.toPostCommentDto(): PostCommentDto {
     return PostCommentDto(
         id = this.id!!,
         postId = this.postId,
-        postTitle = this.postTitle,
+        postSlug = this.postSlug,
         userId = this.socUser?.firebaseId,
         userName = this.socUser?.name,
         imageUrl = this.socUser?.imageUrl,

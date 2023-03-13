@@ -40,7 +40,7 @@ class PostCommentServiceImpl(
                     PostComment(
                         if (userId != null) socUserService.get(authenticationService.getUserId()) else null,
                         postId,
-                        addRequest.postTitle,
+                        addRequest.postSlug,
                         addRequest.commentText
                     )
                 )
