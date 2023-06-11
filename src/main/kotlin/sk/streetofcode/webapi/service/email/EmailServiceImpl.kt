@@ -27,7 +27,7 @@ class EmailServiceImpl(
         const val SUBJECT_EMPTY = "no subject provided"
 
         const val DISCORD_INVITATION_HTML =
-            "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://discord.com/invite/7K4dG6Nru4\">Pridaj sa</a>"
+            "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://streetofcode.sk/discord\">Pridaj sa</a>"
     }
     @Value("\${emailservice.enabled:false}")
     private var enableEmailService: String = "false"
