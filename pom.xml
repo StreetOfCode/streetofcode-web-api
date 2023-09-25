@@ -69,6 +69,11 @@
 			<artifactId>sentry-spring-boot-starter</artifactId>
 			<version>6.3.0</version>
 		</dependency>
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-youtube</artifactId>
+            <version>v3-rev20210915-1.32.1</version>
+        </dependency>
 
 		<dependency>
 			<groupId>com.h2database</groupId>
