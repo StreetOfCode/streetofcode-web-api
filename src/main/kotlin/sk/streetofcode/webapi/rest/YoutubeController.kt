@@ -17,4 +17,10 @@ class YoutubeController(val youTubeService: YouTubeService) {
     fun get(@PathVariable("id") id: String): ResponseEntity<Video> {
         return ResponseEntity.ok(youTubeService.getVideo(id))
     }
+
+    @GetMapping("clear-cache")
+    fun clearCache(): ResponseEntity<String> {
+        youTubeService.clearCache()
+        return ResponseEntity.ok("Cache cleared")
+    }
 }

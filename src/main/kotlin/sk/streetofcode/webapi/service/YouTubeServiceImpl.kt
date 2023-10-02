@@ -13,6 +13,8 @@ class YouTubeServiceImpl(val youtube: YouTube, val youtubeProperties: YoutubePro
         private val log = LoggerFactory.getLogger(YouTubeServiceImpl::class.java)
     }
 
+    private val videosCache: MutableMap<String, Video> = mutableMapOf()
+
     private fun getVideosById(id: List<String>): List<Video> {
         val request = youtube.Videos().list(listOf("id", "snippet"))
         request.id = id
@@ -43,14 +45,50 @@ class YouTubeServiceImpl(val youtube: YouTube, val youtubeProperties: YoutubePro
     }
 
     override fun getVideos(): List<Video> {
+        if (videosCache.isNotEmpty()) {
+            log.info("Returning ${videosCache.size} videos from cache.")
+            return videosCache.map { it.value }
+        }
+
+        log.info("Video cache is empty, fetching videos.")
+
         val channelVideos = getPlaylistVideos(youtubeProperties.channelPlaylistId)
         val videosIdsToIgnore = youtubeProperties.playlistsToIgnore
             .map { playlistToIgnore -> getPlaylistVideos(playlistToIgnore).map { video -> video.id } }
             .flatten()
             .toSet()
 
-        return channelVideos.filter { !videosIdsToIgnore.contains(it.id) }
+        val videos = channelVideos.filter { !videosIdsToIgnore.contains(it.id) }
+
+        videosCache.clear()
+        log.info("Cache cleared.")
+
+        videosCache.putAll(videos.map { it.id to it })
+        log.info("${videosCache.size} videos added to cache.")
+
+        return videos
     }
 
-    override fun getVideo(id: String): Video = getVideosById(listOf(id)).first()
+    override fun getVideo(id: String): Video {
+        if (videosCache.contains(id)) {
+            log.info("Returning video $id from cache.")
+            return videosCache[id]!!
+        }
+
+        log.info("Video $id not found in cache, fetching.")
+
+        val video = getVideosById(listOf(id)).first()
+
+        videosCache[video.id] = video
+
+        log.info("Video $id added to cache.")
+
+        return video
+    }
+
+    override fun clearCache() {
+        log.info("Clearing videos cache.")
+        videosCache.clear()
+        log.info("Videos cache cleared.")
+    }
 }
