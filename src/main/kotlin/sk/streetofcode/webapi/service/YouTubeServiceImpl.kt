@@ -5,6 +5,7 @@ import com.google.api.services.youtube.model.Video
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.YouTubeService
+import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.client.youtube.YoutubeProperties
 
 @Service
@@ -12,6 +13,7 @@ class YouTubeServiceImpl(val youtube: YouTube, val youtubeProperties: YoutubePro
     companion object {
         private val log = LoggerFactory.getLogger(YouTubeServiceImpl::class.java)
 
+        // YouTube API returns empty result if more than 50 videos are requested
         const val MAX_VIDEOS_PER_REQUEST = 50
     }
 
@@ -50,7 +52,8 @@ class YouTubeServiceImpl(val youtube: YouTube, val youtubeProperties: YoutubePro
 
         log.info("Video $id not found in cache, fetching.")
 
-        val video = getVideosById(listOf(id)).first()
+        val video = getVideosById(listOf(id)).firstOrNull()
+            ?: throw ResourceNotFoundException("Video with id $id was not found")
 
         videosCache[video.id] = video
 
