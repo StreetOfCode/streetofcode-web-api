@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.webapi.api.CourseService
+import sk.streetofcode.webapi.api.dto.AllCourseProductsDto
 import sk.streetofcode.webapi.api.dto.CourseDto
 import sk.streetofcode.webapi.api.dto.CourseOverviewDto
 import sk.streetofcode.webapi.api.request.CourseAddRequest
@@ -42,6 +43,14 @@ class CourseController(val courseService: CourseService, val authenticationServi
     @GetMapping("slug")
     fun getAllSlugs(): ResponseEntity<List<String>> {
         return ResponseEntity.ok(courseService.getAll().map { it.slug }.toList())
+    }
+
+    @GetMapping("all-products")
+    fun getAllProducts(): ResponseEntity<AllCourseProductsDto> {
+        val allProducts = courseService.getAllCoursesOverview()
+            .associate { it.slug to it.courseProducts.map { cp -> cp.productId } }
+
+        return ResponseEntity.ok(AllCourseProductsDto(allProducts))
     }
 
     @GetMapping("{id}")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.webapi.api.dto.ChapterOverviewDto
 import sk.streetofcode.webapi.api.dto.CourseDto
 import sk.streetofcode.webapi.api.dto.CourseOverviewDto
+import sk.streetofcode.webapi.api.dto.CourseProductDto
 import sk.streetofcode.webapi.api.dto.CourseReviewsOverviewDto
 import sk.streetofcode.webapi.api.dto.LectureOverviewDto
 import sk.streetofcode.webapi.api.dto.progress.UserProgressMetadataDto
@@ -184,7 +185,8 @@ fun Course.toCourseDto(): CourseDto {
 
 fun Course.toCourseOverview(
     courseReviewsOverview: CourseReviewsOverviewDto,
-    userProgressMetadata: UserProgressMetadataDto?
+    userProgressMetadata: UserProgressMetadataDto?,
+    courseProducts: List<CourseProductDto>
 ): CourseOverviewDto {
 
     val chapters = this.chapters.map { chapter ->
@@ -224,6 +226,7 @@ fun Course.toCourseOverview(
         chapters,
         courseDurationMinutes = chapters.sumOf { chapter -> chapter.chapterDurationMinutes },
         reviewsOverview = courseReviewsOverview,
-        userProgressMetadata = userProgressMetadata
+        userProgressMetadata = userProgressMetadata,
+        courseProducts,
     )
 }

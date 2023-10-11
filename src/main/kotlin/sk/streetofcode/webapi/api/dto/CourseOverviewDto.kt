@@ -25,7 +25,8 @@ data class CourseOverviewDto(
     val chapters: Set<ChapterOverviewDto>,
     val courseDurationMinutes: Int,
     val reviewsOverview: CourseReviewsOverviewDto,
-    val userProgressMetadata: UserProgressMetadataDto?
+    val userProgressMetadata: UserProgressMetadataDto?,
+    val courseProducts: List<CourseProductDto>
 )
 
 data class ChapterOverviewDto(

@@ -60,3 +60,9 @@ INSERT INTO quiz_question_user_answer(id, question_id, answer_id, user_id, creat
 INSERT INTO post_comment(id, soc_user_firebase_id, post_id, post_slug, comment_text, created_at, updated_at) VALUES
 (nextval('post_comment_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', '1', 'post-slug', 'toto je super post', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (nextval('post_comment_id_seq'), null, '1', 'post-slug', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
+
+INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_Okkl9b2kAZHqJA', 1);
+INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_OkklGrYeJgDOg4', 1);
+
+--INSERT INTO public.user_product(id, soc_user_firebase_id, product_id, price_id, bought_at)
+--VALUES (nextval('user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Okkl9b2kAZHqJA', 'price_1NxFFfEBUaa48153CLia9I5x', '2007-12-03T10:15:30+01:00');

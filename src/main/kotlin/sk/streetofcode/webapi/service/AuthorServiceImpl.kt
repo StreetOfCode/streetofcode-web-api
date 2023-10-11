@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import sk.streetofcode.webapi.api.AuthorService
+import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.CourseReviewService
 import sk.streetofcode.webapi.api.dto.AuthorOverviewDto
 import sk.streetofcode.webapi.api.exception.BadRequestException
@@ -23,7 +24,8 @@ class AuthorServiceImpl(
     val authorRepository: AuthorRepository,
     val courseRepository: CourseRepository,
     val courseReviewService: CourseReviewService,
-    val authenticationService: AuthenticationService
+    val authenticationService: AuthenticationService,
+    val courseProductService: CourseProductService
 ) : AuthorService {
 
     companion object {
@@ -39,10 +41,22 @@ class AuthorServiceImpl(
             .orElseThrow { ResourceNotFoundException("Author with slug $slug was not found") }
 
         val coursesToCourseReviewOverview = if (authenticationService.isAuthenticated() && authenticationService.isAdmin()) {
-            author.courses.map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
+            author.courses.map {
+                it.toCourseOverview(
+                    courseReviewService.getCourseReviewsOverview(it.id!!),
+                    null,
+                    courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
+                )
+            }
         } else {
             author.courses.filter { course -> course.status == CourseStatus.PUBLIC }
-                .map { it.toCourseOverview(courseReviewService.getCourseReviewsOverview(it.id!!), null) }
+                .map {
+                    it.toCourseOverview(
+                        courseReviewService.getCourseReviewsOverview(it.id!!),
+                        null,
+                        courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
+                    )
+                }
         }
 
         return author.toAuthorOverview(

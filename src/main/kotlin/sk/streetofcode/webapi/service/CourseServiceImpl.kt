@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.CourseReviewService
 import sk.streetofcode.webapi.api.CourseService
 import sk.streetofcode.webapi.api.dto.CourseDto
@@ -35,7 +36,8 @@ class CourseServiceImpl(
     // Use Lazy to prevent circular dependency error
     @Lazy
     val progressService: ProgressServiceImpl,
-    val authenticationService: AuthenticationService
+    val authenticationService: AuthenticationService,
+    val courseProductService: CourseProductService
 ) : CourseService {
 
     companion object {
@@ -139,7 +141,8 @@ class CourseServiceImpl(
             .map {
                 it.toCourseOverview(
                     courseReviewService.getCourseReviewsOverview(it.id!!),
-                    getProgressMetadata(it.id)
+                    getProgressMetadata(it.id),
+                    courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
                 )
             }
             .sortedBy { it.courseOrder }
@@ -163,9 +166,11 @@ class CourseServiceImpl(
             throw AuthorizationException()
         } else {
             val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
+            val courseProducts = courseProductService.getAllForCourse(userId, course.id!!)
             return course.toCourseOverview(
-                courseReviewService.getCourseReviewsOverview(course.id!!),
-                progress
+                courseReviewService.getCourseReviewsOverview(course.id),
+                progress,
+                courseProducts
             )
         }
     }
@@ -176,7 +181,8 @@ class CourseServiceImpl(
             .orElseThrow { ResourceNotFoundException("Course with slug $slug not found") }
 
         val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
-        return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(course.id!!), progress)
+        val courseProducts = courseProductService.getAllForCourse(userId, course.id!!)
+        return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(course.id), progress, courseProducts)
     }
 
     override fun getMyCourses(userId: String): List<CourseOverviewDto> {
@@ -188,7 +194,8 @@ class CourseServiceImpl(
                     .get()
                     .toCourseOverview(
                         courseReviewService.getCourseReviewsOverview(courseId),
-                        progressService.getUserProgressMetadata(userId, courseId)
+                        progressService.getUserProgressMetadata(userId, courseId),
+                        courseProductService.getAllForCourse(userId, courseId)
                     )
             }
     }
