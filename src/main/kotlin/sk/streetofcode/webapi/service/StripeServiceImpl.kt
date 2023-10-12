@@ -5,6 +5,7 @@ import com.stripe.model.PaymentIntent
 import com.stripe.model.StripeObject
 import com.stripe.net.Webhook
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.StripeService
 import sk.streetofcode.webapi.api.UserProductService
 import sk.streetofcode.webapi.api.exception.BadRequestException
@@ -18,7 +19,8 @@ import sk.streetofcode.webapi.client.stripe.getMetadataFromPaymentIntent
 class StripeServiceImpl(
     private val stripeProperties: StripeProperties,
     private val stripeApiClient: StripeApiClient,
-    private val userProductService: UserProductService
+    private val userProductService: UserProductService,
+    private val emailService: EmailService,
 ) : StripeService {
     override fun createPaymentIntent(
         userId: String,
@@ -62,6 +64,8 @@ class StripeServiceImpl(
 
     private fun handlePaymentSucceededEvent(paymentIntent: PaymentIntent) {
         val (userId, courseProductId, priceId) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
-        userProductService.addUserProduct(userId, courseProductId, priceId)
+        // callbacks after successful payment
+        val userProduct = userProductService.addUserProduct(userId, courseProductId, priceId)
+        emailService.sendUserProductConfirmationMail(userProduct)
     }
 }

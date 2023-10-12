@@ -13,6 +13,7 @@ import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
 import sk.streetofcode.webapi.model.CourseReview
 import sk.streetofcode.webapi.model.LectureComment
 import sk.streetofcode.webapi.model.PostComment
+import sk.streetofcode.webapi.model.UserProduct
 import java.net.SocketTimeoutException
 
 @Service
@@ -126,6 +127,28 @@ class EmailServiceImpl(
         }
     }
 
+    override fun sendUserProductConfirmationMail(userProduct: UserProduct) {
+        if (enableEmailService != "true") return
+
+        val mimeMessage = mailSender.createMimeMessage()
+        val message = MimeMessageHelper(mimeMessage, "utf-8")
+
+        message.setFrom(emailFrom, "Street of Code")
+        message.setTo(userProduct.socUser.email)
+
+        message.setSubject("Úspešná objednávka - ${userProduct.courseProduct.course.name}")
+        message.setReplyTo(emailFrom)
+        message.setText(createUserProductConfirmationMessage(userProduct), true)
+
+        try {
+            mailSender.send(mimeMessage)
+        } catch (e: MailException) {
+            log.error("Problem with sending sendUserProductConfirmationMail email", e)
+        } catch (e: SocketTimeoutException) {
+            log.error("Timeout when reading from socket", e)
+        }
+    }
+
     override fun sendFeedbackEmail(userId: String?, request: SendFeedbackEmailRequest) {
         if (enableEmailService != "true") return
 
@@ -168,20 +191,28 @@ class EmailServiceImpl(
 
     private fun createNewLectureCommentMessage(comment: LectureComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser.name}, Email - ${comment.socUser.email}, Id - ${comment.socUser.firebaseId}</p>" +
-            "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
-            "<h3>Komentár</h3><p>${comment.commentText}</p>"
+                "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
+                "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
     private fun createNewPostCommentMessage(comment: PostComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser?.name}, Email - ${comment.socUser?.email}, Id - ${comment.socUser?.firebaseId}</p>" +
-            "<h3>Post</h3><p>Názov - ${comment.postSlug}, Id - ${comment.postId}</p>" +
-            "<h3>Komentár</h3><p>${comment.commentText}</p>"
+                "<h3>Post</h3><p>Názov - ${comment.postSlug}, Id - ${comment.postId}</p>" +
+                "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
     private fun createNewReviewMessage(courseName: String, courseReview: CourseReview): String {
         return "<h3>Používateľ</h3><p>Meno - ${courseReview.socUser.name}, Email - ${courseReview.socUser.email}, Id - ${courseReview.socUser.firebaseId}</p>" +
-            "<h3>Kurz</h3><p>Názov - $courseName, Id - ${courseReview.courseId}</p>" +
-            "<h3>Review</h3><p>${courseReview.text}</p>" +
-            "<h3>Rating</h3><p>${courseReview.rating}</p>"
+                "<h3>Kurz</h3><p>Názov - $courseName, Id - ${courseReview.courseId}</p>" +
+                "<h3>Review</h3><p>${courseReview.text}</p>" +
+                "<h3>Rating</h3><p>${courseReview.rating}</p>"
+    }
+
+    private fun createUserProductConfirmationMessage(userProduct: UserProduct): String {
+        return "<p>Ahoj. Kurz ${userProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
+                " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
+                " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
+                "<p>Ďakujeme,</p>" +
+                "<p>tím Street of Code.</p>"
     }
 }
