@@ -14,9 +14,11 @@ import sk.streetofcode.webapi.model.toCourseProductDto
 class CourseProductServiceImpl(
     val courseProductRepository: CourseProductRepository,
     val userProductService: UserProductService,
-    val stripeApiClient: StripeApiClient
+    val stripeApiClient: StripeApiClient,
+    val authenticationService: AuthenticationService
 ) : CourseProductService {
-    override fun getAllForCourse(userId: String?, courseId: Long): List<CourseProductDto> {
+    override fun getAllForCourse(courseId: Long): List<CourseProductDto> {
+        val userId = authenticationService.getNullableUserId()
         val courseProducts = courseProductRepository.findAllByCourseId(courseId)
 
         return courseProducts.map {
@@ -33,7 +35,19 @@ class CourseProductServiceImpl(
         return courseProductRepository.findById(courseProductId).orElseThrow()
     }
 
-    override fun isOwnedByUser(userId: String, courseId: Long): IsOwnedByUserDto {
-        return IsOwnedByUserDto(getAllForCourse(userId, courseId).any { it.userProducts.isNotEmpty() })
+    override fun isOwnedByUser(courseId: Long): IsOwnedByUserDto {
+        val courseProducts = getAllForCourse(courseId)
+
+        val hasProducts = courseProducts.isNotEmpty()
+        val isOwnedByUser = if (!hasProducts) {
+            true
+        } else {
+            val hasUserProducts = courseProducts.any { it.userProducts.isNotEmpty() }
+            val isAdmin = authenticationService.isAdmin()
+
+            hasUserProducts || isAdmin
+        }
+
+        return IsOwnedByUserDto(isOwnedByUser)
     }
 }

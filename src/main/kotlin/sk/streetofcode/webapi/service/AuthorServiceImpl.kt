@@ -45,7 +45,7 @@ class AuthorServiceImpl(
                 it.toCourseOverview(
                     courseReviewService.getCourseReviewsOverview(it.id!!),
                     null,
-                    courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
+                    courseProductService.getAllForCourse(it.id)
                 )
             }
         } else {
@@ -54,7 +54,7 @@ class AuthorServiceImpl(
                     it.toCourseOverview(
                         courseReviewService.getCourseReviewsOverview(it.id!!),
                         null,
-                        courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
+                        courseProductService.getAllForCourse(it.id)
                     )
                 }
         }

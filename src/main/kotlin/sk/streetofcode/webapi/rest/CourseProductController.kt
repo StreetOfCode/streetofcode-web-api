@@ -16,11 +16,11 @@ import sk.streetofcode.webapi.service.AuthenticationService
 class CourseProductController(val courseProductService: CourseProductService, val authenticationService: AuthenticationService) {
     @GetMapping
     fun getAllForCourse(@PathVariable("courseId") courseId: Long): ResponseEntity<List<CourseProductDto>> {
-        return ResponseEntity.ok(courseProductService.getAllForCourse(authenticationService.getNullableUserId(), courseId))
+        return ResponseEntity.ok(courseProductService.getAllForCourse(courseId))
     }
 
     @IsAuthenticated
     @GetMapping("{courseId}/is-owned-by-user")
     fun getIsOwnedByUser(@PathVariable("courseId") courseId: Long): ResponseEntity<IsOwnedByUserDto> =
-        ResponseEntity.ok(courseProductService.isOwnedByUser(authenticationService.getUserId(), courseId))
+        ResponseEntity.ok(courseProductService.isOwnedByUser(courseId))
 }

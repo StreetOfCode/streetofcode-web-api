@@ -1,8 +1,10 @@
 package sk.streetofcode.webapi.service.quiz
 
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.QuizService
 import sk.streetofcode.webapi.api.dto.quiz.QuizDto
+import sk.streetofcode.webapi.api.exception.AuthorizationException
 import sk.streetofcode.webapi.api.exception.BadRequestException
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.QuizAddRequest
@@ -15,7 +17,8 @@ import sk.streetofcode.webapi.model.quiz.toQuizDto
 @Service
 class QuizServiceImpl(
     val lectureRepository: LectureRepository,
-    val quizRepository: QuizRepository
+    val quizRepository: QuizRepository,
+    val courseProductService: CourseProductService
 ) : QuizService {
     override fun get(id: Long): QuizDto {
         return quizRepository.findById(id)
@@ -30,6 +33,18 @@ class QuizServiceImpl(
     }
 
     override fun getAllForLecture(lectureId: Long): List<QuizDto> {
+        val quizzes = quizRepository.findByLectureId(lectureId)
+        if (quizzes.isEmpty()) return listOf()
+
+        val courseId = quizzes.first().lecture.chapter.course.id!!
+
+        // TODO paid-courses: allow if lecture preview is allowed
+        if (!courseProductService.isOwnedByUser(courseId).isOwnedByUser
+            // && !quizzes.first().lecture.isPreviewAllowed
+        ) {
+            throw AuthorizationException("User does not own this course")
+        }
+
         return quizRepository.findByLectureId(lectureId)
             .map { it.toQuizDto() }
     }

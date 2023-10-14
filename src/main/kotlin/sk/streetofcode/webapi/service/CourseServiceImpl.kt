@@ -142,7 +142,7 @@ class CourseServiceImpl(
                 it.toCourseOverview(
                     courseReviewService.getCourseReviewsOverview(it.id!!),
                     getProgressMetadata(it.id),
-                    courseProductService.getAllForCourse(authenticationService.getNullableUserId(), it.id)
+                    courseProductService.getAllForCourse(it.id)
                 )
             }
             .sortedBy { it.courseOrder }
@@ -166,7 +166,7 @@ class CourseServiceImpl(
             throw AuthorizationException()
         } else {
             val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
-            val courseProducts = courseProductService.getAllForCourse(userId, course.id!!)
+            val courseProducts = courseProductService.getAllForCourse(course.id!!)
             return course.toCourseOverview(
                 courseReviewService.getCourseReviewsOverview(course.id),
                 progress,
@@ -181,7 +181,7 @@ class CourseServiceImpl(
             .orElseThrow { ResourceNotFoundException("Course with slug $slug not found") }
 
         val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
-        val courseProducts = courseProductService.getAllForCourse(userId, course.id!!)
+        val courseProducts = courseProductService.getAllForCourse(course.id!!)
         return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(course.id), progress, courseProducts)
     }
 
@@ -195,7 +195,7 @@ class CourseServiceImpl(
                     .toCourseOverview(
                         courseReviewService.getCourseReviewsOverview(courseId),
                         progressService.getUserProgressMetadata(userId, courseId),
-                        courseProductService.getAllForCourse(userId, courseId)
+                        courseProductService.getAllForCourse(courseId)
                     )
             }
     }

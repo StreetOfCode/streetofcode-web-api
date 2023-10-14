@@ -3,10 +3,12 @@ package sk.streetofcode.webapi.service
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.LectureOrderSort
 import sk.streetofcode.webapi.api.LectureService
 import sk.streetofcode.webapi.api.dto.LectureDto
 import sk.streetofcode.webapi.api.dto.LectureType
+import sk.streetofcode.webapi.api.exception.AuthorizationException
 import sk.streetofcode.webapi.api.exception.BadRequestException
 import sk.streetofcode.webapi.api.exception.InternalErrorException
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
@@ -25,7 +27,9 @@ class LectureServiceImpl(
     val lectureRepository: LectureRepository,
     val chapterRepository: ChapterRepository,
     val courseRepository: CourseRepository,
-    val vimeoApiClient: VimeoApiClient
+    val vimeoApiClient: VimeoApiClient,
+    val authenticationService: AuthenticationService,
+    val courseProductService: CourseProductService
 ) : LectureService {
 
     companion object {
@@ -43,9 +47,17 @@ class LectureServiceImpl(
     }
 
     override fun get(id: Long): LectureDto {
-
-        return lectureRepository.findById(id)
+        val lecture = lectureRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Lecture with id $id was not found") }
+
+        // TODO paid-courses: allow if lecture preview is allowed
+        if (!courseProductService.isOwnedByUser(lecture.chapter.course.id!!).isOwnedByUser
+            // && !lecture.isPreviewAllowed
+        ) {
+            throw AuthorizationException("User does not own this course")
+        }
+
+        return lecture
             .toLectureDto()
     }
 
