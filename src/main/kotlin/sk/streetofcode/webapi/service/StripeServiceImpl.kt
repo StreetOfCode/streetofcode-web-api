@@ -21,6 +21,7 @@ class StripeServiceImpl(
     private val stripeApiClient: StripeApiClient,
     private val userProductService: UserProductService,
     private val emailService: EmailService,
+    private val socUserServiceImpl: SocUserServiceImpl
 ) : StripeService {
     override fun createPaymentIntent(
         userId: String,
@@ -31,8 +32,11 @@ class StripeServiceImpl(
         val price = product.price
         val amount = price.unitAmount
 
+        val userEmail = socUserServiceImpl.get(userId).email
+
         return stripeApiClient.createPaymentIntent(
             userId,
+            userEmail,
             createPaymentIntentRequest.courseProductId,
             price.id,
             amount
