@@ -37,7 +37,6 @@ class StripeServiceImpl(
             userId,
             userEmail,
             courseProductId,
-            price.id,
             amount
         )
     }
@@ -66,9 +65,9 @@ class StripeServiceImpl(
     }
 
     private fun handlePaymentSucceededEvent(paymentIntent: PaymentIntent) {
-        val (userId, courseProductId, priceId) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
+        val (userId, courseProductId) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
         // callbacks after successful payment
-        val courseUserProduct = userProductService.addCourseUserProduct(userId, courseProductId, priceId)
+        val courseUserProduct = userProductService.addCourseUserProduct(userId, courseProductId)
         emailService.sendCourseUserProductConfirmationMail(courseUserProduct)
     }
 }

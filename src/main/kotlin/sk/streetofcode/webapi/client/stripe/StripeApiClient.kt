@@ -45,13 +45,13 @@ class StripeApiClient(
         }
     }
 
-    fun createPaymentIntent(userId: String, userEmail: String, courseProductId: String, priceId: String, amount: Long): CreatePaymentIntentResponse {
+    fun createPaymentIntent(userId: String, userEmail: String, courseProductId: String, amount: Long): CreatePaymentIntentResponse {
         val params = PaymentIntentCreateParams
             .builder()
             .setAmount(amount)
             .setCurrency("eur")
             .setReceiptEmail(userEmail)
-            .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId, priceId))
+            .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId))
             .build()
 
         val paymentIntent = PaymentIntent.create(params)

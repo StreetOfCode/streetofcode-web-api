@@ -30,15 +30,12 @@ data class CourseUserProduct(
     @JoinColumn(name = "product_id", nullable = false)
     val courseProduct: CourseProduct,
 
-    @Column(nullable = false)
-    val priceId: String,
-
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val boughtAt: OffsetDateTime,
 ) {
-    constructor(socUser: SocUser, courseProduct: CourseProduct, priceId: String, boughtAt: OffsetDateTime) :
-        this(null, socUser, courseProduct, priceId, boughtAt)
+    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime) :
+        this(null, socUser, courseProduct, boughtAt)
 }
 
 fun CourseUserProduct.toUserProductDto() =
-    CourseUserProductDto(this.priceId, this.boughtAt)
+    CourseUserProductDto(this.boughtAt)
