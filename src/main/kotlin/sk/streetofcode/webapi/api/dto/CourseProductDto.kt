@@ -6,7 +6,7 @@ data class CourseProductDto(
     val productId: String,
     val courseId: Long,
     val userProducts: List<UserProductDto>,
-    val price: Long
+    val price: Long?
 )
 
 data class IsOwnedByUserDto(

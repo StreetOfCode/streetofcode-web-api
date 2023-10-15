@@ -20,5 +20,5 @@ data class CourseProduct(
     val course: Course,
 )
 
-fun CourseProduct.toCourseProductDto(userProducts: List<UserProduct>, price: Long): CourseProductDto =
+fun CourseProduct.toCourseProductDto(userProducts: List<UserProduct>, price: Long?): CourseProductDto =
     CourseProductDto(this.productId, this.course.id!!, userProducts.map { it.toUserProductDto() }, price)

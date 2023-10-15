@@ -7,6 +7,7 @@ import com.stripe.model.Product
 import com.stripe.param.PaymentIntentCreateParams
 import com.stripe.param.PriceListParams
 import com.stripe.param.ProductListParams
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.CreatePaymentIntentResponse
@@ -17,6 +18,10 @@ import javax.annotation.PostConstruct
 class StripeApiClient(
     private val stripeProperties: StripeProperties
 ) {
+    companion object {
+        private val log = LoggerFactory.getLogger(StripeApiClient::class.java)
+    }
+
     @PostConstruct
     fun init() {
         Stripe.apiKey = stripeProperties.apiKey
@@ -29,9 +34,15 @@ class StripeApiClient(
         return StripeProductWithPrice(product, price)
     }
 
-    fun getProductPrice(productId: String): Long {
-        val price = Price.list(PriceListParams.builder().setProduct(productId).build()).data.firstOrNull() ?: throw ResourceNotFoundException("Price for product with id $productId was not found")
-        return price.unitAmount
+    fun getProductPrice(productId: String): Long? {
+        return try {
+            val price = Price.list(PriceListParams.builder().setProduct(productId).build()).data.firstOrNull()
+                ?: throw ResourceNotFoundException("Price for product with id $productId was not found")
+            price.unitAmount
+        } catch (e: Exception) {
+            log.error("Error while getting price for product id: $productId", e)
+            null
+        }
     }
 
     fun createPaymentIntent(userId: String, courseProductId: String, priceId: String, amount: Long): CreatePaymentIntentResponse {
