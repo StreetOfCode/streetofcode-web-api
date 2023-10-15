@@ -207,7 +207,7 @@ fun Course.toCourseOverview(
         )
     }.toSet()
 
-    val isOwnedByUser = courseProducts.isEmpty() || courseProducts.any { it.userProducts.isNotEmpty() }
+    val isOwnedByUser = courseProducts.isEmpty() || courseProducts.any { it.courseUserProducts.isNotEmpty() }
     val resources = if (isOwnedByUser) {
         this.resources
     } else {

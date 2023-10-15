@@ -13,7 +13,7 @@ import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
 import sk.streetofcode.webapi.model.CourseReview
 import sk.streetofcode.webapi.model.LectureComment
 import sk.streetofcode.webapi.model.PostComment
-import sk.streetofcode.webapi.model.UserProduct
+import sk.streetofcode.webapi.model.CourseUserProduct
 import java.net.SocketTimeoutException
 
 @Service
@@ -127,18 +127,18 @@ class EmailServiceImpl(
         }
     }
 
-    override fun sendUserProductConfirmationMail(userProduct: UserProduct) {
+    override fun sendCourseUserProductConfirmationMail(courseUserProduct: CourseUserProduct) {
         if (enableEmailService != "true") return
 
         val mimeMessage = mailSender.createMimeMessage()
         val message = MimeMessageHelper(mimeMessage, "utf-8")
 
         message.setFrom(emailFrom, "Street of Code")
-        message.setTo(userProduct.socUser.email)
+        message.setTo(courseUserProduct.socUser.email)
 
-        message.setSubject("Úspešná objednávka - ${userProduct.courseProduct.course.name}")
+        message.setSubject("Úspešná objednávka - ${courseUserProduct.courseProduct.course.name}")
         message.setReplyTo(emailFrom)
-        message.setText(createUserProductConfirmationMessage(userProduct), true)
+        message.setText(createUserProductConfirmationMessage(courseUserProduct), true)
 
         try {
             mailSender.send(mimeMessage)
@@ -208,8 +208,8 @@ class EmailServiceImpl(
                 "<h3>Rating</h3><p>${courseReview.rating}</p>"
     }
 
-    private fun createUserProductConfirmationMessage(userProduct: UserProduct): String {
-        return "<p>Ahoj. Kurz ${userProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
+    private fun createUserProductConfirmationMessage(courseUserProduct: CourseUserProduct): String {
+        return "<p>Ahoj. Kurz ${courseUserProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
                 " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
                 " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
                 "<p>Ďakujeme,</p>" +

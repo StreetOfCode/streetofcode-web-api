@@ -1,6 +1,6 @@
 package sk.streetofcode.webapi.model
 
-import sk.streetofcode.webapi.api.dto.UserProductDto
+import sk.streetofcode.webapi.api.dto.CourseUserProductDto
 import java.time.OffsetDateTime
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -14,13 +14,12 @@ import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 import javax.persistence.UniqueConstraint
 
-// TODO STRIPE - rename to UserCourseProduct
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["soc_user_firebase_id", "product_id"])])
-data class UserProduct(
+data class CourseUserProduct(
     @Id
-    @SequenceGenerator(name = "user_product_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_product_id_seq")
+    @SequenceGenerator(name = "course_user_product_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_user_product_id_seq")
     val id: Long? = null,
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -41,5 +40,5 @@ data class UserProduct(
         this(null, socUser, courseProduct, priceId, boughtAt)
 }
 
-fun UserProduct.toUserProductDto() =
-    UserProductDto(this.priceId, this.boughtAt)
+fun CourseUserProduct.toUserProductDto() =
+    CourseUserProductDto(this.priceId, this.boughtAt)

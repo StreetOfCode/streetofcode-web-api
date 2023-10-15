@@ -7,9 +7,8 @@ import com.stripe.net.Webhook
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.StripeService
-import sk.streetofcode.webapi.api.UserProductService
+import sk.streetofcode.webapi.api.CourseUserProductService
 import sk.streetofcode.webapi.api.exception.BadRequestException
-import sk.streetofcode.webapi.api.request.CreatePaymentIntentRequest
 import sk.streetofcode.webapi.api.request.CreatePaymentIntentResponse
 import sk.streetofcode.webapi.client.stripe.StripeApiClient
 import sk.streetofcode.webapi.client.stripe.configuration.StripeProperties
@@ -19,16 +18,16 @@ import sk.streetofcode.webapi.client.stripe.getMetadataFromPaymentIntent
 class StripeServiceImpl(
     private val stripeProperties: StripeProperties,
     private val stripeApiClient: StripeApiClient,
-    private val userProductService: UserProductService,
+    private val userProductService: CourseUserProductService,
     private val emailService: EmailService,
     private val socUserServiceImpl: SocUserServiceImpl
 ) : StripeService {
     override fun createPaymentIntent(
         userId: String,
-        createPaymentIntentRequest: CreatePaymentIntentRequest
+        courseProductId: String
     ): CreatePaymentIntentResponse {
         val product = stripeApiClient
-            .getProduct(createPaymentIntentRequest.courseProductId)
+            .getProduct(courseProductId)
         val price = product.price
         val amount = price.unitAmount
 
@@ -37,7 +36,7 @@ class StripeServiceImpl(
         return stripeApiClient.createPaymentIntent(
             userId,
             userEmail,
-            createPaymentIntentRequest.courseProductId,
+            courseProductId,
             price.id,
             amount
         )
@@ -69,7 +68,7 @@ class StripeServiceImpl(
     private fun handlePaymentSucceededEvent(paymentIntent: PaymentIntent) {
         val (userId, courseProductId, priceId) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
         // callbacks after successful payment
-        val userProduct = userProductService.addUserProduct(userId, courseProductId, priceId)
-        emailService.sendUserProductConfirmationMail(userProduct)
+        val courseUserProduct = userProductService.addCourseUserProduct(userId, courseProductId, priceId)
+        emailService.sendCourseUserProductConfirmationMail(courseUserProduct)
     }
 }

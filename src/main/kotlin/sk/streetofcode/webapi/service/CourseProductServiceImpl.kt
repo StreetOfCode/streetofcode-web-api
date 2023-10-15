@@ -2,7 +2,7 @@ package sk.streetofcode.webapi.service
 
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.CourseProductService
-import sk.streetofcode.webapi.api.UserProductService
+import sk.streetofcode.webapi.api.CourseUserProductService
 import sk.streetofcode.webapi.api.dto.CourseProductDto
 import sk.streetofcode.webapi.api.dto.IsOwnedByUserDto
 import sk.streetofcode.webapi.client.stripe.StripeApiClient
@@ -13,7 +13,7 @@ import sk.streetofcode.webapi.model.toCourseProductDto
 @Service
 class CourseProductServiceImpl(
     val courseProductRepository: CourseProductRepository,
-    val userProductService: UserProductService,
+    val courseUserProductService: CourseUserProductService,
     val stripeApiClient: StripeApiClient,
     val authenticationService: AuthenticationService
 ) : CourseProductService {
@@ -22,12 +22,12 @@ class CourseProductServiceImpl(
         val courseProducts = courseProductRepository.findAllByCourseId(courseId)
 
         return courseProducts.map {
-            val userProducts =
-                if (userId != null) userProductService.getProductUserProducts(userId, it) else listOf()
+            val courseUserProducts =
+                if (userId != null) courseUserProductService.getProductCourseUserProducts(userId, it) else listOf()
 
             val price = stripeApiClient.getProductPrice(it.productId)
 
-            it.toCourseProductDto(userProducts, price)
+            it.toCourseProductDto(courseUserProducts, price)
         }
     }
 
@@ -42,10 +42,10 @@ class CourseProductServiceImpl(
         val isOwnedByUser = if (!hasProducts) {
             true
         } else {
-            val hasUserProducts = courseProducts.any { it.userProducts.isNotEmpty() }
+            val hasCourseUserProducts = courseProducts.any { it.courseUserProducts.isNotEmpty() }
             val isAdmin = authenticationService.isAdmin()
 
-            hasUserProducts || isAdmin
+            hasCourseUserProducts || isAdmin
         }
 
         return IsOwnedByUserDto(isOwnedByUser)

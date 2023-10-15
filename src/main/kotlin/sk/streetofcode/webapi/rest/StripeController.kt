@@ -18,7 +18,7 @@ class StripeController(val stripeService: StripeService, val authenticationServi
     @PostMapping("create-payment-intent")
     @IsAuthenticated
     fun postPaymentIntent(@RequestBody createPaymentIntentRequest: CreatePaymentIntentRequest): ResponseEntity<CreatePaymentIntentResponse> =
-        ResponseEntity.ok(stripeService.createPaymentIntent(authenticationService.getUserId(), createPaymentIntentRequest))
+        ResponseEntity.ok(stripeService.createPaymentIntent(authenticationService.getUserId(), createPaymentIntentRequest.courseProductId))
 
     @PostMapping("webhook")
     fun postWebhook(@RequestHeader("Stripe-Signature") stripeSignature: String, @RequestBody body: String): ResponseEntity<String> {

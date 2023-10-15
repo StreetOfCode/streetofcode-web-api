@@ -1,7 +1,6 @@
 package sk.streetofcode.webapi.model
 
 import sk.streetofcode.webapi.api.dto.CourseProductDto
-import sk.streetofcode.webapi.client.stripe.StripeProductWithPrice
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
@@ -20,5 +19,5 @@ data class CourseProduct(
     val course: Course,
 )
 
-fun CourseProduct.toCourseProductDto(userProducts: List<UserProduct>, price: Long?): CourseProductDto =
-    CourseProductDto(this.productId, this.course.id!!, userProducts.map { it.toUserProductDto() }, price)
+fun CourseProduct.toCourseProductDto(courseUserProducts: List<CourseUserProduct>, price: Long?): CourseProductDto =
+    CourseProductDto(this.productId, this.course.id!!, courseUserProducts.map { it.toUserProductDto() }, price)

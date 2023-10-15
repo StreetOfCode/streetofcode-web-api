@@ -2,33 +2,33 @@ package sk.streetofcode.webapi.service
 
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.SocUserService
-import sk.streetofcode.webapi.api.UserProductService
+import sk.streetofcode.webapi.api.CourseUserProductService
 import sk.streetofcode.webapi.db.repository.CourseProductRepository
-import sk.streetofcode.webapi.db.repository.UserProductRepository
+import sk.streetofcode.webapi.db.repository.CourseUserProductRepository
 import sk.streetofcode.webapi.model.CourseProduct
-import sk.streetofcode.webapi.model.UserProduct
+import sk.streetofcode.webapi.model.CourseUserProduct
 import java.time.OffsetDateTime
 
 @Service
-class UserProductServiceImpl(
-    val userProductRepository: UserProductRepository,
+class CourseUserProductServiceImpl(
+    val courseUserProductRepository: CourseUserProductRepository,
     val courseProductRepository: CourseProductRepository,
     val userService: SocUserService
-) : UserProductService {
-    override fun getProductUserProducts(userId: String, courseProduct: CourseProduct): List<UserProduct> =
-        userProductRepository.findBySocUserFirebaseIdAndCourseProduct(userId, courseProduct)
+) : CourseUserProductService {
+    override fun getProductCourseUserProducts(userId: String, courseProduct: CourseProduct): List<CourseUserProduct> =
+        courseUserProductRepository.findBySocUserFirebaseIdAndCourseProduct(userId, courseProduct)
 
-    override fun addUserProduct(userId: String, courseProductId: String, priceId: String): UserProduct {
+    override fun addCourseUserProduct(userId: String, courseProductId: String, priceId: String): CourseUserProduct {
         val user = userService.get(userId)
         val courseProduct = courseProductRepository.findById(courseProductId).orElseThrow()
 
-        val userProduct = UserProduct(
+        val courseUserProduct = CourseUserProduct(
             socUser = user,
             courseProduct = courseProduct,
             priceId = priceId,
             boughtAt = OffsetDateTime.now()
         )
 
-        return userProductRepository.save(userProduct)
+        return courseUserProductRepository.save(courseUserProduct)
     }
 }
