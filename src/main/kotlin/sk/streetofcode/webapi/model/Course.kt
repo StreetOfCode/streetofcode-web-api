@@ -207,6 +207,13 @@ fun Course.toCourseOverview(
         )
     }.toSet()
 
+    val isOwnedByUser = courseProducts.isEmpty() || courseProducts.any { it.userProducts.isNotEmpty() }
+    val resources = if (isOwnedByUser) {
+        this.resources
+    } else {
+        null
+    }
+
     return CourseOverviewDto(
         this.id!!,
         this.name,
@@ -214,7 +221,7 @@ fun Course.toCourseOverview(
         this.courseOrder,
         this.shortDescription,
         this.longDescription,
-        this.resources,
+        resources,
         this.trailerUrl,
         this.thumbnailUrl,
         this.iconUrl,
