@@ -112,7 +112,7 @@ class ProgressServiceImpl(
                         name = chapterLecture.name,
                         viewed = allLecturesViewedFromAllCourses.contains(chapterLecture.id),
                         videoDurationSeconds = chapterLecture.videoDurationSeconds,
-                        lectureType = LectureServiceImpl.determineLectureType(chapterLecture)
+                        lectureType = LectureServiceImpl.determineLectureType(chapterLecture),
                     )
                 }
             )

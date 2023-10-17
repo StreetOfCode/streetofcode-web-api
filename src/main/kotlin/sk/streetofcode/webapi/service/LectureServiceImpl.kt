@@ -46,13 +46,12 @@ class LectureServiceImpl(
         }
     }
 
-    override fun get(id: Long): LectureDto {
+    override fun get(id: Long, preview: Boolean?): LectureDto {
         val lecture = lectureRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Lecture with id $id was not found") }
 
-        // TODO paid-courses: allow if lecture preview is allowed
-        if (!courseProductService.isOwnedByUser(lecture.chapter.course.id!!).isOwnedByUser
-            // && !lecture.isPreviewAllowed
+        val canLectureBePreviewed = preview == true && lecture.allowPreviewWhenPaid
+        if (!courseProductService.isOwnedByUser(lecture.chapter.course.id!!).isOwnedByUser && !canLectureBePreviewed
         ) {
             throw AuthorizationException("User does not own this course")
         }

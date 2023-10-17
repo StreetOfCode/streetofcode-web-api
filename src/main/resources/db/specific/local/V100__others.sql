@@ -66,3 +66,6 @@ INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_OkklGrYeJ
 
 --INSERT INTO public.course_user_product(id, soc_user_firebase_id, product_id, bought_at)
 --VALUES (nextval('course_user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Opf91PbCKmN79b', '2007-12-03T10:15:30+01:00');
+
+-- Informatika 101 first 2 lectures
+UPDATE lecture set allow_preview_when_paid = true where id in (1, 2);

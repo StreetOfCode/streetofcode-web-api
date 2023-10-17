@@ -198,7 +198,8 @@ fun Course.toCourseOverview(
                     lecture.id!!,
                     lecture.name,
                     lecture.videoDurationSeconds,
-                    LectureServiceImpl.determineLectureType(lecture)
+                    LectureServiceImpl.determineLectureType(lecture),
+                    lecture.allowPreviewWhenPaid
                 )
             },
             chapterDurationMinutes = chapter.lectures.sumOf { lecture ->

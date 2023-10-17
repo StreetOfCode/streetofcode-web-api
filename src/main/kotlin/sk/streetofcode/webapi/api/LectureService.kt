@@ -5,7 +5,7 @@ import sk.streetofcode.webapi.api.request.LectureAddRequest
 import sk.streetofcode.webapi.api.request.LectureEditRequest
 
 interface LectureService {
-    fun get(id: Long): LectureDto
+    fun get(id: Long, preview: Boolean? = false): LectureDto
     fun getAll(order: LectureOrderSort): List<LectureDto>
     fun getByChapterId(chapterId: Long, order: LectureOrderSort): List<LectureDto>
     fun add(addRequest: LectureAddRequest): LectureDto

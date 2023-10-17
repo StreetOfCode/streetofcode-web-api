@@ -40,5 +40,6 @@ data class LectureOverviewDto(
     val id: Long,
     val name: String,
     val videoDurationSeconds: Int,
-    val lectureType: LectureType
+    val lectureType: LectureType,
+    val allowPreviewWhenPaid: Boolean
 )

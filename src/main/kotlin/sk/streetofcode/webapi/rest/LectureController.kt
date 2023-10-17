@@ -18,15 +18,16 @@ import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.webapi.api.LectureOrderSort
 import sk.streetofcode.webapi.api.LectureService
 import sk.streetofcode.webapi.api.dto.LectureDto
+import sk.streetofcode.webapi.api.exception.AuthorizationException
 import sk.streetofcode.webapi.api.request.LectureAddRequest
 import sk.streetofcode.webapi.api.request.LectureEditRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
-import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
+import sk.streetofcode.webapi.service.AuthenticationService
 import java.util.Optional
 
 @RestController
 @RequestMapping("lecture")
-class LectureController(val lectureService: LectureService) {
+class LectureController(val lectureService: LectureService, val authenticationService: AuthenticationService) {
 
     companion object {
         private val log = LoggerFactory.getLogger(LectureController::class.java)
@@ -68,9 +69,14 @@ class LectureController(val lectureService: LectureService) {
     }
 
     @GetMapping("{id}")
-    @IsAuthenticated
-    fun get(@PathVariable("id") id: Long): ResponseEntity<LectureDto> {
-        return ResponseEntity.ok(lectureService.get(id))
+    fun get(@PathVariable("id") id: Long, @RequestParam("preview", required = false) preview: Optional<Boolean>): ResponseEntity<LectureDto> {
+        if (preview.isPresent && preview.get()) {
+            return ResponseEntity.ok(lectureService.get(id, preview.get()))
+        } else if (authenticationService.isAuthenticated()) {
+            return ResponseEntity.ok(lectureService.get(id))
+        }
+
+        throw AuthorizationException()
     }
 
     @PostMapping

@@ -21,5 +21,5 @@ data class LectureProgressOverviewDto(
     val name: String,
     val viewed: Boolean,
     val videoDurationSeconds: Int,
-    val lectureType: LectureType
+    val lectureType: LectureType,
 )
