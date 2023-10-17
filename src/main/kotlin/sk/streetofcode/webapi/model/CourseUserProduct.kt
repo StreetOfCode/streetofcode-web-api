@@ -34,10 +34,10 @@ data class CourseUserProduct(
     val boughtAt: OffsetDateTime,
 
     @Column(nullable = true)
-    val appliedPromoCode: String?
+    val promoCode: String?
 ) {
-    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime, appliedPromoCode: String?) :
-        this(null, socUser, courseProduct, boughtAt, appliedPromoCode)
+    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime, promoCode: String?) :
+        this(null, socUser, courseProduct, boughtAt, promoCode)
 }
 
 fun CourseUserProduct.toUserProductDto() =

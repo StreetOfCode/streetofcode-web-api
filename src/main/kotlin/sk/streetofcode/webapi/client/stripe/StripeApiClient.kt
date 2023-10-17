@@ -67,7 +67,7 @@ class StripeApiClient(
             .setAmount(finalAmount)
             .setCurrency("eur")
             .setReceiptEmail(userEmail)
-            .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId, promoCode))
+            .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId, promoCode?: ""))
             .build()
 
         val paymentIntent = PaymentIntent.create(params)
