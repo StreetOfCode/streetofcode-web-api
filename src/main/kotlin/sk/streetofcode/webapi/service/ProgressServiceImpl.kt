@@ -45,6 +45,8 @@ class ProgressServiceImpl(
     @Transactional
     @Synchronized
     override fun updateProgress(userId: String, lectureId: Long): CourseProgressOverviewDto {
+        // TODO check if course is paid and if it is then check if user owns the course?
+
         val lecture = lectureService.get(lectureId)
         val courseId = lecture.course.id
 

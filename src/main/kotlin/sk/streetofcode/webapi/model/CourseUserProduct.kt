@@ -32,9 +32,12 @@ data class CourseUserProduct(
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val boughtAt: OffsetDateTime,
+
+    @Column(nullable = true)
+    val appliedPromoCode: String?
 ) {
-    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime) :
-        this(null, socUser, courseProduct, boughtAt)
+    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime, appliedPromoCode: String?) :
+        this(null, socUser, courseProduct, boughtAt, appliedPromoCode)
 }
 
 fun CourseUserProduct.toUserProductDto() =

@@ -18,14 +18,15 @@ class CourseUserProductServiceImpl(
     override fun getProductCourseUserProducts(userId: String, courseProduct: CourseProduct): List<CourseUserProduct> =
         courseUserProductRepository.findBySocUserFirebaseIdAndCourseProduct(userId, courseProduct)
 
-    override fun addCourseUserProduct(userId: String, courseProductId: String): CourseUserProduct {
+    override fun addCourseUserProduct(userId: String, courseProductId: String, appliedPromoCode: String?): CourseUserProduct {
         val user = userService.get(userId)
         val courseProduct = courseProductRepository.findById(courseProductId).orElseThrow()
 
         val courseUserProduct = CourseUserProduct(
             socUser = user,
             courseProduct = courseProduct,
-            boughtAt = OffsetDateTime.now()
+            boughtAt = OffsetDateTime.now(),
+            appliedPromoCode
         )
 
         return courseUserProductRepository.save(courseUserProduct)
