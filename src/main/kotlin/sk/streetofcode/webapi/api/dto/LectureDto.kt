@@ -11,6 +11,7 @@ data class LectureDto(
     val content: String? = null,
     val videoUrl: String? = null,
     val videoDurationSeconds: Int? = null,
+    val allowPreviewWhenPaid: Boolean,
     val createdAt: OffsetDateTime,
     val updatedAt: OffsetDateTime
 )

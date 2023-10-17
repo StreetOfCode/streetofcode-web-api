@@ -173,15 +173,15 @@ class ProgressIntegrationTests : IntegrationTests() {
             it.body!!.id
         }
 
-        val lecture1ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 1, "content")
-        val lecture2ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 2, "content")
-        val lecture3ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 3, "content")
+        val lecture1ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 1, "content", allowPreviewWhenPaid = false)
+        val lecture2ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 2, "content", allowPreviewWhenPaid = false)
+        val lecture3ForChapter1 = LectureAddRequest(chapterIdFirst, "test", 3, "content", allowPreviewWhenPaid = false)
         restWithAdminRole().postForEntity<LectureDto>("/lecture", lecture1ForChapter1)
         restWithAdminRole().postForEntity<LectureDto>("/lecture", lecture2ForChapter1)
         restWithAdminRole().postForEntity<LectureDto>("/lecture", lecture3ForChapter1)
 
-        val lecture1ForChapter2 = LectureAddRequest(chapterIdSecond, "test", 1, "content")
-        val lecture2ForChapter2 = LectureAddRequest(chapterIdSecond, "test", 2, "content")
+        val lecture1ForChapter2 = LectureAddRequest(chapterIdSecond, "test", 1, "content", allowPreviewWhenPaid = false)
+        val lecture2ForChapter2 = LectureAddRequest(chapterIdSecond, "test", 2, "content", allowPreviewWhenPaid = false)
         restWithAdminRole().postForEntity<LectureDto>("/lecture", lecture1ForChapter2)
         restWithAdminRole().postForEntity<LectureDto>("/lecture", lecture2ForChapter2)
 

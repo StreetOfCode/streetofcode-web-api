@@ -83,7 +83,8 @@ class LectureServiceImpl(
                     addRequest.lectureOrder,
                     addRequest.content,
                     addRequest.videoUrl,
-                    vimeoApiClient.getVideoDurationInSeconds(addRequest.videoUrl)
+                    vimeoApiClient.getVideoDurationInSeconds(addRequest.videoUrl),
+                    addRequest.allowPreviewWhenPaid,
                 )
             ).toLectureDto()
         } catch (e: Exception) {
@@ -110,6 +111,7 @@ class LectureServiceImpl(
             existingLecture.videoDurationSeconds = vimeoApiClient.getVideoDurationInSeconds(editRequest.videoUrl)
             existingLecture.lectureOrder = editRequest.lectureOrder
             existingLecture.updatedAt = OffsetDateTime.now()
+            existingLecture.allowPreviewWhenPaid = editRequest.allowPreviewWhenPaid
             return lectureRepository.save(existingLecture).toLectureDto()
         }
     }

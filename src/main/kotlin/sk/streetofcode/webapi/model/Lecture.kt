@@ -46,6 +46,9 @@ data class Lecture(
     @Column(nullable = false, columnDefinition = "integer default 0")
     var videoDurationSeconds: Int,
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    var allowPreviewWhenPaid: Boolean,
+
     @OneToMany(
         mappedBy = "lecture",
         cascade = [CascadeType.REMOVE],
@@ -72,7 +75,8 @@ data class Lecture(
         lectureOrder: Int,
         content: String?,
         videoUrl: String?,
-        videoDurationSeconds: Int
+        videoDurationSeconds: Int,
+        allowPreviewWhenPaid: Boolean
     ) :
         this(
             null,
@@ -82,6 +86,7 @@ data class Lecture(
             content,
             videoUrl,
             videoDurationSeconds,
+            allowPreviewWhenPaid,
             mutableSetOf(),
             OffsetDateTime.now(),
             OffsetDateTime.now(),
@@ -122,6 +127,7 @@ fun Lecture.toLectureDto(): LectureDto {
         this.content,
         this.videoUrl,
         this.videoDurationSeconds,
+        this.allowPreviewWhenPaid,
         this.createdAt.truncatedTo(ChronoUnit.SECONDS),
         this.updatedAt.truncatedTo(ChronoUnit.SECONDS)
     )

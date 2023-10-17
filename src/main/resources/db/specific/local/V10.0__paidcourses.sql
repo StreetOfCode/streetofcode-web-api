@@ -13,3 +13,5 @@ CREATE TABLE course_user_product(
     promo_code varchar(255),
     constraint uc_course_user_product unique (soc_user_firebase_id, product_id)
 );
+
+ALTER TABLE lecture ADD allow_preview_when_paid boolean default false;
