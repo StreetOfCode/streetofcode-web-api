@@ -1,17 +1,23 @@
 package sk.streetofcode.webapi.service
 
 import com.stripe.exception.SignatureVerificationException
+import com.stripe.exception.StripeException
 import com.stripe.model.PaymentIntent
 import com.stripe.model.PromotionCode
 import com.stripe.model.StripeObject
 import com.stripe.net.Webhook
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.CourseUserProductService
 import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.StripeService
-import sk.streetofcode.webapi.api.CourseUserProductService
 import sk.streetofcode.webapi.api.dto.IsPromotionCodeValid
 import sk.streetofcode.webapi.api.exception.BadRequestException
+import sk.streetofcode.webapi.api.exception.InternalErrorException
+import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.CreatePaymentIntentResponse
+import sk.streetofcode.webapi.api.request.UpdatePaymentIntentResponse
+import sk.streetofcode.webapi.client.stripe.METADATA_KEY_COURSE_PRODUCT_ID
 import sk.streetofcode.webapi.client.stripe.StripeApiClient
 import sk.streetofcode.webapi.client.stripe.configuration.StripeProperties
 import sk.streetofcode.webapi.client.stripe.getMetadataFromPaymentIntent
@@ -24,34 +30,63 @@ class StripeServiceImpl(
     private val emailService: EmailService,
     private val socUserServiceImpl: SocUserServiceImpl
 ) : StripeService {
+
+    companion object {
+        private val log = LoggerFactory.getLogger(StripeServiceImpl::class.java)
+    }
     override fun createPaymentIntent(
         userId: String,
         courseProductId: String,
-        promoCode: String?
     ): CreatePaymentIntentResponse {
         val product = stripeApiClient
             .getProduct(courseProductId)
         val price = product.price
-        val fullAmount = price.unitAmount
-        var discountAmount = 0L
-
-        if (promoCode != null) {
-            val promotionCode = getPromotionCode(promoCode)
-            if (promotionCode.coupon.appliesTo.products.contains(product.product.id)) {
-                discountAmount = promotionCode.coupon.amountOff
-            }
-        }
-
+        val amount = price.unitAmount
         val userEmail = socUserServiceImpl.get(userId).email
 
         return stripeApiClient.createPaymentIntent(
             userId,
             userEmail,
             courseProductId,
-            fullAmount,
-            discountAmount,
-            promoCode
+            amount
         )
+    }
+
+    override fun updatePaymentIntent(paymentIntentId: String, promoCode: String): UpdatePaymentIntentResponse {
+        val paymentIntent: PaymentIntent
+
+        try {
+            paymentIntent = PaymentIntent.retrieve(paymentIntentId)
+        } catch (e: StripeException) {
+            log.error("Error retrieving intent with id $paymentIntentId")
+            throw ResourceNotFoundException("Could not find intent with id $paymentIntentId")
+        }
+
+        val courseProductId: String
+        if (paymentIntent.metadata.containsKey(METADATA_KEY_COURSE_PRODUCT_ID)) {
+            courseProductId = paymentIntent.metadata[METADATA_KEY_COURSE_PRODUCT_ID]!!
+        } else {
+            log.error("PaymentIntent doesn't have $METADATA_KEY_COURSE_PRODUCT_ID in metadata")
+            throw InternalErrorException("Cannot update payment intent")
+        }
+
+        val fullAmount = paymentIntent.amount
+        val discountAmount: Long
+        val promotionCode = getPromotionCode(promoCode)
+        if (promotionCode.coupon.appliesTo.products.contains(courseProductId)) {
+            discountAmount = promotionCode.coupon.amountOff
+        } else {
+            log.error("PaymentIntent productId is not same as intended with PromotionCode. This should not happen, because only requests with same productId should be present")
+            throw InternalErrorException("Cannot update payment intent")
+        }
+
+        val finalAmount = fullAmount - discountAmount
+        if (finalAmount <= 0) {
+            log.error("Final amount for courseProductId $courseProductId is less or equal to zero")
+            throw InternalErrorException("CreatePaymentIntent error - amount less or equal to zero")
+        }
+
+        return stripeApiClient.updatePaymentIntent(paymentIntent, finalAmount, discountAmount, promoCode)
     }
 
     override fun getPromotionCode(code: String): PromotionCode {

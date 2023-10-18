@@ -24,7 +24,5 @@ fun getMetadataFromPaymentIntent(paymentIntent: PaymentIntent): Triple<String, S
     val courseProductId = paymentIntent.metadata[METADATA_KEY_COURSE_PRODUCT_ID]!!
     val appliedPromoCode = paymentIntent.metadata[METADATA_KEY_APPLIED_PROMO_CODE]!!
 
-    // TODO appliedPromoCode not working, it reads null from map even when it was inserted in paymentIntent before
-
     return Triple(userId, courseProductId, appliedPromoCode)
 }
