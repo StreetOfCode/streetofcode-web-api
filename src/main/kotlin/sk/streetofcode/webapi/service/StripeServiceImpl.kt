@@ -52,7 +52,7 @@ class StripeServiceImpl(
         )
     }
 
-    override fun updatePaymentIntent(paymentIntentId: String, promoCode: String): UpdatePaymentIntentResponse {
+    override fun updatePaymentIntent(paymentIntentId: String, promoCode: String?): UpdatePaymentIntentResponse {
         val paymentIntent: PaymentIntent
 
         try {
@@ -70,23 +70,29 @@ class StripeServiceImpl(
             throw InternalErrorException("Cannot update payment intent")
         }
 
-        val fullAmount = paymentIntent.amount
-        val discountAmount: Long
-        val promotionCode = getPromotionCode(promoCode)
-        if (promotionCode.coupon.appliesTo.products.contains(courseProductId)) {
-            discountAmount = promotionCode.coupon.amountOff
+        if (promoCode != null) {
+            val fullAmount = paymentIntent.amount
+            val discountAmount: Long
+            val promotionCode = getPromotionCode(promoCode)
+            if (promotionCode.coupon.appliesTo.products.contains(courseProductId)) {
+                discountAmount = promotionCode.coupon.amountOff
+            } else {
+                log.error("PaymentIntent productId is not same as intended with PromotionCode. This should not happen, because only requests with same productId should be present")
+                throw InternalErrorException("Cannot update payment intent")
+            }
+
+            val finalAmount = fullAmount - discountAmount
+            if (finalAmount <= 0) {
+                log.error("Final amount for courseProductId $courseProductId is less or equal to zero")
+                throw InternalErrorException("CreatePaymentIntent error - amount less or equal to zero")
+            }
+
+            return stripeApiClient.updatePaymentIntent(paymentIntent, finalAmount, discountAmount, promoCode)
         } else {
-            log.error("PaymentIntent productId is not same as intended with PromotionCode. This should not happen, because only requests with same productId should be present")
-            throw InternalErrorException("Cannot update payment intent")
+            val productPrice = stripeApiClient.getProductPrice(courseProductId)
+                ?: throw InternalErrorException("Product price is null")
+            return stripeApiClient.updatePaymentIntent(paymentIntent, productPrice, null, null)
         }
-
-        val finalAmount = fullAmount - discountAmount
-        if (finalAmount <= 0) {
-            log.error("Final amount for courseProductId $courseProductId is less or equal to zero")
-            throw InternalErrorException("CreatePaymentIntent error - amount less or equal to zero")
-        }
-
-        return stripeApiClient.updatePaymentIntent(paymentIntent, finalAmount, discountAmount, promoCode)
     }
 
     override fun getPromotionCode(code: String): PromotionCode {

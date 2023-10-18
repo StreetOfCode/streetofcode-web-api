@@ -5,5 +5,5 @@ import sk.streetofcode.webapi.model.CourseUserProduct
 
 interface CourseUserProductService {
     fun getProductCourseUserProducts(userId: String, courseProduct: CourseProduct): List<CourseUserProduct>
-    fun addCourseUserProduct(userId: String, courseProductId: String, promoCode: String): CourseUserProduct
+    fun addCourseUserProduct(userId: String, courseProductId: String, promoCode: String?): CourseUserProduct
 }

@@ -6,7 +6,7 @@ data class CreatePaymentIntentRequest(
 
 data class UpdatePaymentIntentRequest(
     val paymentIntentId: String,
-    val promoCode: String
+    val promoCode: String?
 )
 
 data class CreatePaymentIntentResponse(
@@ -21,6 +21,6 @@ data class UpdatePaymentIntentResponse(
     val clientSecret: String,
     val paymentIntentId: String,
     val fullAmount: Long,
-    val discountAmount: Long,
-    val promoCode: String
+    val discountAmount: Long?,
+    val promoCode: String?
 )
