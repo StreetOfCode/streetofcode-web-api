@@ -64,8 +64,8 @@ INSERT INTO post_comment(id, soc_user_firebase_id, post_id, post_slug, comment_t
 INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_Opf91PbCKmN79b', 1);
 INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_OkklGrYeJgDOg4', 1);
 
---INSERT INTO public.course_user_product(id, soc_user_firebase_id, product_id, bought_at)
---VALUES (nextval('course_user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Opf91PbCKmN79b', '2007-12-03T10:15:30+01:00');
+--INSERT INTO public.course_user_product(id, soc_user_firebase_id, product_id, bought_at, final_amount, promo_code)
+--VALUES (nextval('course_user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Opf91PbCKmN79b', '2007-12-03T10:15:30+01:00', 9900, 'BASIC');
 
 -- Informatika 101 first 2 lectures
 UPDATE lecture set allow_preview_when_paid = true where id in (1, 2);

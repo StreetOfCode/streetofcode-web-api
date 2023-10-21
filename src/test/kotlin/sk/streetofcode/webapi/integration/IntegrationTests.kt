@@ -4,6 +4,7 @@ import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.spring.SpringListener
+import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -13,11 +14,15 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import sk.streetofcode.webapi.api.CourseProductService
+import sk.streetofcode.webapi.api.dto.IsOwnedByUserDto
 import sk.streetofcode.webapi.api.request.SocUserAddRequest
+import sk.streetofcode.webapi.client.stripe.StripeApiClient
 import sk.streetofcode.webapi.client.vimeo.VimeoApiClient
 import sk.streetofcode.webapi.db.repository.NewsletterRegistrationRepository
 import sk.streetofcode.webapi.model.SocUser
 import sk.streetofcode.webapi.service.AuthenticationService
+import sk.streetofcode.webapi.service.CourseProductServiceImpl
 
 open class IntegrationTests : StringSpec() {
     override fun listeners(): List<TestListener> {
@@ -36,13 +41,22 @@ open class IntegrationTests : StringSpec() {
     protected lateinit var vimeoApiClient: VimeoApiClient
 
     @MockBean
+    protected lateinit var stripeApiClient: StripeApiClient
+
+    @MockBean
     protected lateinit var authenticationService: AuthenticationService
+
+    @MockBean
+    protected lateinit var courseProductService: CourseProductServiceImpl
 
     init {
         beforeTest {
             Mockito.`when`(authenticationService.isAdmin()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isUser()).thenCallRealMethod()
             Mockito.`when`(authenticationService.isAuthenticated()).thenCallRealMethod()
+
+            Mockito.`when`(courseProductService.isOwnedByUser(anyLong())).thenReturn(IsOwnedByUserDto(true))
+
             setUserId("moNoTwZcU5Nwg4qMBBVW9uJBQM12")
         }
     }
