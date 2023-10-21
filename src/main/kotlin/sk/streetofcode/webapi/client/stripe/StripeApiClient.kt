@@ -84,16 +84,18 @@ class StripeApiClient(
 
     fun updatePaymentIntent(
         paymentIntent: PaymentIntent,
-        amount: Long,
+        fullAmount: Long,
         discountAmount: Long?,
         promoCode: String?
     ): UpdatePaymentIntentResponse {
         val (userId, courseProductId, _) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
 
+        val finalAmount = fullAmount - (discountAmount ?: 0)
+
         paymentIntent.update(
             PaymentIntentUpdateParams
                 .builder()
-                .setAmount(amount)
+                .setAmount(finalAmount)
                 // add promoCode to metadata
                 .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId, promoCode))
                 .build()
@@ -102,7 +104,7 @@ class StripeApiClient(
         return UpdatePaymentIntentResponse(
             clientSecret = paymentIntent.clientSecret,
             paymentIntent.id,
-            amount,
+            fullAmount,
             discountAmount,
             promoCode,
         )

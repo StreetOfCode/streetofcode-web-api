@@ -81,13 +81,12 @@ class StripeServiceImpl(
                 throw InternalErrorException("Cannot update payment intent")
             }
 
-            val finalAmount = fullAmount - discountAmount
-            if (finalAmount <= 0) {
+            if (fullAmount - discountAmount <= 0) {
                 log.error("Final amount for courseProductId $courseProductId is less or equal to zero")
                 throw InternalErrorException("CreatePaymentIntent error - amount less or equal to zero")
             }
 
-            return stripeApiClient.updatePaymentIntent(paymentIntent, finalAmount, discountAmount, promoCode)
+            return stripeApiClient.updatePaymentIntent(paymentIntent, fullAmount, discountAmount, promoCode)
         } else {
             val productPrice = stripeApiClient.getProductPrice(courseProductId)
                 ?: throw InternalErrorException("Product price is null")
