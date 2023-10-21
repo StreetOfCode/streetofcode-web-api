@@ -39,10 +39,7 @@ class StripeServiceImpl(
         userId: String,
         courseProductId: String,
     ): CreatePaymentIntentResponse {
-        val product = stripeApiClient
-            .getProduct(courseProductId)
-        val price = product.price
-        val amount = price.unitAmount
+        val amount = stripeApiClient.getProductPrice(courseProductId)
         val userEmail = socUserServiceImpl.get(userId).email
 
         return stripeApiClient.createPaymentIntent(
@@ -90,7 +87,6 @@ class StripeServiceImpl(
             return stripeApiClient.updatePaymentIntent(paymentIntent, fullAmount, discountAmount, promoCode)
         } else {
             val productPrice = stripeApiClient.getProductPrice(courseProductId)
-                ?: throw InternalErrorException("Product price is null")
             return stripeApiClient.updatePaymentIntent(paymentIntent, productPrice, null, null)
         }
     }
@@ -121,7 +117,7 @@ class StripeServiceImpl(
 
         // Deserialize the nested object inside the event
         val dataObjectDeserializer = event.dataObjectDeserializer
-        var stripeObject: StripeObject = if (dataObjectDeserializer.getObject().isPresent) {
+        val stripeObject: StripeObject = if (dataObjectDeserializer.getObject().isPresent) {
             dataObjectDeserializer.getObject().get()
         } else {
             throw BadRequestException("Event deserialization failed.")
