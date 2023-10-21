@@ -23,6 +23,7 @@ class QuizQuestionUserAnswerServiceImpl(
     companion object {
         private val log = org.slf4j.LoggerFactory.getLogger(QuizQuestionUserAnswerServiceImpl::class.java)
     }
+
     override fun get(id: Long): QuizQuestionUserAnswerDto {
         return quizQuestionUserAnswerRepository
             .findById(id)
@@ -63,7 +64,8 @@ class QuizQuestionUserAnswerServiceImpl(
 
                 updatedAnswer.isCorrect =
                     question.correctAnswers
-                    .map { it.id }.sortedBy { it } == mostRecentAnswers.filter { it.question.id == question.id }.map { it.answer.id }.sortedBy { it }
+                        .map { it.id }.sortedBy { it } == mostRecentAnswers.filter { it.question.id == question.id }
+                        .map { it.answer.id }.sortedBy { it }
 
                 updatedAnswer
             }
@@ -112,6 +114,9 @@ class QuizQuestionUserAnswerServiceImpl(
     }
 
     override fun removeAllUserAnswersByLectureId(lectureId: Long) {
-        quizQuestionUserAnswerRepository.deleteByQuestionQuizLectureIdAndUserId(lectureId, authenticationService.getUserId())
+        quizQuestionUserAnswerRepository.deleteByQuestionQuizLectureIdAndUserId(
+            lectureId,
+            authenticationService.getUserId()
+        )
     }
 }

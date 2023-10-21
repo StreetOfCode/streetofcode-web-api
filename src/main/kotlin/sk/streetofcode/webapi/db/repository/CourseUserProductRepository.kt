@@ -7,5 +7,8 @@ import sk.streetofcode.webapi.model.CourseUserProduct
 
 @Repository
 interface CourseUserProductRepository : CrudRepository<CourseUserProduct, String> {
-    fun findBySocUserFirebaseIdAndCourseProduct(firebaseId: String, courseProduct: CourseProduct): List<CourseUserProduct>
+    fun findBySocUserFirebaseIdAndCourseProduct(
+        firebaseId: String,
+        courseProduct: CourseProduct
+    ): List<CourseUserProduct>
 }

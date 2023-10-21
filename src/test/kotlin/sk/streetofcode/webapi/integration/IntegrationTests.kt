@@ -14,7 +14,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.dto.IsOwnedByUserDto
 import sk.streetofcode.webapi.api.request.SocUserAddRequest
 import sk.streetofcode.webapi.client.stripe.StripeApiClient

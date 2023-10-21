@@ -22,9 +22,9 @@ fun getPaymentIntentMetadataMap(
 }
 
 fun getMetadataFromPaymentIntent(paymentIntent: PaymentIntent): PaymentMetadata? {
-    if (!paymentIntent.metadata.containsKey(METADATA_KEY_USER_ID)
-        || !paymentIntent.metadata.containsKey(METADATA_KEY_COURSE_PRODUCT_ID)
-        || !paymentIntent.metadata.containsKey(METADATA_KEY_FINAL_AMOUNT)
+    if (!paymentIntent.metadata.containsKey(METADATA_KEY_USER_ID) ||
+        !paymentIntent.metadata.containsKey(METADATA_KEY_COURSE_PRODUCT_ID) ||
+        !paymentIntent.metadata.containsKey(METADATA_KEY_FINAL_AMOUNT)
     ) {
         return null
     }

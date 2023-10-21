@@ -20,7 +20,7 @@ import sk.streetofcode.webapi.api.request.QuizQuestionAddRequest
 import sk.streetofcode.webapi.api.request.QuizQuestionEditRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
-import java.util.*
+import java.util.Optional
 
 @RestController
 class QuizQuestionController(val quizQuestionService: QuizQuestionService) {
@@ -31,7 +31,12 @@ class QuizQuestionController(val quizQuestionService: QuizQuestionService) {
 
     @GetMapping("/quiz/question")
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>): ResponseEntity<List<QuizQuestionDto>> {
+    fun getAll(
+        @RequestParam(
+            "filter",
+            required = false
+        ) filter: Optional<String>
+    ): ResponseEntity<List<QuizQuestionDto>> {
         return if (filter.isPresent) {
             val questions = try {
                 val quizId = JSONObject(filter.get()).getLong("quizId")
@@ -77,7 +82,10 @@ class QuizQuestionController(val quizQuestionService: QuizQuestionService) {
 
     @PutMapping("/quiz/question/{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody questionEditRequest: QuizQuestionEditRequest): ResponseEntity<QuizQuestionDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody questionEditRequest: QuizQuestionEditRequest
+    ): ResponseEntity<QuizQuestionDto> {
         return ResponseEntity.ok(quizQuestionService.edit(id, questionEditRequest))
     }
 

@@ -3,7 +3,15 @@ package sk.streetofcode.webapi.model.quiz
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionUserAnswerDto
 import java.time.OffsetDateTime
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
@@ -31,11 +39,16 @@ data class QuizQuestionUserAnswer(
     var tryCount: Int
 ) {
     constructor(question: QuizQuestion, answer: QuizQuestionAnswer, userId: String, tryCount: Int) :
-        this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
+            this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
 
-    override fun equals(other: Any?) = other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(other)
+    override fun equals(other: Any?) =
+        other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(
+            other
+        )
+
     override fun hashCode() = QuizQuestionUserAnswerEssential(this).hashCode()
-    override fun toString() = QuizQuestionUserAnswerEssential(this).toString().replaceFirst("QuizQuestionUserAnswerEssential", "QuizQuestionUserAnswer")
+    override fun toString() = QuizQuestionUserAnswerEssential(this).toString()
+        .replaceFirst("QuizQuestionUserAnswerEssential", "QuizQuestionUserAnswer")
 }
 
 private data class QuizQuestionUserAnswerEssential(

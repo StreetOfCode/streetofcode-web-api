@@ -16,7 +16,10 @@ import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
 @RequestMapping("progress")
-class ProgressController(private val authenticationService: AuthenticationService, private val progressService: ProgressService) {
+class ProgressController(
+    private val authenticationService: AuthenticationService,
+    private val progressService: ProgressService
+) {
 
     @PostMapping("/update/{lectureId}")
     @IsAuthenticated

@@ -2,9 +2,9 @@ package sk.streetofcode.webapi.api
 
 import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.model.CourseReview
+import sk.streetofcode.webapi.model.CourseUserProduct
 import sk.streetofcode.webapi.model.LectureComment
 import sk.streetofcode.webapi.model.PostComment
-import sk.streetofcode.webapi.model.CourseUserProduct
 
 interface EmailService {
     fun sendFeedbackEmail(userId: String? = null, request: SendFeedbackEmailRequest)

@@ -3,7 +3,19 @@ package sk.streetofcode.webapi.model.quiz
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import org.hibernate.annotations.Where
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionDto
-import javax.persistence.*
+import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.EnumType
+import javax.persistence.Enumerated
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
@@ -43,11 +55,14 @@ data class QuizQuestion(
     val correctAnswers: MutableSet<QuizQuestionAnswer>
 ) {
     constructor(quiz: Quiz, questionOrder: Int, text: String, type: QuizQuestionType) :
-        this(null, quiz, questionOrder, text, type, mutableSetOf(), mutableSetOf())
+            this(null, quiz, questionOrder, text, type, mutableSetOf(), mutableSetOf())
 
-    override fun equals(other: Any?) = other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
+    override fun equals(other: Any?) =
+        other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)
+
     override fun hashCode() = QuizQuestionEssential(this).hashCode()
-    override fun toString() = QuizQuestionEssential(this).toString().replaceFirst("QuizQuestionEssential", "QuizQuestion")
+    override fun toString() =
+        QuizQuestionEssential(this).toString().replaceFirst("QuizQuestionEssential", "QuizQuestion")
 }
 
 private data class QuizQuestionEssential(

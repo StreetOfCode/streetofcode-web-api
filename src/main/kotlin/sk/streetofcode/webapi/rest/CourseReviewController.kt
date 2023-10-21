@@ -20,7 +20,10 @@ import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
 @RequestMapping("course-review")
-class CourseReviewController(private val courseReviewService: CourseReviewService, private val authenticationService: AuthenticationService) {
+class CourseReviewController(
+    private val courseReviewService: CourseReviewService,
+    private val authenticationService: AuthenticationService
+) {
     @GetMapping("/course/{courseId}")
     fun getCourseReviews(@PathVariable("courseId") courseId: Long): ResponseEntity<List<CourseReviewDto>> {
         return ResponseEntity.ok(courseReviewService.getCourseReviews(courseId))
@@ -45,7 +48,10 @@ class CourseReviewController(private val courseReviewService: CourseReviewServic
 
     @PutMapping("/{id}")
     @IsAuthenticated
-    fun edit(@PathVariable("id") id: Long, @RequestBody courseReviewEditRequest: CourseReviewEditRequest): ResponseEntity<CourseReviewDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody courseReviewEditRequest: CourseReviewEditRequest
+    ): ResponseEntity<CourseReviewDto> {
         return ResponseEntity.ok(courseReviewService.edit(id, courseReviewEditRequest))
     }
 

@@ -1,8 +1,8 @@
 package sk.streetofcode.webapi.service
 
 import org.springframework.stereotype.Service
-import sk.streetofcode.webapi.api.SocUserService
 import sk.streetofcode.webapi.api.CourseUserProductService
+import sk.streetofcode.webapi.api.SocUserService
 import sk.streetofcode.webapi.db.repository.CourseProductRepository
 import sk.streetofcode.webapi.db.repository.CourseUserProductRepository
 import sk.streetofcode.webapi.model.CourseProduct
@@ -18,7 +18,12 @@ class CourseUserProductServiceImpl(
     override fun getProductCourseUserProducts(userId: String, courseProduct: CourseProduct): List<CourseUserProduct> =
         courseUserProductRepository.findBySocUserFirebaseIdAndCourseProduct(userId, courseProduct)
 
-    override fun addCourseUserProduct(userId: String, courseProductId: String, finalAmount: Long, promoCode: String?): CourseUserProduct {
+    override fun addCourseUserProduct(
+        userId: String,
+        courseProductId: String,
+        finalAmount: Long,
+        promoCode: String?
+    ): CourseUserProduct {
         val user = userService.get(userId)
         val courseProduct = courseProductRepository.findById(courseProductId).orElseThrow()
 

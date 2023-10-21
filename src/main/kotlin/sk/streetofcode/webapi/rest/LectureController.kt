@@ -35,7 +35,10 @@ class LectureController(val lectureService: LectureService, val authenticationSe
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>, @RequestParam("sort", required = false) sort: Optional<String>): ResponseEntity<List<LectureDto>> {
+    fun getAll(
+        @RequestParam("filter", required = false) filter: Optional<String>,
+        @RequestParam("sort", required = false) sort: Optional<String>
+    ): ResponseEntity<List<LectureDto>> {
         var lectureOrderSort: LectureOrderSort = LectureOrderSort.ASC
         if (sort.isPresent && sort.get().contains("lectureOrder")) {
             if (sort.get().contains("DESC")) {
@@ -69,7 +72,10 @@ class LectureController(val lectureService: LectureService, val authenticationSe
     }
 
     @GetMapping("{id}")
-    fun get(@PathVariable("id") id: Long, @RequestParam("preview", required = false) preview: Optional<Boolean>): ResponseEntity<LectureDto> {
+    fun get(
+        @PathVariable("id") id: Long,
+        @RequestParam("preview", required = false) preview: Optional<Boolean>
+    ): ResponseEntity<LectureDto> {
         if (preview.isPresent && preview.get()) {
             return ResponseEntity.ok(lectureService.get(id, preview.get()))
         } else if (authenticationService.isAuthenticated()) {
@@ -87,7 +93,10 @@ class LectureController(val lectureService: LectureService, val authenticationSe
 
     @PutMapping("{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody lectureEditRequest: LectureEditRequest): ResponseEntity<LectureDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody lectureEditRequest: LectureEditRequest
+    ): ResponseEntity<LectureDto> {
         return ResponseEntity.ok(lectureService.edit(id, lectureEditRequest))
     }
 

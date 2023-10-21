@@ -5,7 +5,18 @@ import sk.streetofcode.webapi.api.dto.quiz.QuizDto
 import sk.streetofcode.webapi.model.Lecture
 import java.time.OffsetDateTime
 import java.time.temporal.ChronoUnit
-import javax.persistence.*
+import javax.persistence.CascadeType
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
+import javax.persistence.OrderBy
+import javax.persistence.SequenceGenerator
 
 @Entity
 @JsonIgnoreProperties("hibernateLazyInitializer", "handler")
@@ -40,7 +51,7 @@ data class Quiz(
     var questions: MutableSet<QuizQuestion>
 ) {
     constructor(lecture: Lecture, title: String, subtitle: String?, finishedMessage: String?) :
-        this(null, lecture, title, subtitle, OffsetDateTime.now(), finishedMessage, mutableSetOf())
+            this(null, lecture, title, subtitle, OffsetDateTime.now(), finishedMessage, mutableSetOf())
 
     override fun equals(other: Any?) = other is Quiz && QuizEssential(this) == QuizEssential(other)
     override fun hashCode() = QuizEssential(this).hashCode()

@@ -13,7 +13,10 @@ import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
 @RequestMapping("course-product")
-class CourseProductController(val courseProductService: CourseProductService, val authenticationService: AuthenticationService) {
+class CourseProductController(
+    val courseProductService: CourseProductService,
+    val authenticationService: AuthenticationService
+) {
     @GetMapping
     fun getAllForCourse(@PathVariable("courseId") courseId: Long): ResponseEntity<List<CourseProductDto>> {
         return ResponseEntity.ok(courseProductService.getAllForCourse(courseId))

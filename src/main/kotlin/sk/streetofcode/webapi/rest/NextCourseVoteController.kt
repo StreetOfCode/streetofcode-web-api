@@ -13,7 +13,10 @@ import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
 @RequestMapping("next-course-vote")
-class NextCourseVoteController(val voteService: NextCourseVoteService, val authenticationService: AuthenticationService) {
+class NextCourseVoteController(
+    val voteService: NextCourseVoteService,
+    val authenticationService: AuthenticationService
+) {
 
     @GetMapping
     fun getOptions(): ResponseEntity<List<NextCourseVoteOption>> {

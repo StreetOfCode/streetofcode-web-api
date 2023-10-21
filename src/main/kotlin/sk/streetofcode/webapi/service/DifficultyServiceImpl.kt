@@ -14,7 +14,8 @@ import sk.streetofcode.webapi.db.repository.DifficultyRepository
 import sk.streetofcode.webapi.model.Difficulty
 
 @Service
-class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val courseRepository: CourseRepository) : DifficultyService {
+class DifficultyServiceImpl(val difficultyRepository: DifficultyRepository, val courseRepository: CourseRepository) :
+    DifficultyService {
 
     companion object {
         private val log = LoggerFactory.getLogger(DifficultyServiceImpl::class.java)

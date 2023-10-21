@@ -21,7 +21,7 @@ import sk.streetofcode.webapi.api.request.QuizQuestionAnswerAddRequest
 import sk.streetofcode.webapi.api.request.QuizQuestionAnswerEditRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
-import java.util.*
+import java.util.Optional
 
 @RestController
 @RequestMapping("/quiz/question")
@@ -33,7 +33,12 @@ class QuizQuestionAnswerController(val quizQuestionAnswerService: QuizQuestionAn
 
     @GetMapping("/answer")
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = true) filter: Optional<String>): ResponseEntity<List<QuizQuestionAnswerDto>> {
+    fun getAll(
+        @RequestParam(
+            "filter",
+            required = true
+        ) filter: Optional<String>
+    ): ResponseEntity<List<QuizQuestionAnswerDto>> {
         return if (filter.isPresent) {
             val answers = try {
                 val questionId = JSONObject(filter.get()).getLong("quizQuestionId")
@@ -81,7 +86,10 @@ class QuizQuestionAnswerController(val quizQuestionAnswerService: QuizQuestionAn
 
     @PutMapping("/answer/{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody answerEditRequest: QuizQuestionAnswerEditRequest): ResponseEntity<QuizQuestionAnswerDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody answerEditRequest: QuizQuestionAnswerEditRequest
+    ): ResponseEntity<QuizQuestionAnswerDto> {
         return ResponseEntity.ok(quizQuestionAnswerService.edit(id, answerEditRequest))
     }
 

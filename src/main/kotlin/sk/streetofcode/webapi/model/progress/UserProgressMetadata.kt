@@ -43,7 +43,16 @@ data class UserProgressMetadata(
     var finishedAt: OffsetDateTime? = null
 ) {
     constructor(userId: String, courseId: Long, lecturesViewed: Int) :
-        this(null, userId, courseId, lecturesViewed, ProgressStatus.IN_PROGRESS, OffsetDateTime.now(), OffsetDateTime.now(), null)
+            this(
+                null,
+                userId,
+                courseId,
+                lecturesViewed,
+                ProgressStatus.IN_PROGRESS,
+                OffsetDateTime.now(),
+                OffsetDateTime.now(),
+                null
+            )
 
     override fun equals(other: Any?) =
         other is UserProgressMetadata && UserProgressMetadataEssential(this) == UserProgressMetadataEssential(other)

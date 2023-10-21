@@ -32,7 +32,11 @@ class ConvertKitApiClient(
             email,
             first_name = getFirstName(name)
         )
-        val response = restTemplate.postForEntity("/forms/${convertKitProperties.formId}/subscribe", addRequest, String::class.java)
+        val response = restTemplate.postForEntity(
+            "/forms/${convertKitProperties.formId}/subscribe",
+            addRequest,
+            String::class.java
+        )
         if (!response.statusCode.is2xxSuccessful) {
             log.info("Add subscriber request didn't finished successfully, response: {}", response)
         }

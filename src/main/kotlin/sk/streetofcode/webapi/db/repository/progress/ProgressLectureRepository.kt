@@ -10,6 +10,7 @@ import javax.transaction.Transactional
 interface ProgressLectureRepository : CrudRepository<ProgressLecture, Long> {
     @Transactional
     fun deleteByUserIdAndLectureId(userId: String, lectureId: Long)
+
     @Transactional
     fun deleteByUserIdAndLectureIdIn(userId: String, lectureIds: List<Long>)
     fun findAllByUserId(userId: String): List<ProgressLecture>

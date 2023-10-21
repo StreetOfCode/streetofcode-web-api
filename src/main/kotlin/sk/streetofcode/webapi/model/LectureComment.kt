@@ -39,7 +39,7 @@ data class LectureComment(
     var updatedAt: OffsetDateTime
 ) {
     constructor(socUser: SocUser, lecture: Lecture, commentText: String) :
-        this(null, socUser, lecture, commentText, OffsetDateTime.now(), OffsetDateTime.now())
+            this(null, socUser, lecture, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is LectureComment && LectureCommentEssential(this) == LectureCommentEssential(other)

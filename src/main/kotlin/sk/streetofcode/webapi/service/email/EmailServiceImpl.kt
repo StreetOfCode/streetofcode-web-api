@@ -11,9 +11,9 @@ import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
 import sk.streetofcode.webapi.model.CourseReview
+import sk.streetofcode.webapi.model.CourseUserProduct
 import sk.streetofcode.webapi.model.LectureComment
 import sk.streetofcode.webapi.model.PostComment
-import sk.streetofcode.webapi.model.CourseUserProduct
 import java.net.SocketTimeoutException
 
 @Service
@@ -30,6 +30,7 @@ class EmailServiceImpl(
         const val DISCORD_INVITATION_HTML =
             "<p>Ahoj. Posielame ti pozvánku na náš Discord server.</p><a href=\"https://streetofcode.sk/discord\">Pridaj sa</a>"
     }
+
     @Value("\${emailservice.enabled:false}")
     private var enableEmailService: String = "false"
 

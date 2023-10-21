@@ -61,11 +61,13 @@ class LectureServiceImpl(
     }
 
     override fun getAll(order: LectureOrderSort): List<LectureDto> {
-        return lectureRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder")).map { it.toLectureDto() }.toList()
+        return lectureRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder"))
+            .map { it.toLectureDto() }.toList()
     }
 
     override fun getByChapterId(chapterId: Long, order: LectureOrderSort): List<LectureDto> {
-        return lectureRepository.findByChapterId(chapterId, Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder")).map { it.toLectureDto() }.toList()
+        return lectureRepository.findByChapterId(chapterId, Sort.by(Sort.Direction.valueOf(order.name), "lectureOrder"))
+            .map { it.toLectureDto() }.toList()
     }
 
     override fun add(addRequest: LectureAddRequest): LectureDto {

@@ -119,7 +119,8 @@ class ProgressServiceImpl(
         }
 
         return CourseProgressOverviewDto(
-            lecturesViewed = chapters.flatMap { chapter -> chapter.lectures }.filter { lecture -> lecture.viewed }.count(),
+            lecturesViewed = chapters.flatMap { chapter -> chapter.lectures }.filter { lecture -> lecture.viewed }
+                .count(),
             courseLecturesCount = course.lecturesCount,
             chapters = chapters
         )
@@ -135,7 +136,11 @@ class ProgressServiceImpl(
 
         val firstUnseenLecture = getFirstUnseenLecture(userId, course)
 
-        return metadata.toUserProgressMetadataDto(courseLecturesCount, firstUnseenLecture?.chapter?.id, firstUnseenLecture?.id)
+        return metadata.toUserProgressMetadataDto(
+            courseLecturesCount,
+            firstUnseenLecture?.chapter?.id,
+            firstUnseenLecture?.id
+        )
     }
 
     override fun getUserProgressMetadataOrNull(userId: String, courseId: Long): UserProgressMetadataDto? {
@@ -186,8 +191,9 @@ class ProgressServiceImpl(
     }
 
     private fun resetCourseProgress(userId: String, courseId: Long): CourseProgressOverviewDto {
-        val lectureIds = chapterService.getByCourseId(courseId, ChapterOrderSort.ASC).flatMap { chapterDto -> chapterDto.lectures }
-            .map { lectureDto -> lectureDto.id }
+        val lectureIds =
+            chapterService.getByCourseId(courseId, ChapterOrderSort.ASC).flatMap { chapterDto -> chapterDto.lectures }
+                .map { lectureDto -> lectureDto.id }
 
         val progressMetadata = progressMetadataRepository.findByUserIdAndCourseId(userId, courseId)
             .orElseThrow { ResourceNotFoundException("Not found progress metadata for userId $userId and courseId $courseId") }
@@ -202,7 +208,8 @@ class ProgressServiceImpl(
     }
 
     private fun updateIsCourseFinished(progressMetadata: UserProgressMetadata, courseLecturesCount: Int) {
-        val shouldUnfinish = progressMetadata.status == ProgressStatus.FINISHED && progressMetadata.lecturesViewed < courseLecturesCount
+        val shouldUnfinish =
+            progressMetadata.status == ProgressStatus.FINISHED && progressMetadata.lecturesViewed < courseLecturesCount
         if (shouldUnfinish) {
             progressMetadata.status = ProgressStatus.IN_PROGRESS
             progressMetadata.finishedAt = null
@@ -215,7 +222,11 @@ class ProgressServiceImpl(
         }
     }
 
-    private fun updateProgressMetadata(progressMetadata: UserProgressMetadata, lecturesViewedDelta: Int, courseLecturesCount: Int) {
+    private fun updateProgressMetadata(
+        progressMetadata: UserProgressMetadata,
+        lecturesViewedDelta: Int,
+        courseLecturesCount: Int
+    ) {
         val updatedLecturesViewed = progressMetadata.lecturesViewed + lecturesViewedDelta
         if (updatedLecturesViewed == 0) {
             progressMetadataRepository.delete(progressMetadata)
@@ -227,8 +238,8 @@ class ProgressServiceImpl(
         } else {
             log.error(
                 "Something is terribly wrong in updating progress metadata, because apparently " +
-                    "new updatedLecturesViewed $updatedLecturesViewed is out of bound. Course has total of $courseLecturesCount" +
-                    ". Progress may be corrupted."
+                        "new updatedLecturesViewed $updatedLecturesViewed is out of bound. Course has total of $courseLecturesCount" +
+                        ". Progress may be corrupted."
             )
             throw InternalErrorException("Problem in internal logic of updating progress metadata")
         }

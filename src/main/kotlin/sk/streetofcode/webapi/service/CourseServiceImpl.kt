@@ -165,7 +165,8 @@ class CourseServiceImpl(
         if (CourseStatus.PUBLIC != course.status) {
             throw AuthorizationException()
         } else {
-            val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
+            val progress =
+                if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
             val courseProducts = courseProductService.getAllForCourse(course.id!!)
             return course.toCourseOverview(
                 courseReviewService.getCourseReviewsOverview(course.id),
@@ -182,7 +183,11 @@ class CourseServiceImpl(
 
         val progress = if (userId == null) null else progressService.getUserProgressMetadataOrNull(userId, course.id!!)
         val courseProducts = courseProductService.getAllForCourse(course.id!!)
-        return course.toCourseOverview(courseReviewService.getCourseReviewsOverview(course.id), progress, courseProducts)
+        return course.toCourseOverview(
+            courseReviewService.getCourseReviewsOverview(course.id),
+            progress,
+            courseProducts
+        )
     }
 
     override fun getMyCourses(userId: String): List<CourseOverviewDto> {

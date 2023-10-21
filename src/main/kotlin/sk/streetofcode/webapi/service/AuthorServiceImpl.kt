@@ -36,28 +36,30 @@ class AuthorServiceImpl(
         return authorRepository.findById(id)
             .orElseThrow { ResourceNotFoundException("Author with id $id was not found") }
     }
+
     override fun getOverview(slug: String): AuthorOverviewDto {
         val author = authorRepository.findBySlug(slug)
             .orElseThrow { ResourceNotFoundException("Author with slug $slug was not found") }
 
-        val coursesToCourseReviewOverview = if (authenticationService.isAuthenticated() && authenticationService.isAdmin()) {
-            author.courses.map {
-                it.toCourseOverview(
-                    courseReviewService.getCourseReviewsOverview(it.id!!),
-                    null,
-                    courseProductService.getAllForCourse(it.id)
-                )
-            }
-        } else {
-            author.courses.filter { course -> course.status == CourseStatus.PUBLIC }
-                .map {
+        val coursesToCourseReviewOverview =
+            if (authenticationService.isAuthenticated() && authenticationService.isAdmin()) {
+                author.courses.map {
                     it.toCourseOverview(
                         courseReviewService.getCourseReviewsOverview(it.id!!),
                         null,
                         courseProductService.getAllForCourse(it.id)
                     )
                 }
-        }
+            } else {
+                author.courses.filter { course -> course.status == CourseStatus.PUBLIC }
+                    .map {
+                        it.toCourseOverview(
+                            courseReviewService.getCourseReviewsOverview(it.id!!),
+                            null,
+                            courseProductService.getAllForCourse(it.id)
+                        )
+                    }
+            }
 
         return author.toAuthorOverview(
             coursesToCourseReviewOverview
@@ -69,7 +71,14 @@ class AuthorServiceImpl(
     }
 
     override fun add(addRequest: AuthorAddRequest): Author {
-        val author = Author(addRequest.name, addRequest.slug, addRequest.imageUrl, addRequest.coursesTitle, addRequest.email, addRequest.description)
+        val author = Author(
+            addRequest.name,
+            addRequest.slug,
+            addRequest.imageUrl,
+            addRequest.coursesTitle,
+            addRequest.email,
+            addRequest.description
+        )
 
         try {
             return authorRepository.save(author)
@@ -84,7 +93,15 @@ class AuthorServiceImpl(
             if (id != editRequest.id) {
                 throw BadRequestException("PathVariable id is not equal to request id field")
             } else {
-                val author = Author(editRequest.id, editRequest.name, editRequest.slug, editRequest.imageUrl, editRequest.coursesTitle, editRequest.email, editRequest.description)
+                val author = Author(
+                    editRequest.id,
+                    editRequest.name,
+                    editRequest.slug,
+                    editRequest.imageUrl,
+                    editRequest.coursesTitle,
+                    editRequest.email,
+                    editRequest.description
+                )
                 return authorRepository.save(author)
             }
         } else {

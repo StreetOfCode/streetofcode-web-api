@@ -34,6 +34,7 @@ class StripeServiceImpl(
     companion object {
         private val log = LoggerFactory.getLogger(StripeServiceImpl::class.java)
     }
+
     override fun createPaymentIntent(
         userId: String,
         courseProductId: String,
@@ -135,9 +136,11 @@ class StripeServiceImpl(
     }
 
     private fun handlePaymentSucceededEvent(paymentIntent: PaymentIntent) {
-        val (userId, courseProductId, finalAmount, appliedPromoCode) = getMetadataFromPaymentIntent(paymentIntent) ?: throw BadRequestException("Invalid metadata.")
+        val (userId, courseProductId, finalAmount, appliedPromoCode) = getMetadataFromPaymentIntent(paymentIntent)
+            ?: throw BadRequestException("Invalid metadata.")
         // callbacks after successful payment
-        val courseUserProduct = userProductService.addCourseUserProduct(userId, courseProductId, finalAmount, appliedPromoCode)
+        val courseUserProduct =
+            userProductService.addCourseUserProduct(userId, courseProductId, finalAmount, appliedPromoCode)
         emailService.sendCourseUserProductConfirmationMail(courseUserProduct)
     }
 }

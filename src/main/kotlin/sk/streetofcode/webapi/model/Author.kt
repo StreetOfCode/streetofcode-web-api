@@ -50,11 +50,26 @@ data class Author(
     @OrderBy("id")
     val courses: MutableSet<Course> = mutableSetOf()
 ) {
-    constructor(id: Long, name: String, slug: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
-        this(id, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
+    constructor(
+        id: Long,
+        name: String,
+        slug: String,
+        imageUrl: String,
+        coursesTitle: String,
+        email: String,
+        description: String
+    ) :
+            this(id, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
-    constructor(name: String, slug: String, imageUrl: String, coursesTitle: String, email: String, description: String) :
-        this(null, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
+    constructor(
+        name: String,
+        slug: String,
+        imageUrl: String,
+        coursesTitle: String,
+        email: String,
+        description: String
+    ) :
+            this(null, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
     override fun equals(other: Any?) = other is Author && AuthorEssential(this) == AuthorEssential(other)
     override fun hashCode() = AuthorEssential(this).hashCode()

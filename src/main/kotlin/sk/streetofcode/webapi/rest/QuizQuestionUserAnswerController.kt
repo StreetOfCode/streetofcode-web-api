@@ -5,7 +5,13 @@ import org.json.JSONObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.webapi.api.QuizQuestionUserAnswerService
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionAnswerCorrectnessDto
 import sk.streetofcode.webapi.api.dto.quiz.QuizQuestionUserAnswerDto
@@ -13,7 +19,7 @@ import sk.streetofcode.webapi.api.request.QuizQuestionUserAnswerRequest
 import sk.streetofcode.webapi.api.request.QuizRemoveAnswersRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
-import java.util.*
+import java.util.Optional
 
 @RestController
 class QuizQuestionUserAnswerController(val quizQuestionUserAnswerService: QuizQuestionUserAnswerService) {
@@ -23,7 +29,12 @@ class QuizQuestionUserAnswerController(val quizQuestionUserAnswerService: QuizQu
 
     @GetMapping("/quiz/question/user-answer")
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = true) filter: Optional<String>): ResponseEntity<List<QuizQuestionUserAnswerDto>> {
+    fun getAll(
+        @RequestParam(
+            "filter",
+            required = true
+        ) filter: Optional<String>
+    ): ResponseEntity<List<QuizQuestionUserAnswerDto>> {
         return if (filter.isPresent) {
             val answers = try {
                 val questionId = JSONObject(filter.get()).getLong("quizQuestionId")

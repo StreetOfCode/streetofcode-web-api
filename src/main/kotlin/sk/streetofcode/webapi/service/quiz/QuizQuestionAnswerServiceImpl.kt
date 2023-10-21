@@ -84,7 +84,8 @@ class QuizQuestionAnswerServiceImpl(
         questionAnswer.text = editRequest.text
         questionAnswer.isCorrect = editRequest.isCorrect
 
-        return quizQuestionAnswerRepository.save(questionAnswer).toQuizQuestionAnswerDto(authenticationService.isAdmin())
+        return quizQuestionAnswerRepository.save(questionAnswer)
+            .toQuizQuestionAnswerDto(authenticationService.isAdmin())
     }
 
     override fun delete(id: Long): QuizQuestionAnswerDto {

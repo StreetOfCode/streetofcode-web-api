@@ -19,7 +19,11 @@ import sk.streetofcode.webapi.model.toChapterDto
 import java.time.OffsetDateTime
 
 @Service
-class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRepository: CourseRepository, val lectureRepository: LectureRepository) : ChapterService {
+class ChapterServiceImpl(
+    val chapterRepository: ChapterRepository,
+    val courseRepository: CourseRepository,
+    val lectureRepository: LectureRepository
+) : ChapterService {
 
     companion object {
         private val log = LoggerFactory.getLogger(ChapterServiceImpl::class.java)
@@ -33,11 +37,13 @@ class ChapterServiceImpl(val chapterRepository: ChapterRepository, val courseRep
     }
 
     override fun getAll(order: ChapterOrderSort): List<ChapterDto> {
-        return chapterRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder")).map { it.toChapterDto() }.toList()
+        return chapterRepository.findAll(Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder"))
+            .map { it.toChapterDto() }.toList()
     }
 
     override fun getByCourseId(courseId: Long, order: ChapterOrderSort): List<ChapterDto> {
-        return chapterRepository.findByCourseId(courseId, Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder")).map { it.toChapterDto() }.toList()
+        return chapterRepository.findByCourseId(courseId, Sort.by(Sort.Direction.valueOf(order.name), "chapterOrder"))
+            .map { it.toChapterDto() }.toList()
     }
 
     override fun add(addRequest: ChapterAddRequest): ChapterDto {

@@ -33,7 +33,10 @@ class ChapterController(val chapterService: ChapterService) {
 
     @GetMapping
     @IsAdmin
-    fun getAll(@RequestParam("filter", required = false) filter: Optional<String>, @RequestParam("sort", required = false) sort: Optional<String>): ResponseEntity<List<ChapterDto>> {
+    fun getAll(
+        @RequestParam("filter", required = false) filter: Optional<String>,
+        @RequestParam("sort", required = false) sort: Optional<String>
+    ): ResponseEntity<List<ChapterDto>> {
         var chapterOrderSort: ChapterOrderSort = ChapterOrderSort.ASC
         if (sort.isPresent && sort.get().contains("chapterOrder")) {
             if (sort.get().contains("DESC")) {
@@ -80,7 +83,10 @@ class ChapterController(val chapterService: ChapterService) {
 
     @PutMapping("{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody chapterEditRequest: ChapterEditRequest): ResponseEntity<ChapterDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody chapterEditRequest: ChapterEditRequest
+    ): ResponseEntity<ChapterDto> {
         return ResponseEntity.ok(chapterService.edit(id, chapterEditRequest))
     }
 

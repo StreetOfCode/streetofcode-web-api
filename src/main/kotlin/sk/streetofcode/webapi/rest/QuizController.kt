@@ -21,7 +21,7 @@ import sk.streetofcode.webapi.api.request.QuizAddRequest
 import sk.streetofcode.webapi.api.request.QuizEditRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
-import java.util.*
+import java.util.Optional
 
 @RestController
 @RequestMapping("quiz")

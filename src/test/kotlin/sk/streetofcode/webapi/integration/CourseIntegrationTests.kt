@@ -2,15 +2,12 @@ package sk.streetofcode.webapi.integration
 
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import org.mockito.ArgumentMatchers.anyLong
-import org.mockito.Mockito
 import org.springframework.boot.test.web.client.getForEntity
 import org.springframework.boot.test.web.client.postForEntity
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import sk.streetofcode.webapi.api.dto.CourseDto
 import sk.streetofcode.webapi.api.dto.CourseOverviewDto
-import sk.streetofcode.webapi.api.dto.IsOwnedByUserDto
 import sk.streetofcode.webapi.api.exception.AuthorizationException
 import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.api.request.CourseAddRequest

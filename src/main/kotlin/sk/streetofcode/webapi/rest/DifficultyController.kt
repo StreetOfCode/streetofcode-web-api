@@ -49,7 +49,10 @@ class DifficultyController(val difficultyService: DifficultyService) {
 
     @PutMapping("{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody difficultyEditRequest: DifficultyEditRequest): ResponseEntity<Difficulty> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody difficultyEditRequest: DifficultyEditRequest
+    ): ResponseEntity<Difficulty> {
         return ResponseEntity.ok(difficultyService.edit(id, difficultyEditRequest))
     }
 

@@ -40,7 +40,7 @@ class QuizServiceImpl(
 
         // TODO paid-courses: allow if lecture preview is allowed
         if (!courseProductService.isOwnedByUser(courseId).isOwnedByUser
-            // && !quizzes.first().lecture.isPreviewAllowed
+        // && !quizzes.first().lecture.isPreviewAllowed
         ) {
             throw AuthorizationException("User does not own this course")
         }

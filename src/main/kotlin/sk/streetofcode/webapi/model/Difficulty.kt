@@ -37,10 +37,10 @@ data class Difficulty(
     val courses: MutableSet<Course> = mutableSetOf()
 ) {
     constructor(name: String, skillLevel: Int) :
-        this(null, name, skillLevel, mutableSetOf())
+            this(null, name, skillLevel, mutableSetOf())
 
     constructor(id: Long, name: String, skillLevel: Int) :
-        this(id, name, skillLevel, mutableSetOf())
+            this(id, name, skillLevel, mutableSetOf())
 
     override fun equals(other: Any?) = other is Difficulty && DifficultyEssential(this) == DifficultyEssential(other)
     override fun hashCode() = DifficultyEssential(this).hashCode()

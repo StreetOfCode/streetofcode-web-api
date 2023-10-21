@@ -27,11 +27,14 @@ data class ProgressLecture(
     val createdAt: OffsetDateTime
 ) {
     constructor(userId: String, lectureId: Long) :
-        this(null, userId, lectureId, OffsetDateTime.now())
+            this(null, userId, lectureId, OffsetDateTime.now())
 
-    override fun equals(other: Any?) = other is ProgressLecture && ProgressLectureEssential(this) == ProgressLectureEssential(other)
+    override fun equals(other: Any?) =
+        other is ProgressLecture && ProgressLectureEssential(this) == ProgressLectureEssential(other)
+
     override fun hashCode() = ProgressLectureEssential(this).hashCode()
-    override fun toString() = ProgressLectureEssential(this).toString().replaceFirst("ProgressLectureEssential", "ProgressLecture")
+    override fun toString() =
+        ProgressLectureEssential(this).toString().replaceFirst("ProgressLectureEssential", "ProgressLecture")
 }
 
 private data class ProgressLectureEssential(

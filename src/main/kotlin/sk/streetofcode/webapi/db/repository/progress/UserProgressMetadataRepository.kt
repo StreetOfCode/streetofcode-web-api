@@ -9,6 +9,7 @@ import java.util.Optional
 @Repository
 interface UserProgressMetadataRepository : CrudRepository<UserProgressMetadata, Long> {
     fun findByUserIdAndCourseId(userId: String, courseId: Long): Optional<UserProgressMetadata>
+
     @Query(
         """
         SELECT progress.courseId from UserProgressMetadata as progress 

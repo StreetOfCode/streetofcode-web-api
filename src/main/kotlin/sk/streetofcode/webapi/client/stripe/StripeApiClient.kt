@@ -5,7 +5,11 @@ import com.stripe.model.PaymentIntent
 import com.stripe.model.Price
 import com.stripe.model.Product
 import com.stripe.model.PromotionCode
-import com.stripe.param.*
+import com.stripe.param.PaymentIntentCreateParams
+import com.stripe.param.PaymentIntentUpdateParams
+import com.stripe.param.PriceListParams
+import com.stripe.param.ProductListParams
+import com.stripe.param.PromotionCodeListParams
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.exception.BadRequestException

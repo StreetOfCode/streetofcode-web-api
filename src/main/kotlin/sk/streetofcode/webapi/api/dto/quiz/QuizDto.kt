@@ -1,7 +1,6 @@
 package sk.streetofcode.webapi.api.dto.quiz
 
 import java.time.OffsetDateTime
-import kotlin.Long
 
 data class QuizDto(
     val id: Long,
