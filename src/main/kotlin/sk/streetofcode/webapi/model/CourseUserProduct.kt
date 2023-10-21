@@ -2,17 +2,7 @@ package sk.streetofcode.webapi.model
 
 import sk.streetofcode.webapi.api.dto.CourseUserProductDto
 import java.time.OffsetDateTime
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.SequenceGenerator
-import javax.persistence.Table
-import javax.persistence.UniqueConstraint
+import javax.persistence.*
 
 @Entity
 @Table(uniqueConstraints = [UniqueConstraint(columnNames = ["soc_user_firebase_id", "product_id"])])
@@ -33,12 +23,21 @@ data class CourseUserProduct(
     @Column(nullable = false, columnDefinition = "TIMESTAMP WITH TIME ZONE")
     val boughtAt: OffsetDateTime,
 
+    @Column(nullable = false)
+    val finalAmount: Long,
+
     @Column(nullable = true)
-    val promoCode: String?
+    val promoCode: String?,
 ) {
-    constructor(socUser: SocUser, courseProduct: CourseProduct, boughtAt: OffsetDateTime, promoCode: String?) :
-        this(null, socUser, courseProduct, boughtAt, promoCode)
+    constructor(
+        socUser: SocUser,
+        courseProduct: CourseProduct,
+        boughtAt: OffsetDateTime,
+        finalAmount: Long,
+        promoCode: String?
+    ) :
+            this(null, socUser, courseProduct, boughtAt, finalAmount, promoCode)
 }
 
 fun CourseUserProduct.toUserProductDto() =
-    CourseUserProductDto(this.boughtAt)
+    CourseUserProductDto(this.boughtAt, this.finalAmount, this.promoCode)

@@ -3,16 +3,8 @@ package sk.streetofcode.webapi.rest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import sk.streetofcode.webapi.api.CourseService
-import sk.streetofcode.webapi.api.dto.AllCourseProductsDto
 import sk.streetofcode.webapi.api.dto.CourseDto
 import sk.streetofcode.webapi.api.dto.CourseOverviewDto
 import sk.streetofcode.webapi.api.request.CourseAddRequest
@@ -45,14 +37,6 @@ class CourseController(val courseService: CourseService, val authenticationServi
         return ResponseEntity.ok(courseService.getAll().map { it.slug }.toList())
     }
 
-    @GetMapping("all-products")
-    fun getAllProducts(): ResponseEntity<AllCourseProductsDto> {
-        val allProducts = courseService.getAllCoursesOverview()
-            .associate { it.slug to it.courseProducts.map { cp -> cp.productId } }
-
-        return ResponseEntity.ok(AllCourseProductsDto(allProducts))
-    }
-
     @GetMapping("{id}")
     @IsAdmin
     fun get(@PathVariable("id") id: Long): ResponseEntity<CourseDto> {
@@ -67,7 +51,10 @@ class CourseController(val courseService: CourseService, val authenticationServi
 
     @PutMapping("{id}")
     @IsAdmin
-    fun edit(@PathVariable("id") id: Long, @RequestBody courseEditRequest: CourseEditRequest): ResponseEntity<CourseDto> {
+    fun edit(
+        @PathVariable("id") id: Long,
+        @RequestBody courseEditRequest: CourseEditRequest
+    ): ResponseEntity<CourseDto> {
         return ResponseEntity.ok(courseService.edit(id, courseEditRequest))
     }
 
