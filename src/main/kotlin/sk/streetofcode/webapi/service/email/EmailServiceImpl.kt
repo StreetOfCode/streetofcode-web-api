@@ -3,11 +3,11 @@ package sk.streetofcode.webapi.service.email
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.MailException
-import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.EmailService
+import sk.streetofcode.webapi.api.request.JavaCoursePromoCodeRequest
 import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.client.recaptcha.RecaptchaApiClient
 import sk.streetofcode.webapi.model.CourseReview
@@ -39,6 +39,12 @@ class EmailServiceImpl(
 
     @Value("\${email-feedback.to-address}")
     private lateinit var feedbackEmailTo: String
+
+    @Value("\${java-course.basic.promo-code}")
+    private lateinit var javaCourseBasicPromoCode: String
+
+    @Value("\${java-course.premium.promo-code}")
+    private lateinit var javaCoursePremiumPromoCode: String
 
     override fun sendDiscordInvitation(email: String) {
         if (enableEmailService != "true") return
@@ -165,18 +171,41 @@ class EmailServiceImpl(
             }
         }
 
-        val message = SimpleMailMessage()
-        message.setFrom(emailFrom)
-        message.setTo(feedbackEmailTo)
+        val mimeMessage = mailSender.createMimeMessage()
+        val message = MimeMessageHelper(mimeMessage, "utf-8")
 
-        message.setSubject(getSubject(request.subject))
-        message.setReplyTo(request.email)
-        message.setText(request.emailText)
+        message.setFrom(emailFrom, "Street of Code")
+        message.setTo(request.email)
+
+        message.setSubject("Java kurz - promo kód")
+        message.setReplyTo(emailFrom)
+    }
+
+    override fun sendJavaCoursePromoCode(request: JavaCoursePromoCodeRequest) {
+        if (enableEmailService != "true") return
+
+        if (request.recaptchaToken != null) {
+            if (!recaptchaApiClient.verifyRecaptchaToken(request.recaptchaToken)) {
+                log.warn("Anonymous sends feedback request with failed verification of recaptcha token")
+                return
+            }
+        }
+
+        val mimeMessage = mailSender.createMimeMessage()
+        val message = MimeMessageHelper(mimeMessage, "utf-8")
+
+        message.setFrom(emailFrom, "Street of Code")
+        message.setTo(request.email)
+
+        message.setSubject("Java kurz - promo kód")
+        message.setReplyTo(emailFrom)
+        message.setText(createJavaCoursePromoCodeMessage(), true)
 
         try {
-            mailSender.send(message)
+            mailSender.send(mimeMessage)
+            log.info("Java promo codes sent to ${request.email}")
         } catch (e: MailException) {
-            log.error("Problem with sending feedback email", e)
+            log.error("Problem with sending sendJavaCoursePromoCode email", e)
         } catch (e: SocketTimeoutException) {
             log.error("Timeout when reading from socket", e)
         }
@@ -192,6 +221,7 @@ class EmailServiceImpl(
 
     private fun createNewLectureCommentMessage(comment: LectureComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser.name}, Email - ${comment.socUser.email}, Id - ${comment.socUser.firebaseId}</p>" +
+                "<h3>Kurz</h3><p>Názov - ${comment.lecture.chapter.course.name}" +
                 "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
                 "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
@@ -212,8 +242,19 @@ class EmailServiceImpl(
     private fun createUserProductConfirmationMessage(courseUserProduct: CourseUserProduct): String {
         return "<p>Ahoj. Kurz ${courseUserProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
                 " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
+                " Určite sa pridaj na náš Discord <a href=\"https://streetofcode.sk/discord\">server</a>, kde si budeme o kurze písať." +
                 " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
                 "<p>Ďakujeme,</p>" +
                 "<p>tím Street of Code.</p>"
+
+    }
+
+    private fun createJavaCoursePromoCodeMessage(): String {
+        return "<p>Ahoj. Ďakujeme za záujem o náš Java kurz.</p>" +
+                "<p>Promo kód pre základný balík je: <b>${this.javaCourseBasicPromoCode}</b></p>" +
+                "<p>Promo kód pre premium balík je: <b>${this.javaCoursePremiumPromoCode}</b></p>" +
+                "<p>Ďakujeme,</p>" +
+                "<p>tím Street of Code.</p>" +
+                "<p>P.S. Ak je to omyl, túto správu prosím ignoruj.</p>"
     }
 }

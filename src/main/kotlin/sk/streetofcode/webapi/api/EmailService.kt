@@ -1,5 +1,6 @@
 package sk.streetofcode.webapi.api
 
+import sk.streetofcode.webapi.api.request.JavaCoursePromoCodeRequest
 import sk.streetofcode.webapi.api.request.SendFeedbackEmailRequest
 import sk.streetofcode.webapi.model.CourseReview
 import sk.streetofcode.webapi.model.CourseUserProduct
@@ -8,6 +9,7 @@ import sk.streetofcode.webapi.model.PostComment
 
 interface EmailService {
     fun sendFeedbackEmail(userId: String? = null, request: SendFeedbackEmailRequest)
+    fun sendJavaCoursePromoCode(request: JavaCoursePromoCodeRequest)
     fun sendDiscordInvitation(email: String)
     fun sendNewLectureCommentNotification(lectureComment: LectureComment)
     fun sendNewPostCommentNotification(postComment: PostComment)

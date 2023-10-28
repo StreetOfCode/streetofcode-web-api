@@ -12,17 +12,23 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import sk.streetofcode.webapi.api.CourseService
+import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.dto.CourseDto
 import sk.streetofcode.webapi.api.dto.CourseOverviewDto
 import sk.streetofcode.webapi.api.request.CourseAddRequest
 import sk.streetofcode.webapi.api.request.CourseEditRequest
+import sk.streetofcode.webapi.api.request.JavaCoursePromoCodeRequest
 import sk.streetofcode.webapi.configuration.annotation.IsAdmin
 import sk.streetofcode.webapi.configuration.annotation.IsAuthenticated
 import sk.streetofcode.webapi.service.AuthenticationService
 
 @RestController
 @RequestMapping("course")
-class CourseController(val courseService: CourseService, val authenticationService: AuthenticationService) {
+class CourseController(
+    val courseService: CourseService,
+    val authenticationService: AuthenticationService,
+    val emailService: EmailService,
+) {
 
     @GetMapping
     @IsAdmin
@@ -95,5 +101,11 @@ class CourseController(val courseService: CourseService, val authenticationServi
     @IsAuthenticated
     fun getMyCourses(): ResponseEntity<List<CourseOverviewDto>> {
         return ResponseEntity.ok(courseService.getMyCourses(authenticationService.getUserId()))
+    }
+
+    @PostMapping("/java/promo-code")
+    fun sendPromoCode(@RequestBody request: JavaCoursePromoCodeRequest): ResponseEntity<String> {
+        this.emailService.sendJavaCoursePromoCode(request)
+        return ResponseEntity.ok("Promo code sent")
     }
 }
