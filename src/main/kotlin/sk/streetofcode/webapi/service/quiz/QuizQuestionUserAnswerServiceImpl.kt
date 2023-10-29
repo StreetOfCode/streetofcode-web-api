@@ -64,8 +64,8 @@ class QuizQuestionUserAnswerServiceImpl(
 
                 updatedAnswer.isCorrect =
                     question.correctAnswers
-                        .map { it.id }.sortedBy { it } == mostRecentAnswers.filter { it.question.id == question.id }
-                        .map { it.answer.id }.sortedBy { it }
+                    .map { it.id }.sortedBy { it } == mostRecentAnswers.filter { it.question.id == question.id }
+                    .map { it.answer.id }.sortedBy { it }
 
                 updatedAnswer
             }

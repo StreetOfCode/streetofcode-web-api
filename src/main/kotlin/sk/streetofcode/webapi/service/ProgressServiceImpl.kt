@@ -236,8 +236,8 @@ class ProgressServiceImpl(
         } else {
             log.error(
                 "Something is terribly wrong in updating progress metadata, because apparently " +
-                        "new updatedLecturesViewed $updatedLecturesViewed is out of bound. Course has total of $courseLecturesCount" +
-                        ". Progress may be corrupted."
+                    "new updatedLecturesViewed $updatedLecturesViewed is out of bound. Course has total of $courseLecturesCount" +
+                    ". Progress may be corrupted."
             )
             throw InternalErrorException("Problem in internal logic of updating progress metadata")
         }

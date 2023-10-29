@@ -221,40 +221,39 @@ class EmailServiceImpl(
 
     private fun createNewLectureCommentMessage(comment: LectureComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser.name}, Email - ${comment.socUser.email}, Id - ${comment.socUser.firebaseId}</p>" +
-                "<h3>Kurz</h3><p>Názov - ${comment.lecture.chapter.course.name}" +
-                "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
-                "<h3>Komentár</h3><p>${comment.commentText}</p>"
+            "<h3>Kurz</h3><p>Názov - ${comment.lecture.chapter.course.name}" +
+            "<h3>Lekcia</h3><p>Názov - ${comment.lecture.name}, Id - ${comment.lecture.id}</p>" +
+            "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
     private fun createNewPostCommentMessage(comment: PostComment): String {
         return "<h3>Používateľ</h3><p>Meno - ${comment.socUser?.name}, Email - ${comment.socUser?.email}, Id - ${comment.socUser?.firebaseId}</p>" +
-                "<h3>Post</h3><p>Názov - ${comment.postSlug}, Id - ${comment.postId}</p>" +
-                "<h3>Komentár</h3><p>${comment.commentText}</p>"
+            "<h3>Post</h3><p>Názov - ${comment.postSlug}, Id - ${comment.postId}</p>" +
+            "<h3>Komentár</h3><p>${comment.commentText}</p>"
     }
 
     private fun createNewReviewMessage(courseName: String, courseReview: CourseReview): String {
         return "<h3>Používateľ</h3><p>Meno - ${courseReview.socUser.name}, Email - ${courseReview.socUser.email}, Id - ${courseReview.socUser.firebaseId}</p>" +
-                "<h3>Kurz</h3><p>Názov - $courseName, Id - ${courseReview.courseId}</p>" +
-                "<h3>Review</h3><p>${courseReview.text}</p>" +
-                "<h3>Rating</h3><p>${courseReview.rating}</p>"
+            "<h3>Kurz</h3><p>Názov - $courseName, Id - ${courseReview.courseId}</p>" +
+            "<h3>Review</h3><p>${courseReview.text}</p>" +
+            "<h3>Rating</h3><p>${courseReview.rating}</p>"
     }
 
     private fun createUserProductConfirmationMessage(courseUserProduct: CourseUserProduct): String {
         return "<p>Ahoj. Kurz ${courseUserProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
-                " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
-                " Určite sa pridaj na náš Discord <a href=\"https://streetofcode.sk/discord\">server</a>, kde si budeme o kurze písať." +
-                " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
-                "<p>Ďakujeme,</p>" +
-                "<p>tím Street of Code.</p>"
-
+            " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
+            " Určite sa pridaj na náš Discord <a href=\"https://streetofcode.sk/discord\">server</a>, kde si budeme o kurze písať." +
+            " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
+            "<p>Ďakujeme,</p>" +
+            "<p>tím Street of Code.</p>"
     }
 
     private fun createJavaCoursePromoCodeMessage(): String {
         return "<p>Ahoj. Ďakujeme za záujem o náš Java kurz.</p>" +
-                "<p>Promo kód pre základný balík je: <b>${this.javaCourseBasicPromoCode}</b></p>" +
-                "<p>Promo kód pre premium balík je: <b>${this.javaCoursePremiumPromoCode}</b></p>" +
-                "<p>Ďakujeme,</p>" +
-                "<p>tím Street of Code.</p>" +
-                "<p>P.S. Ak je to omyl, túto správu prosím ignoruj.</p>"
+            "<p>Promo kód pre základný balík je: <b>${this.javaCourseBasicPromoCode}</b></p>" +
+            "<p>Promo kód pre premium balík je: <b>${this.javaCoursePremiumPromoCode}</b></p>" +
+            "<p>Ďakujeme,</p>" +
+            "<p>tím Street of Code.</p>" +
+            "<p>P.S. Ak je to omyl, túto správu prosím ignoruj.</p>"
     }
 }

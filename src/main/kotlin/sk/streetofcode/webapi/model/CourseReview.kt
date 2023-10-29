@@ -41,7 +41,7 @@ data class CourseReview(
     var updatedAt: OffsetDateTime
 ) {
     constructor(socUser: SocUser, courseId: Long, rating: Double, text: String?) :
-            this(null, socUser, courseId, rating, text, OffsetDateTime.now(), OffsetDateTime.now())
+        this(null, socUser, courseId, rating, text, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is CourseReview && CourseReviewEssential(this) == CourseReviewEssential(other)

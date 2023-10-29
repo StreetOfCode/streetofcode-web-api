@@ -46,7 +46,7 @@ data class CourseUserProduct(
         finalAmount: Long,
         promoCode: String?
     ) :
-            this(null, socUser, courseProduct, boughtAt, finalAmount, promoCode)
+        this(null, socUser, courseProduct, boughtAt, finalAmount, promoCode)
 }
 
 fun CourseUserProduct.toUserProductDto() =

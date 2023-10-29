@@ -41,7 +41,7 @@ data class PostComment(
     var updatedAt: OffsetDateTime
 ) {
     constructor(socUser: SocUser? = null, postId: String, postSlug: String, commentText: String) :
-            this(null, socUser, postId, postSlug, commentText, OffsetDateTime.now(), OffsetDateTime.now())
+        this(null, socUser, postId, postSlug, commentText, OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is PostComment && PostCommentEssential(this) == PostCommentEssential(other)

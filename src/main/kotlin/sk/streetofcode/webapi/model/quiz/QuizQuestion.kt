@@ -55,7 +55,7 @@ data class QuizQuestion(
     val correctAnswers: MutableSet<QuizQuestionAnswer>
 ) {
     constructor(quiz: Quiz, questionOrder: Int, text: String, type: QuizQuestionType) :
-            this(null, quiz, questionOrder, text, type, mutableSetOf(), mutableSetOf())
+        this(null, quiz, questionOrder, text, type, mutableSetOf(), mutableSetOf())
 
     override fun equals(other: Any?) =
         other is QuizQuestion && QuizQuestionEssential(this) == QuizQuestionEssential(other)

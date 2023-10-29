@@ -52,7 +52,7 @@ data class Chapter(
     var updatedAt: OffsetDateTime
 ) {
     constructor(course: Course, name: String, chapterOrder: Int) :
-            this(null, course, name, chapterOrder, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
+        this(null, course, name, chapterOrder, mutableSetOf(), OffsetDateTime.now(), OffsetDateTime.now())
 
     override fun equals(other: Any?) = other is Chapter && ChapterEssential(this) == ChapterEssential(other)
     override fun hashCode() = ChapterEssential(this).hashCode()

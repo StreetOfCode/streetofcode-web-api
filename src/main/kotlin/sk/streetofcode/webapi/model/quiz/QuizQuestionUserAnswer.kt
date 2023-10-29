@@ -39,7 +39,7 @@ data class QuizQuestionUserAnswer(
     var tryCount: Int
 ) {
     constructor(question: QuizQuestion, answer: QuizQuestionAnswer, userId: String, tryCount: Int) :
-            this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
+        this(null, question, answer, userId, OffsetDateTime.now(), tryCount)
 
     override fun equals(other: Any?) =
         other is QuizQuestionUserAnswer && QuizQuestionUserAnswerEssential(this) == QuizQuestionUserAnswerEssential(

@@ -108,25 +108,25 @@ data class Course(
         status: CourseStatus,
         courseOrder: Int
     ) :
-            this(
-                null,
-                author,
-                difficulty,
-                name,
-                slug,
-                shortDescription,
-                longDescription,
-                resources,
-                trailerUrl,
-                thumbnailUrl,
-                iconUrl,
-                status,
-                mutableSetOf(),
-                OffsetDateTime.now(),
-                OffsetDateTime.now(),
-                0,
-                courseOrder
-            )
+        this(
+            null,
+            author,
+            difficulty,
+            name,
+            slug,
+            shortDescription,
+            longDescription,
+            resources,
+            trailerUrl,
+            thumbnailUrl,
+            iconUrl,
+            status,
+            mutableSetOf(),
+            OffsetDateTime.now(),
+            OffsetDateTime.now(),
+            0,
+            courseOrder
+        )
 
     override fun equals(other: Any?) = other is Course && CourseEssential(this) == CourseEssential(other)
     override fun hashCode() = CourseEssential(this).hashCode()

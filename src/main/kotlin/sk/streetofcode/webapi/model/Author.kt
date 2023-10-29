@@ -59,7 +59,7 @@ data class Author(
         email: String,
         description: String
     ) :
-            this(id, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
+        this(id, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
     constructor(
         name: String,
@@ -69,7 +69,7 @@ data class Author(
         email: String,
         description: String
     ) :
-            this(null, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
+        this(null, name, slug, imageUrl, coursesTitle, email, description, mutableSetOf())
 
     override fun equals(other: Any?) = other is Author && AuthorEssential(this) == AuthorEssential(other)
     override fun hashCode() = AuthorEssential(this).hashCode()

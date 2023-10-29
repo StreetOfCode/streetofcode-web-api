@@ -27,7 +27,7 @@ data class ProgressLecture(
     val createdAt: OffsetDateTime
 ) {
     constructor(userId: String, lectureId: Long) :
-            this(null, userId, lectureId, OffsetDateTime.now())
+        this(null, userId, lectureId, OffsetDateTime.now())
 
     override fun equals(other: Any?) =
         other is ProgressLecture && ProgressLectureEssential(this) == ProgressLectureEssential(other)
