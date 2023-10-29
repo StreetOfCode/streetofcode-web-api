@@ -52,6 +52,9 @@ class StripeApiClient(
             .setAmount(amount)
             .setCurrency("eur")
             .setReceiptEmail(userEmail)
+            .setAutomaticPaymentMethods(
+                PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build()
+            )
             .putAllMetadata(getPaymentIntentMetadataMap(userId, courseProductId, amount, null))
             .build()
 
