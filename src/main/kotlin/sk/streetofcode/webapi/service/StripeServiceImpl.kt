@@ -28,7 +28,7 @@ class StripeServiceImpl(
     private val stripeApiClient: StripeApiClient,
     private val userProductService: CourseUserProductService,
     private val emailService: EmailService,
-    private val socUserServiceImpl: SocUserServiceImpl
+    private val socUserServiceImpl: SocUserServiceImpl,
 ) : StripeService {
 
     companion object {
@@ -127,6 +127,9 @@ class StripeServiceImpl(
             "payment_intent.succeeded" -> {
                 val paymentIntent = stripeObject as PaymentIntent?
                 handlePaymentSucceededEvent(paymentIntent!!)
+            }
+            else -> {
+                log.info("Unhandled stripe event type: ${event.type}")
             }
         }
     }
