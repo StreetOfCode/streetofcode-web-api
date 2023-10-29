@@ -1,6 +1,7 @@
 package sk.streetofcode.webapi.service
 
 import org.springframework.stereotype.Service
+import sk.streetofcode.webapi.api.CourseProductService
 import sk.streetofcode.webapi.api.CourseReviewService
 import sk.streetofcode.webapi.api.EmailService
 import sk.streetofcode.webapi.api.SocUserService
@@ -23,7 +24,8 @@ class CourseReviewServiceImpl(
     private val courseRepository: CourseRepository,
     private val authenticationService: AuthenticationService,
     private val socUserService: SocUserService,
-    private val emailService: EmailService
+    private val emailService: EmailService,
+    private val courseProductService: CourseProductService
 ) : CourseReviewService {
     override fun getCourseReviews(courseId: Long): List<CourseReviewDto> {
         courseRepository
@@ -54,6 +56,11 @@ class CourseReviewServiceImpl(
     override fun add(addRequest: CourseReviewAddRequest): CourseReviewDto {
         val course = courseRepository.findById(addRequest.courseId)
             .orElseThrow { ResourceNotFoundException("Course with id ${addRequest.courseId} was not found") }
+
+        if (!courseProductService.isOwnedByUser(addRequest.courseId).isOwnedByUser
+        ) {
+            throw AuthorizationException("User does not own this course")
+        }
 
         val userId = authenticationService.getUserId()
         val existingReview = courseReviewRepository.findBySocUserFirebaseIdAndCourseId(userId, addRequest.courseId)
