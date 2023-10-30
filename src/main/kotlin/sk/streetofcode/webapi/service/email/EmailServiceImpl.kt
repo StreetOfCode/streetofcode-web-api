@@ -240,7 +240,8 @@ class EmailServiceImpl(
     }
 
     private fun createUserProductConfirmationMessage(courseUserProduct: CourseUserProduct): String {
-        return "<p>Ahoj. Kurz ${courseUserProduct.courseProduct.course.name} máš kúpený s celoživotným prístupom." +
+        return "<p>Ahoj.</p>" +
+            "<p>Úspešne si si zakúpil/a ${courseUserProduct.courseProduct.course.name}.</p>" +
             " Prístup ku kurzu je napárovaný na tvoj email, a iba po prihlásení s týmto emailom na stránke si kurz budeš vedieť spustiť." +
             " Určite sa pridaj na náš Discord <a href=\"https://streetofcode.sk/discord\">server</a>, kde si budeme o kurze písať." +
             " Ak by si mal/a hocijaké otázky, alebo ti niečo nefunguje, tak neváhaj odpísať na túto správu.</p>" +
