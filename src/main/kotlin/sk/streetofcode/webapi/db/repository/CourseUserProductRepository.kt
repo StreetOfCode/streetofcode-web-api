@@ -11,4 +11,9 @@ interface CourseUserProductRepository : CrudRepository<CourseUserProduct, String
         firebaseId: String,
         courseProduct: CourseProduct
     ): List<CourseUserProduct>
+
+    fun existsBySocUserFirebaseIdAndCourseProduct(
+        firebaseId: String,
+        courseProduct: CourseProduct
+    ): Boolean
 }

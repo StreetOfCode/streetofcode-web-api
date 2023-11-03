@@ -137,6 +137,14 @@ class StripeServiceImpl(
     private fun handlePaymentSucceededEvent(paymentIntent: PaymentIntent) {
         val (userId, courseProductId, finalAmount, appliedPromoCode) = getMetadataFromPaymentIntent(paymentIntent)
             ?: throw BadRequestException("Invalid metadata.")
+
+        if (userProductService.hasUserProduct(userId, courseProductId)) {
+            log.info("User $userId already has product $courseProductId")
+            return
+        }
+
+        log.info("Payment succeeded for user $userId and course product $courseProductId")
+
         // callbacks after successful payment
         val courseUserProduct =
             userProductService.addCourseUserProduct(userId, courseProductId, finalAmount, appliedPromoCode)
