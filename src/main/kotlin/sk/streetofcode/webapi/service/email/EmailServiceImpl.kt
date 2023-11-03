@@ -253,6 +253,7 @@ class EmailServiceImpl(
         return "<p>Ahoj. Ďakujeme za záujem o náš Java kurz.</p>" +
             "<p>Promo kód pre základný balík je: <b>${this.javaCourseBasicPromoCode}</b></p>" +
             "<p>Promo kód pre premium balík je: <b>${this.javaCoursePremiumPromoCode}</b></p>" +
+            "<p>Kódy sa dajú použiť do 12.11.2023 23:59.</p>" +
             "<p>Ďakujeme,</p>" +
             "<p>tím Street of Code.</p>" +
             "<p>P.S. Ak je to omyl, túto správu prosím ignoruj.</p>"
