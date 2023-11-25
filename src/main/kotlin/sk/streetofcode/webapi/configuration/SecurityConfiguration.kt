@@ -1,6 +1,7 @@
 package sk.streetofcode.webapi.configuration
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.core.convert.converter.Converter
@@ -11,6 +12,8 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter
+import org.springframework.security.web.firewall.HttpStatusRequestRejectedHandler
+import org.springframework.security.web.firewall.RequestRejectedHandler
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -22,6 +25,13 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
     companion object {
         const val AUTHORITY_PREFIX = "ROLE_"
         const val AUTHORITIES_CLAIM_NAME = "roles"
+    }
+
+    @Bean
+    fun requestRejectedHandler(): RequestRejectedHandler? {
+        // Get rid of too many logs of
+        // RequestRejectedException: The request was rejected because the URL contained a potentially malicious String "//"
+        return HttpStatusRequestRejectedHandler()
     }
 
     override fun configure(http: HttpSecurity) {
