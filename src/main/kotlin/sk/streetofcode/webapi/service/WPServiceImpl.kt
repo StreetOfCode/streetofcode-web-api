@@ -3,7 +3,6 @@ package sk.streetofcode.webapi.service
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import sk.streetofcode.webapi.api.WPService
-import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 import sk.streetofcode.webapi.client.wp.WpApiClient
 import sk.streetofcode.webapi.db.repository.WpPostRepository
 import sk.streetofcode.webapi.model.WpPost
@@ -32,10 +31,6 @@ class WPServiceImpl(
     override fun getPostBySlug(slug: String, revalidate: Boolean): String {
         if (revalidate) {
             val updatedPost = apiClient.getPostBySlug(slug)
-            if (updatedPost.isEmpty()) {
-                throw ResourceNotFoundException("Post with slug $slug not found")
-            }
-
             postsBySlug[slug] = updatedPost
             wpPostRepository.save(WpPost(slug, updatedPost))
             log.info("Post with slug $slug updated in cache and database.")
@@ -50,9 +45,6 @@ class WPServiceImpl(
                 return it.post
             } ?: run {
                 val post = apiClient.getPostBySlug(slug)
-                if (post.isEmpty()) {
-                    throw ResourceNotFoundException("Post with slug $slug not found")
-                }
                 postsBySlug[slug] = post
                 wpPostRepository.save(WpPost(slug, post))
                 return post

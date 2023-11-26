@@ -7,6 +7,8 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
+import sk.streetofcode.webapi.api.exception.InternalErrorException
+import sk.streetofcode.webapi.api.exception.ResourceNotFoundException
 
 @Service
 class WpApiClient(
@@ -55,11 +57,11 @@ class WpApiClient(
             }
         """
 
-        return fetchGraphql(query, null)
+        return fetchPost(query, slug)
     }
 
-    private fun fetchGraphql(query: String, variables: Any?): String {
-        val request = GraphqlRequest(query, variables)
+    private fun fetchPost(query: String, slug: String): String {
+        val request = GraphqlRequest(query, null)
 
         val jsonObject = JSONObject()
         jsonObject.put("variables", request.variables)
@@ -78,16 +80,21 @@ class WpApiClient(
 
         if (!response.statusCode.is2xxSuccessful) {
             log.info("Fetch graphql was not successful, response: {}", response)
+            throw InternalErrorException("Error fetching graphql data")
         } else {
             try {
-                val data = JSONObject(response.body).getJSONObject("data").getJSONObject("post")
-                return data.toString()
+                val data = JSONObject(response.body).getJSONObject("data").get("post").toString()
+                if (data != "null") {
+                    return data
+                } else {
+                    throw ResourceNotFoundException("Post with $slug not found")
+                }
+            } catch (e: ResourceNotFoundException) {
+                throw e
             } catch (e: Exception) {
-                log.info("Fetch graphql was not successful, response: {}", response)
+                throw InternalErrorException("Error fetching graphql data")
             }
         }
-
-        return ""
     }
 }
 
