@@ -73,7 +73,14 @@ class StripeServiceImpl(
             val discountAmount: Long
             val promotionCode = getPromotionCode(promoCode)
             if (promotionCode.coupon.appliesTo.products.contains(courseProductId)) {
-                discountAmount = promotionCode.coupon.amountOff
+                discountAmount = if (promotionCode.coupon.amountOff != null) {
+                    promotionCode.coupon.amountOff
+                } else if (promotionCode.coupon.percentOff != null) {
+                    (fullAmount * promotionCode.coupon.percentOff.toLong() / 100)
+                } else {
+                    log.error("PromotionCode has neither amountOff nor percentOff")
+                    throw InternalErrorException("Cannot update payment intent")
+                }
             } else {
                 log.error("PaymentIntent productId is not same as intended with PromotionCode. This should not happen, because only requests with same productId should be present")
                 throw InternalErrorException("Cannot update payment intent")
