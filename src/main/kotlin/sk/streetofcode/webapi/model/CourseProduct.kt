@@ -17,7 +17,11 @@ data class CourseProduct(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     val course: Course,
+
+    @Column(nullable = true)
+    val archived: Boolean = false
+
 )
 
 fun CourseProduct.toCourseProductDto(courseUserProducts: List<CourseUserProduct>, price: Long?): CourseProductDto =
-    CourseProductDto(this.productId, this.course.id!!, courseUserProducts.map { it.toUserProductDto() }, price)
+    CourseProductDto(this.productId, this.course.id!!, courseUserProducts.map { it.toUserProductDto() }, price, this.archived)

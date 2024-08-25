@@ -7,7 +7,6 @@ import sk.streetofcode.webapi.api.dto.CourseProductDto
 import sk.streetofcode.webapi.api.dto.IsOwnedByUserDto
 import sk.streetofcode.webapi.client.stripe.StripeApiClient
 import sk.streetofcode.webapi.db.repository.CourseProductRepository
-import sk.streetofcode.webapi.model.CourseProduct
 import sk.streetofcode.webapi.model.toCourseProductDto
 
 @Service
@@ -29,10 +28,6 @@ class CourseProductServiceImpl(
 
             it.toCourseProductDto(courseUserProducts, price)
         }
-    }
-
-    override fun get(courseProductId: String): CourseProduct {
-        return courseProductRepository.findById(courseProductId).orElseThrow()
     }
 
     override fun isOwnedByUser(courseId: Long): IsOwnedByUserDto {

@@ -1,0 +1,1 @@
+ALTER TABLE course_product ADD archived boolean default false;

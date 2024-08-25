@@ -61,11 +61,16 @@ INSERT INTO post_comment(id, soc_user_firebase_id, post_id, post_slug, comment_t
 (nextval('post_comment_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', '1', 'post-slug', 'toto je super post', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' ),
 (nextval('post_comment_id_seq'), null, '1', 'post-slug', 'parada', '2007-12-03T10:15:30+01:00', '2007-12-03T10:15:30+01:00' );
 
-INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_Opf91PbCKmN79b', 1);
-INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_OkklGrYeJgDOg4', 1);
+INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_Opf91PbCKmN79b', 1); -- basic
+INSERT INTO public.course_product(product_id, course_id) VALUES ('prod_OkklGrYeJgDOg4', 1); -- premium
 
---INSERT INTO public.course_user_product(id, soc_user_firebase_id, product_id, bought_at, final_amount, promo_code)
---VALUES (nextval('course_user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Opf91PbCKmN79b', '2007-12-03T10:15:30+01:00', 9900, 'BASIC');
+INSERT INTO public.course_user_product(id, soc_user_firebase_id, product_id, bought_at, final_amount, promo_code) VALUES
+(nextval('course_user_product_id_seq'), 'moNoTwZcU5Nwg4qMBBVW9uJBQM12', 'prod_Opf91PbCKmN79b', '2007-12-03T10:15:30+01:00', 9900, 'BASIC'),
+(nextval('course_user_product_id_seq'), 'Dk71hPkR9Fc6SJma3S1NvGcrkHe2', 'prod_OkklGrYeJgDOg4', '2007-12-03T10:15:30+01:00', 19900, 'PREMIUM');
 
 -- Informatika 101 first 2 lectures
 UPDATE lecture set allow_preview_when_paid = true where id in (1, 2);
+
+-- archive premium course
+UPDATE course_product set archived = true where product_id = 'prod_OkklGrYeJgDOg4';
+
