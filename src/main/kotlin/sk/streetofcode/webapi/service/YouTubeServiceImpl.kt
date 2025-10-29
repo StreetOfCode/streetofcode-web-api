@@ -75,25 +75,30 @@ class YouTubeServiceImpl(val youtube: YouTube, val youtubeProperties: YoutubePro
     }
 
     private fun getPlaylistVideos(playlistId: String): List<Video> {
-        val videoIdList: MutableList<String> = ArrayList()
+        try {
+            val videoIdList: MutableList<String> = ArrayList()
 
-        val playlistItemRequest = youtube.playlistItems().list(listOf("contentDetails"))
-        playlistItemRequest.fields = "nextPageToken,items/contentDetails/videoId"
-        playlistItemRequest.maxResults = MAX_VIDEOS_PER_REQUEST.toLong()
-        playlistItemRequest.playlistId = playlistId
+            val playlistItemRequest = youtube.playlistItems().list(listOf("contentDetails"))
+            playlistItemRequest.fields = "nextPageToken,items/contentDetails/videoId"
+            playlistItemRequest.maxResults = MAX_VIDEOS_PER_REQUEST.toLong()
+            playlistItemRequest.playlistId = playlistId
 
-        var nextToken: String? = null
-        do {
-            playlistItemRequest.pageToken = nextToken
-            val playlistItemResult = playlistItemRequest.execute()
-            for (playlistItem in playlistItemResult.items) videoIdList.add(playlistItem.contentDetails.videoId)
-            nextToken = playlistItemResult.nextPageToken
-        } while (nextToken != null)
+            var nextToken: String? = null
+            do {
+                playlistItemRequest.pageToken = nextToken
+                val playlistItemResult = playlistItemRequest.execute()
+                for (playlistItem in playlistItemResult.items) videoIdList.add(playlistItem.contentDetails.videoId)
+                nextToken = playlistItemResult.nextPageToken
+            } while (nextToken != null)
 
-        val videos = videoIdList.chunked(MAX_VIDEOS_PER_REQUEST).map { chunk ->
-            getVideosById(chunk)
-        }.flatten()
+            val videos = videoIdList.chunked(MAX_VIDEOS_PER_REQUEST).map { chunk ->
+                getVideosById(chunk)
+            }.flatten()
 
-        return videos
+            return videos
+        } catch (e: Exception) {
+            log.error("Failed to fetch videos from playlist $playlistId.", e)
+            return emptyList()
+        }
     }
 }
