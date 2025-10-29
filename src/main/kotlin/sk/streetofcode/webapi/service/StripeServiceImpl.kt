@@ -86,9 +86,9 @@ class StripeServiceImpl(
                 throw InternalErrorException("Cannot update payment intent")
             }
 
-            if (fullAmount - discountAmount <= 0) {
-                log.error("Final amount for courseProductId $courseProductId is less or equal to zero")
-                throw InternalErrorException("CreatePaymentIntent error - amount less or equal to zero")
+            if (fullAmount - discountAmount < 0) {
+                log.error("Final amount for courseProductId $courseProductId is less than a zero")
+                throw InternalErrorException("CreatePaymentIntent error - amount less than zero")
             }
 
             return stripeApiClient.updatePaymentIntent(paymentIntent, fullAmount, discountAmount, promoCode)
