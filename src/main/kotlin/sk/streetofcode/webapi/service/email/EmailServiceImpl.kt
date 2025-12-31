@@ -3,6 +3,7 @@ package sk.streetofcode.webapi.service.email
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mail.MailException
+import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
 import org.springframework.mail.javamail.MimeMessageHelper
 import org.springframework.stereotype.Service
@@ -171,14 +172,21 @@ class EmailServiceImpl(
             }
         }
 
-        val mimeMessage = mailSender.createMimeMessage()
-        val message = MimeMessageHelper(mimeMessage, "utf-8")
+        val message = SimpleMailMessage()
+        message.setFrom(emailFrom)
+        message.setTo(feedbackEmailTo)
 
-        message.setFrom(emailFrom, "Street of Code")
-        message.setTo(request.email)
+        message.setSubject(getSubject(request.subject))
+        message.setReplyTo(request.email)
+        message.setText(request.emailText)
 
-        message.setSubject("Java kurz - promo kód")
-        message.setReplyTo(emailFrom)
+        try {
+            mailSender.send(message)
+        } catch (e: MailException) {
+            log.error("Problem with sending feedback email", e)
+        } catch (e: SocketTimeoutException) {
+            log.error("Timeout when reading from socket", e)
+        }
     }
 
     override fun sendJavaCoursePromoCode(request: JavaCoursePromoCodeRequest) {
