@@ -1,0 +1,1 @@
+ALTER TABLE soc_user ALTER COLUMN image_url TYPE VARCHAR(1024);
