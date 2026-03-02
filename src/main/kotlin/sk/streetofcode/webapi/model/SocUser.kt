@@ -17,7 +17,7 @@ data class SocUser(
     @Column(nullable = false)
     val email: String,
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 1024)
     val imageUrl: String? = null,
 
     @Column(nullable = false)
